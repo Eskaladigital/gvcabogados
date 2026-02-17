@@ -2,7 +2,7 @@ import { Metadata } from 'next';
 import Image from 'next/image';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
-import WhatsAppButton from '@/components/layout/WhatsAppButton';
+import BackToTopButton from '@/components/layout/WhatsAppButton';
 import ScrollReveal from '@/components/ui/ScrollReveal';
 import { getTeamByLocale } from '@/data/team';
 import { getTranslations } from '@/data/translations';
@@ -71,7 +71,7 @@ export default function TeamPageEn() {
         </section>
       </main>
       <Footer locale={locale} />
-      <WhatsAppButton />
+      <BackToTopButton />
       <ScrollReveal />
     </>
   );

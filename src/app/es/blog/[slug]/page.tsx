@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
-import WhatsAppButton from '@/components/layout/WhatsAppButton';
+import BackToTopButton from '@/components/layout/WhatsAppButton';
 import SocialShare from '@/components/blog/SocialShare';
 import RelatedPosts from '@/components/blog/RelatedPosts';
 import { supabaseAdmin } from '@/lib/supabase';
@@ -145,7 +145,7 @@ export default async function BlogPostPage({ params }: Props) {
         </section>
       </main>
       <Footer locale={locale} />
-      <WhatsAppButton />
+      <BackToTopButton />
     </>
   );
 }

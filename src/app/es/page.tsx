@@ -2,7 +2,7 @@ import { Metadata } from 'next';
 import { getTranslations } from '@/data/translations';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
-import WhatsAppButton from '@/components/layout/WhatsAppButton';
+import BackToTopButton from '@/components/layout/WhatsAppButton';
 import ScrollReveal from '@/components/ui/ScrollReveal';
 import Hero from '@/components/home/Hero';
 import AboutStrip from '@/components/home/AboutStrip';
@@ -46,7 +46,7 @@ export default function HomePageEs() {
         <ContactSection locale={locale} />
       </main>
       <Footer locale={locale} />
-      <WhatsAppButton />
+      <BackToTopButton />
       <ScrollReveal />
     </>
   );

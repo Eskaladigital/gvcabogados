@@ -9,7 +9,7 @@ import {
 } from 'lucide-react';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
-import WhatsAppButton from '@/components/layout/WhatsAppButton';
+import BackToTopButton from '@/components/layout/WhatsAppButton';
 import ScrollReveal from '@/components/ui/ScrollReveal';
 import Breadcrumbs from '@/components/ui/Breadcrumbs';
 import RichTextContent from '@/components/content/RichTextContent';
@@ -431,7 +431,7 @@ export default async function ServiceDetailPage({ params }: Props) {
 
       </main>
       <Footer locale={locale} />
-      <WhatsAppButton />
+      <BackToTopButton />
       <ScrollReveal />
     </>
   );

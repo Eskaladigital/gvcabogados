@@ -2,7 +2,7 @@ import { Metadata } from 'next';
 import Link from 'next/link';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
-import WhatsAppButton from '@/components/layout/WhatsAppButton';
+import BackToTopButton from '@/components/layout/WhatsAppButton';
 import { getAllServiceContentSlugs } from '@/lib/service-content';
 import { Home, Users, Briefcase, FileText, Phone, Scale } from 'lucide-react';
 
@@ -114,7 +114,7 @@ export default async function SitemapPage() {
         </section>
       </main>
       <Footer locale={locale} />
-      <WhatsAppButton />
+      <BackToTopButton />
     </>
   );
 }

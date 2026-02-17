@@ -5,7 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
-import WhatsAppButton from '@/components/layout/WhatsAppButton';
+import BackToTopButton from '@/components/layout/WhatsAppButton';
 import Breadcrumbs from '@/components/ui/Breadcrumbs';
 import BlogPostsGridEn from '@/components/blog/BlogPostsGridEn';
 
@@ -138,7 +138,7 @@ export default async function BlogPageEn() {
         </section>
       </main>
       <Footer locale="en" />
-      <WhatsAppButton />
+      <BackToTopButton />
     </>
   );
 }
