@@ -28,18 +28,7 @@ export const metadata: Metadata = {
 async function getPosts() {
   const { data, error } = await supabase
     .from('blog_posts')
-    .select(`
-      id,
-      slug_en,
-      title_en,
-      excerpt_en,
-      published_at,
-      reading_time_minutes,
-      blog_categories (
-        name_en,
-        color
-      )
-    `)
+    .select('id, slug_en, title_en, excerpt_en, published_at, reading_time_minutes, category_id')
     .eq('status', 'published')
     .not('slug_en', 'is', null)
     .not('title_en', 'is', null)
@@ -68,10 +57,16 @@ async function getCategories() {
 }
 
 export default async function BlogPageEn() {
-  const [posts, categories] = await Promise.all([
+  const [postsRaw, categories] = await Promise.all([
     getPosts(),
     getCategories()
   ]);
+
+  const categoryMap = new Map(categories.map((c) => [c.id, { name_en: c.name_en, color: c.color }]));
+  const posts = postsRaw.map((p) => ({
+    ...p,
+    blog_categories: p.category_id ? categoryMap.get(p.category_id) ?? null : null,
+  }));
 
   const breadcrumbs = [
     { name: 'Home', href: '/en' },

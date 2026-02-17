@@ -1,4 +1,5 @@
 import { supabase } from './supabase';
+import { services as staticServices } from '@/data/services';
 
 export interface ServiceContent {
   id: string;
@@ -28,7 +29,45 @@ export interface ServiceContent {
 }
 
 /**
- * Busca contenido de servicio por slug_es en Supabase
+ * Fallback: contenido desde datos estáticos cuando Supabase falla
+ */
+function getServiceContentFromStatic(slug: string): ServiceContent | null {
+  const svc = staticServices.find(
+    (s) => s.slugEs === slug || s.slugEn === slug
+  );
+  if (!svc) return null;
+
+  return {
+    id: svc.id,
+    serviceId: svc.id,
+    serviceKey: svc.id,
+    serviceNameEs: svc.nameEs,
+    serviceNameEn: svc.nameEn,
+    localityId: '',
+    localityName: 'Murcia',
+    localitySlug: 'murcia',
+    slugEs: svc.slugEs,
+    slugEn: svc.slugEn,
+    titleEs: `Abogados de ${svc.nameEs} en Murcia | GVC Abogados`,
+    metaDescriptionEs: `${svc.descriptionEs} Especialistas en Murcia. ☎ 968 241 025.`,
+    shortDescriptionEs: svc.descriptionEs,
+    longDescriptionEs: svc.longDescriptionEs,
+    sectionsEs: svc.sectionsEs,
+    processEs: svc.processEs,
+    faqsEs: svc.faqsEs,
+    titleEn: `${svc.nameEn} Lawyers in Murcia | GVC Lawyers`,
+    metaDescriptionEn: svc.descriptionEn,
+    shortDescriptionEn: svc.descriptionEn,
+    longDescriptionEn: svc.longDescriptionEn,
+    sectionsEn: svc.sectionsEn,
+    processEn: svc.processEn,
+    faqsEn: svc.faqsEn,
+  };
+}
+
+/**
+ * Busca contenido de servicio por slug_es en Supabase.
+ * Si falla, usa datos estáticos como fallback.
  */
 export async function getServiceContentBySlug(slug: string): Promise<ServiceContent | null> {
   const { data, error } = await supabase
@@ -68,10 +107,10 @@ export async function getServiceContentBySlug(slug: string): Promise<ServiceCont
 
   if (error) {
     console.error('Error fetching service content:', error);
-    return null;
+    return getServiceContentFromStatic(slug);
   }
 
-  if (!data) return null;
+  if (!data) return getServiceContentFromStatic(slug);
 
   return {
     id: data.id,
@@ -102,7 +141,8 @@ export async function getServiceContentBySlug(slug: string): Promise<ServiceCont
 }
 
 /**
- * Obtiene todos los slugs_es activos desde Supabase para generateStaticParams
+ * Obtiene todos los slugs_es activos desde Supabase para generateStaticParams.
+ * Si Supabase falla, usa slugs de datos estáticos como fallback.
  */
 export async function getAllServiceContentSlugs(): Promise<{ slug: string }[]> {
   const { data, error } = await supabase
@@ -112,8 +152,12 @@ export async function getAllServiceContentSlugs(): Promise<{ slug: string }[]> {
 
   if (error) {
     console.error('Error fetching service content slugs:', error);
-    return [];
+    return staticServices.map((s) => ({ slug: s.slugEs }));
   }
 
-  return (data || []).map((row) => ({ slug: row.slug_es }));
+  const slugs = (data || []).map((row) => ({ slug: row.slug_es }));
+  if (slugs.length === 0) {
+    return staticServices.map((s) => ({ slug: s.slugEs }));
+  }
+  return slugs;
 }

@@ -26,20 +26,10 @@ export const metadata: Metadata = {
 };
 
 async function getPosts() {
+  // Sin join a blog_categories para evitar fallos por RLS en la relación
   const { data, error } = await supabase
     .from('blog_posts')
-    .select(`
-      id,
-      slug_es,
-      title_es,
-      excerpt_es,
-      published_at,
-      reading_time_minutes,
-      blog_categories (
-        name_es,
-        color
-      )
-    `)
+    .select('id, slug_es, title_es, excerpt_es, published_at, reading_time_minutes, category_id')
     .eq('status', 'published')
     .order('published_at', { ascending: false });
 
@@ -66,10 +56,17 @@ async function getCategories() {
 }
 
 export default async function BlogPage() {
-  const [posts, categories] = await Promise.all([
+  const [postsRaw, categories] = await Promise.all([
     getPosts(),
     getCategories()
   ]);
+
+  // Enriquecer posts con categoría (evita join que puede fallar por RLS)
+  const categoryMap = new Map(categories.map((c) => [c.id, { name_es: c.name_es, color: c.color }]));
+  const posts = postsRaw.map((p) => ({
+    ...p,
+    blog_categories: p.category_id ? categoryMap.get(p.category_id) ?? null : null,
+  }));
 
   const breadcrumbs = [
     { name: 'Inicio', href: '/es' },
