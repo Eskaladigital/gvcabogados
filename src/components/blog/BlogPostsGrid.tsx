@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { SITE_URL } from '@/lib/site-config';
 
 interface CategoryData {
   name_es: string;
@@ -288,7 +289,7 @@ export default function BlogPostsGrid({ posts: rawPosts, categories }: Props) {
                           onClick={(e) => {
                             e.preventDefault();
                             e.stopPropagation();
-                            const url = encodeURIComponent(`https://www.gvcabogados.com/es/blog/${post.slug_es}`);
+                            const url = encodeURIComponent(`${SITE_URL}/es/blog/${post.slug_es}`);
                             window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}`, '_blank', 'width=600,height=400');
                           }}
                           className="p-1.5 rounded-sm hover:bg-brand-dark text-brand-dark hover:text-white transition-colors"
@@ -304,7 +305,7 @@ export default function BlogPostsGrid({ posts: rawPosts, categories }: Props) {
                           onClick={(e) => {
                             e.preventDefault();
                             e.stopPropagation();
-                            const url = encodeURIComponent(`https://www.gvcabogados.com/es/blog/${post.slug_es}`);
+                            const url = encodeURIComponent(`${SITE_URL}/es/blog/${post.slug_es}`);
                             const text = encodeURIComponent(post.title_es);
                             window.open(`https://twitter.com/intent/tweet?url=${url}&text=${text}`, '_blank', 'width=600,height=400');
                           }}
@@ -321,7 +322,7 @@ export default function BlogPostsGrid({ posts: rawPosts, categories }: Props) {
                           onClick={(e) => {
                             e.preventDefault();
                             e.stopPropagation();
-                            const url = encodeURIComponent(`https://www.gvcabogados.com/es/blog/${post.slug_es}`);
+                            const url = encodeURIComponent(`${SITE_URL}/es/blog/${post.slug_es}`);
                             window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${url}`, '_blank', 'width=600,height=400');
                           }}
                           className="p-1.5 rounded-sm hover:bg-brand-dark text-brand-dark hover:text-white transition-colors"

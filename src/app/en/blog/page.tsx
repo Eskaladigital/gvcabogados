@@ -1,4 +1,5 @@
 import { supabase } from '@/lib/supabase';
+import { SITE_URL } from '@/lib/site-config';
 import { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -11,6 +12,17 @@ import BlogPostsGridEn from '@/components/blog/BlogPostsGridEn';
 export const metadata: Metadata = {
   title: 'Legal Blog - News & Articles | GVC Lawyers Murcia',
   description: 'Legal news, expert analysis and practical articles from García-Valcárcel & Cáceres Lawyers in Murcia, Spain.',
+  alternates: {
+    canonical: `${SITE_URL}/en/blog`,
+  },
+  openGraph: {
+    title: 'Legal Blog - News & Articles | GVC Lawyers Murcia',
+    description: 'Legal news, expert analysis and practical articles from our law firm in Murcia, Spain.',
+    url: `${SITE_URL}/en/blog`,
+    siteName: 'García-Valcárcel & Cáceres Abogados',
+    locale: 'en_GB',
+    type: 'website',
+  },
 };
 
 async function getPosts() {

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { SITE_URL } from '@/lib/site-config';
 
 interface Props {
   url: string;
@@ -10,7 +11,7 @@ interface Props {
 export default function SocialShare({ url, title }: Props) {
   const [copied, setCopied] = useState(false);
 
-  const shareUrl = `https://www.gvcabogados.com${url}`;
+  const shareUrl = `${SITE_URL}${url}`;
   const encodedUrl = encodeURIComponent(shareUrl);
   const encodedTitle = encodeURIComponent(title);
 

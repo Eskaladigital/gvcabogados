@@ -1,4 +1,5 @@
 import { supabase } from '@/lib/supabase';
+import { SITE_URL } from '@/lib/site-config';
 import { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -11,6 +12,17 @@ import BlogPostsGrid from '@/components/blog/BlogPostsGrid';
 export const metadata: Metadata = {
   title: 'Blog Jurídico - Noticias y Artículos | GVC Abogados',
   description: 'Actualidad jurídica, noticias y artículos especializados en derecho civil, penal, laboral y más. Mantente informado con nuestro blog legal.',
+  alternates: {
+    canonical: `${SITE_URL}/es/blog`,
+  },
+  openGraph: {
+    title: 'Blog Jurídico - Noticias y Artículos | GVC Abogados',
+    description: 'Actualidad jurídica, noticias y artículos especializados. Mantente informado con nuestro blog legal.',
+    url: `${SITE_URL}/es/blog`,
+    siteName: 'García-Valcárcel & Cáceres Abogados',
+    locale: 'es_ES',
+    type: 'website',
+  },
 };
 
 async function getPosts() {

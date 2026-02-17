@@ -7,6 +7,7 @@ import WhatsAppButton from '@/components/layout/WhatsAppButton';
 import SocialShare from '@/components/blog/SocialShare';
 import RelatedPostsEn from '@/components/blog/RelatedPostsEn';
 import { supabase } from '@/lib/supabase';
+import { SITE_URL } from '@/lib/site-config';
 
 export const revalidate = 60;
 
@@ -36,7 +37,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: `${post.title_en} | Blog GVC Lawyers Murcia`,
     description: post.excerpt_en || post.title_en,
-    alternates: { canonical: `https://www.gvcabogados.com/en/blog/${post.slug_en}` },
+    alternates: { canonical: `${SITE_URL}/en/blog/${post.slug_en}` },
   };
 }
 

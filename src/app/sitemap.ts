@@ -2,15 +2,14 @@ import { MetadataRoute } from 'next';
 import { services } from '@/data/services';
 import { landingPages } from '@/data/landings';
 import { supabase } from '@/lib/supabase';
-
-const BASE_URL = 'https://www.gvcabogados.com';
+import { SITE_URL } from '@/lib/site-config';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticPagesEs = [
     '', '/sobre-nosotros', '/servicios', '/equipo', '/blog', '/contacto',
     '/politica-cookies', '/politica-privacidad', '/aviso-legal', '/sitemap',
   ].map((path) => ({
-    url: `${BASE_URL}/es${path}`,
+    url: `${SITE_URL}/es${path}`,
     lastModified: new Date(),
     changeFrequency: 'weekly' as const,
     priority: path === '' ? 1.0 : 0.8,
@@ -19,35 +18,35 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticPagesEn = [
     '', '/about', '/services', '/team', '/blog', '/contact', '/sitemap',
   ].map((path) => ({
-    url: `${BASE_URL}/en${path}`,
+    url: `${SITE_URL}/en${path}`,
     lastModified: new Date(),
     changeFrequency: 'weekly' as const,
     priority: path === '' ? 0.9 : 0.7,
   }));
 
   const servicesPagesEs = services.map((s) => ({
-    url: `${BASE_URL}/es/servicios/${s.slugEs}`,
+    url: `${SITE_URL}/es/servicios/${s.slugEs}`,
     lastModified: new Date(),
     changeFrequency: 'monthly' as const,
     priority: s.priority <= 2 ? 0.9 : 0.7,
   }));
 
   const servicesPagesEn = services.map((s) => ({
-    url: `${BASE_URL}/en/services/${s.slugEn}`,
+    url: `${SITE_URL}/en/services/${s.slugEn}`,
     lastModified: new Date(),
     changeFrequency: 'monthly' as const,
     priority: s.priority <= 2 ? 0.8 : 0.6,
   }));
 
   const landingsEs = landingPages.map((lp) => ({
-    url: `${BASE_URL}/es/abogados/${lp.slugEs}`,
+    url: `${SITE_URL}/es/abogados/${lp.slugEs}`,
     lastModified: new Date(),
     changeFrequency: 'monthly' as const,
     priority: 0.8,
   }));
 
   const landingsEn = landingPages.map((lp) => ({
-    url: `${BASE_URL}/en/lawyers/${lp.slugEn}`,
+    url: `${SITE_URL}/en/lawyers/${lp.slugEn}`,
     lastModified: new Date(),
     changeFrequency: 'monthly' as const,
     priority: 0.7,
@@ -61,7 +60,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     .order('published_at', { ascending: false });
 
   const blogPagesEs = (blogPosts || []).map((post) => ({
-    url: `${BASE_URL}/es/blog/${post.slug_es}`,
+    url: `${SITE_URL}/es/blog/${post.slug_es}`,
     lastModified: new Date(post.updated_at || post.published_at),
     changeFrequency: 'monthly' as const,
     priority: 0.6,
@@ -70,7 +69,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const blogPagesEn = (blogPosts || [])
     .filter(post => post.slug_en)
     .map((post) => ({
-      url: `${BASE_URL}/en/blog/${post.slug_en}`,
+      url: `${SITE_URL}/en/blog/${post.slug_en}`,
       lastModified: new Date(post.updated_at || post.published_at),
       changeFrequency: 'monthly' as const,
       priority: 0.5,

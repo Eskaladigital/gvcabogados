@@ -1,4 +1,5 @@
 import { Locale } from '@/data/translations';
+import { SITE_URL } from '@/lib/site-config';
 
 // ═══════════════════════════════════════════════════════
 // SCHEMA.ORG JSON-LD — GVC Abogados
@@ -12,12 +13,12 @@ export function LocalBusinessSchema({ locale }: SchemaProps) {
   const schema = {
     '@context': 'https://schema.org',
     '@type': ['LegalService', 'LocalBusiness'],
-    '@id': 'https://www.gvcabogados.com/#organization',
+    '@id': `${SITE_URL}/#organization`,
     name: 'García-Valcárcel & Cáceres Abogados',
     alternateName: 'GVC Abogados',
-    url: 'https://www.gvcabogados.com',
-    logo: 'https://www.gvcabogados.com/images/logo/gvc-logo.png',
-    image: 'https://www.gvcabogados.com/images/hero-bg.png',
+    url: SITE_URL,
+    logo: `${SITE_URL}/images/logo/gvc-logo.png`,
+    image: `${SITE_URL}/images/hero-bg.png`,
     description: locale === 'es'
       ? 'Bufete de abogados en Murcia fundado en 1946. Más de 75 años de experiencia en derecho privado y público. Especialistas en accidentes de tráfico, divorcios, derecho bancario, penal, inmobiliario y sucesorio.'
       : 'Law firm in Murcia, Spain founded in 1946. Over 75 years of experience in private and public law.',
@@ -52,7 +53,7 @@ export function BreadcrumbSchema({ items }: { items: BreadcrumbItem[] }) {
     '@type': 'BreadcrumbList',
     itemListElement: items.map((item, i) => ({
       '@type': 'ListItem', position: i + 1, name: item.name,
-      item: `https://www.gvcabogados.com${item.href}`,
+      item: `${SITE_URL}${item.href}`,
     })),
   };
   return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />;
@@ -61,8 +62,8 @@ export function BreadcrumbSchema({ items }: { items: BreadcrumbItem[] }) {
 export function ServiceSchema({ name, description, slug, locale }: { name: string; description: string; slug: string; locale: Locale }) {
   const schema = {
     '@context': 'https://schema.org', '@type': 'LegalService', name, description,
-    url: `https://www.gvcabogados.com/${locale === 'es' ? 'es/servicios' : 'en/services'}/${slug}`,
-    provider: { '@type': 'LegalService', '@id': 'https://www.gvcabogados.com/#organization', name: 'García-Valcárcel & Cáceres Abogados' },
+    url: `${SITE_URL}/${locale === 'es' ? 'es/servicios' : 'en/services'}/${slug}`,
+    provider: { '@type': 'LegalService', '@id': `${SITE_URL}/#organization`, name: 'García-Valcárcel & Cáceres Abogados' },
     areaServed: { '@type': 'City', name: 'Murcia' }, serviceType: name,
   };
   return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />;
@@ -79,9 +80,9 @@ export function FAQSchema({ faqs }: { faqs: { question: string; answer: string }
 export function ArticleSchema({ title, description, slug, author, publishedAt, image, locale }: { title: string; description: string; slug: string; author: string; publishedAt: string; image?: string; locale: Locale }) {
   const schema = {
     '@context': 'https://schema.org', '@type': 'Article', headline: title, description,
-    url: `https://www.gvcabogados.com/${locale}/blog/${slug}`, datePublished: publishedAt,
+    url: `${SITE_URL}/${locale}/blog/${slug}`, datePublished: publishedAt,
     author: { '@type': 'Person', name: author || 'García-Valcárcel & Cáceres' },
-    publisher: { '@type': 'Organization', '@id': 'https://www.gvcabogados.com/#organization', name: 'García-Valcárcel & Cáceres Abogados' },
+    publisher: { '@type': 'Organization', '@id': `${SITE_URL}/#organization`, name: 'García-Valcárcel & Cáceres Abogados' },
     ...(image && { image }),
   };
   return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />;
