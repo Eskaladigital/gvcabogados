@@ -1,0 +1,52 @@
+{
+  "name": "gvcabogados-web",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "db:verify": "tsx scripts/verify-database.ts",
+    "migrate:murcia": "tsx scripts/migrate-murcia-content.ts",
+    "populate:localities": "tsx scripts/populate-all-localities.ts",
+    "generate:content": "tsx scripts/generate-local-content.ts",
+    "translate:content": "tsx scripts/translate-content.ts",
+    "find:blog-urls": "tsx scripts/find-blog-urls.ts",
+    "test:blog": "tsx scripts/test-single-article.ts",
+    "migrate:blog": "tsx scripts/migrate-blog-posts.ts",
+    "import:csv": "tsx scripts/import-csv-articles.ts",
+    "update:blog-dates": "tsx scripts/update-blog-dates.ts",
+    "fix:blog-html": "tsx scripts/fix-blog-html.ts",
+    "translate:blog": "tsx scripts/translate-blog-posts.ts"
+  },
+  "dependencies": {
+    "@supabase/ssr": "^0.5.2",
+    "@supabase/supabase-js": "^2.96.0",
+    "@tailwindcss/typography": "^0.5.19",
+    "@tinymce/tinymce-react": "^5.1.1",
+    "cheerio": "^1.2.0",
+    "csv-parse": "^6.1.0",
+    "dotenv": "^17.3.1",
+    "framer-motion": "^11.11.0",
+    "lucide-react": "^0.460.0",
+    "next": "^14.2.18",
+    "node-fetch": "^3.3.2",
+    "openai": "^4.104.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "sharp": "^0.33.5"
+  },
+  "devDependencies": {
+    "@types/node": "^22.9.0",
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "autoprefixer": "^10.4.20",
+    "eslint": "^8.57.1",
+    "eslint-config-next": "^14.2.18",
+    "postcss": "^8.4.49",
+    "tailwindcss": "^3.4.15",
+    "tsx": "^4.21.0",
+    "typescript": "^5.6.3"
+  }
+}
