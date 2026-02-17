@@ -9,6 +9,8 @@ import WhatsAppButton from '@/components/layout/WhatsAppButton';
 import Breadcrumbs from '@/components/ui/Breadcrumbs';
 import BlogPostsGrid from '@/components/blog/BlogPostsGrid';
 
+export const revalidate = 60; // Revalidar cada 60s para datos frescos de Supabase
+
 export const metadata: Metadata = {
   title: 'Blog Jurídico - Noticias y Artículos | GVC Abogados',
   description: 'Actualidad jurídica, noticias y artículos especializados en derecho civil, penal, laboral y más. Mantente informado con nuestro blog legal.',

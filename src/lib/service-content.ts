@@ -28,14 +28,59 @@ export interface ServiceContent {
   faqsEn: Array<{ question: string; answer: string }> | null;
 }
 
+/** Convierte slug de ciudad a nombre (malaga -> Málaga) */
+function slugToCityName(slug: string): string {
+  const map: Record<string, string> = {
+    murcia: 'Murcia', alicante: 'Alicante', malaga: 'Málaga', madrid: 'Madrid',
+    barcelona: 'Barcelona', valencia: 'Valencia', sevilla: 'Sevilla', bilbao: 'Bilbao',
+    cartagena: 'Cartagena', albacete: 'Albacete', almeria: 'Almería', toledo: 'Toledo',
+    zaragoza: 'Zaragoza', granada: 'Granada', cordoba: 'Córdoba', santander: 'Santander',
+  };
+  return map[slug.toLowerCase()] || slug.charAt(0).toUpperCase() + slug.slice(1);
+}
+
 /**
- * Fallback: contenido desde datos estáticos cuando Supabase falla
+ * Fallback: contenido desde datos estáticos cuando Supabase falla.
+ * Soporta slugs tipo "abogados-{service}-{city}" para cualquier ciudad.
  */
 function getServiceContentFromStatic(slug: string): ServiceContent | null {
-  const svc = staticServices.find(
-    (s) => s.slugEs === slug || s.slugEn === slug
-  );
+  // 1. Match exacto (Murcia)
+  let svc = staticServices.find((s) => s.slugEs === slug || s.slugEn === slug);
+  let cityName = 'Murcia';
+  let citySlug = 'murcia';
+
+  // 2. Parsear "abogados-{serviceKey}-{citySlug}" para otras ciudades
+  if (!svc && slug.startsWith('abogados-')) {
+    const rest = slug.slice(9); // quitar "abogados-"
+    const parts = rest.split('-');
+    if (parts.length >= 2) {
+      citySlug = parts[parts.length - 1];
+      cityName = slugToCityName(citySlug);
+      const possibleServiceKey = parts.slice(0, -1).join('-');
+      svc = staticServices.find((s) => s.id === possibleServiceKey);
+    }
+  }
+
   if (!svc) return null;
+
+  const enPrefixMap: Record<string, string> = {
+    'accidentes-trafico': 'traffic-accident-lawyers',
+    'derecho-familia': 'family-law-lawyers',
+    'derecho-bancario': 'banking-law-lawyers',
+    'derecho-penal': 'criminal-law-lawyers',
+    'derecho-inmobiliario': 'real-estate-lawyers',
+    'derecho-sucesorio': 'inheritance-lawyers',
+    'negligencias-medicas': 'medical-malpractice-lawyers',
+    'derecho-mercantil': 'commercial-law-lawyers',
+    'responsabilidad-civil': 'civil-liability-lawyers',
+    'obligaciones-contratos': 'contract-law-lawyers',
+    'mediacion': 'mediation-lawyers',
+    'extranjeria': 'immigration-lawyers',
+    'derecho-administrativo': 'administrative-law-lawyers',
+    'defensa-fondos-buitre': 'vulture-fund-defense-lawyers',
+  };
+  const enPrefix = enPrefixMap[svc.id] || svc.id + '-lawyers';
+  const slugEn = `${enPrefix}-${citySlug}`;
 
   return {
     id: svc.id,
@@ -44,21 +89,21 @@ function getServiceContentFromStatic(slug: string): ServiceContent | null {
     serviceNameEs: svc.nameEs,
     serviceNameEn: svc.nameEn,
     localityId: '',
-    localityName: 'Murcia',
-    localitySlug: 'murcia',
-    slugEs: svc.slugEs,
-    slugEn: svc.slugEn,
-    titleEs: `Abogados de ${svc.nameEs} en Murcia | GVC Abogados`,
-    metaDescriptionEs: `${svc.descriptionEs} Especialistas en Murcia. ☎ 968 241 025.`,
+    localityName: cityName,
+    localitySlug: citySlug,
+    slugEs: slug,
+    slugEn,
+    titleEs: `Abogados de ${svc.nameEs} en ${cityName} | GVC Abogados`,
+    metaDescriptionEs: `${svc.descriptionEs} Especialistas en ${cityName}. ☎ 968 241 025.`,
     shortDescriptionEs: svc.descriptionEs,
-    longDescriptionEs: svc.longDescriptionEs,
+    longDescriptionEs: svc.longDescriptionEs.replace(/Murcia/g, cityName),
     sectionsEs: svc.sectionsEs,
     processEs: svc.processEs,
     faqsEs: svc.faqsEs,
-    titleEn: `${svc.nameEn} Lawyers in Murcia | GVC Lawyers`,
+    titleEn: `${svc.nameEn} Lawyers in ${cityName} | GVC Lawyers`,
     metaDescriptionEn: svc.descriptionEn,
     shortDescriptionEn: svc.descriptionEn,
-    longDescriptionEn: svc.longDescriptionEn,
+    longDescriptionEn: svc.longDescriptionEn?.replace(/Murcia/g, cityName) ?? null,
     sectionsEn: svc.sectionsEn,
     processEn: svc.processEn,
     faqsEn: svc.faqsEn,

@@ -9,6 +9,8 @@ import WhatsAppButton from '@/components/layout/WhatsAppButton';
 import Breadcrumbs from '@/components/ui/Breadcrumbs';
 import BlogPostsGridEn from '@/components/blog/BlogPostsGridEn';
 
+export const revalidate = 60;
+
 export const metadata: Metadata = {
   title: 'Legal Blog - News & Articles | GVC Lawyers Murcia',
   description: 'Legal news, expert analysis and practical articles from García-Valcárcel & Cáceres Lawyers in Murcia, Spain.',
