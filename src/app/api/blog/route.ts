@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { createAdminClient } from '@/lib/supabase';
+import { supabaseAdmin } from '@/lib/supabase';
 import { cookies } from 'next/headers';
 
 function getAuthToken() {
@@ -12,8 +12,7 @@ export async function GET() {
   const token = getAuthToken();
   if (!token) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
-  const supabase = createAdminClient();
-  const { data, error } = await supabase
+  const { data, error } = await supabaseAdmin
     .from('blog_posts')
     .select('*')
     .order('created_at', { ascending: false });
@@ -28,9 +27,8 @@ export async function POST(request: Request) {
   if (!token) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
   const body = await request.json();
-  const supabase = createAdminClient();
 
-  const { data, error } = await supabase.from('blog_posts').insert(body).select().single();
+  const { data, error } = await supabaseAdmin.from('blog_posts').insert(body).select().single();
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
   return NextResponse.json(data, { status: 201 });

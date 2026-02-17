@@ -3,7 +3,7 @@
  * desde la web antigua de GVCAbogados
  */
 
-import cheerio from 'cheerio';
+import * as cheerio from 'cheerio';
 
 // Lista de títulos de artículos
 const ARTICLE_TITLES = [
@@ -79,7 +79,7 @@ async function findBlogUrls() {
           normalizeString(title) === normalizeString(linkText)
         );
 
-        if (matchingTitle && href.includes('blog') || href.includes('actualidad')) {
+        if (matchingTitle && (href.includes('blog') || href.includes('actualidad'))) {
           // Construir URL completa
           const fullUrl = href.startsWith('http') 
             ? href 
