@@ -6,7 +6,7 @@ import Footer from '@/components/layout/Footer';
 import WhatsAppButton from '@/components/layout/WhatsAppButton';
 import SocialShare from '@/components/blog/SocialShare';
 import RelatedPosts from '@/components/blog/RelatedPosts';
-import { supabase } from '@/lib/supabase';
+import { supabaseAdmin } from '@/lib/supabase';
 import { SITE_URL } from '@/lib/site-config';
 
 export const revalidate = 60;
@@ -16,7 +16,7 @@ interface Props {
 }
 
 async function getPost(slug: string) {
-  const { data } = await supabase
+  const { data } = await supabaseAdmin
     .from('blog_posts')
     .select(`
       *,

@@ -1,7 +1,7 @@
 import { MetadataRoute } from 'next';
 import { services } from '@/data/services';
 import { landingPages } from '@/data/landings';
-import { supabase } from '@/lib/supabase';
+import { supabaseAdmin } from '@/lib/supabase';
 import { SITE_URL } from '@/lib/site-config';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
@@ -53,7 +53,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }));
 
   // Blog posts from Supabase
-  const { data: blogPosts } = await supabase
+  const { data: blogPosts } = await supabaseAdmin
     .from('blog_posts')
     .select('slug_es, slug_en, published_at, updated_at')
     .eq('status', 'published')

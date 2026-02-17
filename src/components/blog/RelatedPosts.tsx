@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { supabase } from '@/lib/supabase';
+import { supabaseAdmin } from '@/lib/supabase';
 
 interface Props {
   currentPostId: string;
@@ -8,7 +8,7 @@ interface Props {
 }
 
 async function getRelatedPosts(currentPostId: string, categoryId: string | null) {
-  let query = supabase
+  let query = supabaseAdmin
     .from('blog_posts')
     .select(`
       id,

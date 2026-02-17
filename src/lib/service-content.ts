@@ -1,4 +1,4 @@
-import { supabase } from './supabase';
+import { supabaseAdmin } from './supabase';
 import { services as staticServices } from '@/data/services';
 
 export interface ServiceContent {
@@ -28,20 +28,68 @@ export interface ServiceContent {
   faqsEn: Array<{ question: string; answer: string }> | null;
 }
 
-/** Convierte slug de ciudad a nombre (malaga -> Málaga) */
+/** Convierte slug de ciudad a nombre legible con tildes y mayúsculas correctas. */
 function slugToCityName(slug: string): string {
   const map: Record<string, string> = {
-    murcia: 'Murcia', alicante: 'Alicante', malaga: 'Málaga', madrid: 'Madrid',
-    barcelona: 'Barcelona', valencia: 'Valencia', sevilla: 'Sevilla', bilbao: 'Bilbao',
-    cartagena: 'Cartagena', albacete: 'Albacete', almeria: 'Almería', toledo: 'Toledo',
-    zaragoza: 'Zaragoza', granada: 'Granada', cordoba: 'Córdoba', santander: 'Santander',
+    'a-coruna': 'A Coruña', 'aguilas': 'Águilas', 'albacete': 'Albacete',
+    'alcala-de-guadaira': 'Alcalá de Guadaíra', 'alcala-de-henares': 'Alcalá de Henares',
+    'alcantarilla': 'Alcantarilla', 'alcobendas': 'Alcobendas', 'alcorcon': 'Alcorcón',
+    'alcoy': 'Alcoy', 'algeciras': 'Algeciras', 'alicante': 'Alicante', 'alzira': 'Alzira',
+    'aranjuez': 'Aranjuez', 'arganda-del-rey': 'Arganda del Rey', 'badajoz': 'Badajoz',
+    'badalona': 'Badalona', 'barakaldo': 'Barakaldo', 'barcelona': 'Barcelona',
+    'benalmadena': 'Benalmádena', 'benidorm': 'Benidorm', 'bilbao': 'Bilbao',
+    'boadilla-del-monte': 'Boadilla del Monte', 'burgos': 'Burgos', 'caceres': 'Cáceres',
+    'cadiz': 'Cádiz', 'caravaca-de-la-cruz': 'Caravaca de la Cruz', 'cartagena': 'Cartagena',
+    'castelldefels': 'Castelldefels', 'castellon-de-la-plana': 'Castellón de la Plana',
+    'cerdanyola-del-valles': 'Cerdanyola del Vallès', 'cieza': 'Cieza',
+    'collado-villalba': 'Collado Villalba', 'cordoba': 'Córdoba',
+    'cornella-de-llobregat': 'Cornellà de Llobregat', 'coslada': 'Coslada',
+    'donostia-san-sebastian': 'Donostia-San Sebastián', 'dos-hermanas': 'Dos Hermanas',
+    'el-prat-de-llobregat': 'El Prat de Llobregat', 'elche': 'Elche',
+    'estepona': 'Estepona', 'fuengirola': 'Fuengirola', 'fuenlabrada': 'Fuenlabrada',
+    'gandia': 'Gandia', 'getafe': 'Getafe', 'getxo': 'Getxo', 'gijon': 'Gijón',
+    'girona': 'Girona', 'granada': 'Granada', 'granollers': 'Granollers', 'huelva': 'Huelva',
+    'jaen': 'Jaén', 'jerez-de-la-frontera': 'Jerez de la Frontera', 'jumilla': 'Jumilla',
+    'hospitalet-de-llobregat': "L'Hospitalet de Llobregat",
+    'las-palmas-de-gran-canaria': 'Las Palmas de Gran Canaria',
+    'las-rozas-de-madrid': 'Las Rozas de Madrid', 'leganes': 'Leganés', 'leon': 'León',
+    'linares': 'Linares', 'lleida': 'Lleida', 'logrono': 'Logroño', 'lorca': 'Lorca',
+    'madrid': 'Madrid', 'majadahonda': 'Majadahonda', 'malaga': 'Málaga',
+    'manresa': 'Manresa', 'marbella': 'Marbella', 'mataro': 'Mataró',
+    'mazarron': 'Mazarrón', 'mijas': 'Mijas', 'molina-de-segura': 'Molina de Segura',
+    'mollet-del-valles': 'Mollet del Vallès', 'mostoles': 'Móstoles', 'murcia': 'Murcia',
+    'orihuela': 'Orihuela', 'ourense': 'Ourense', 'oviedo': 'Oviedo', 'palma': 'Palma',
+    'pamplona': 'Pamplona', 'parla': 'Parla', 'paterna': 'Paterna',
+    'portugalete': 'Portugalete', 'pozuelo-de-alarcon': 'Pozuelo de Alarcón', 'reus': 'Reus',
+    'rivas-vaciamadrid': 'Rivas-Vaciamadrid', 'rubi': 'Rubí', 'sabadell': 'Sabadell',
+    'sagunto': 'Sagunto', 'salamanca': 'Salamanca',
+    'san-cristobal-de-la-laguna': 'San Cristóbal de La Laguna',
+    'san-javier': 'San Javier',
+    'san-sebastian-de-los-reyes': 'San Sebastián de los Reyes',
+    'san-vicente-del-raspeig': 'San Vicente del Raspeig',
+    'sant-boi-de-llobregat': 'Sant Boi de Llobregat',
+    'sant-cugat-del-valles': 'Sant Cugat del Vallès',
+    'santa-coloma-de-gramenet': 'Santa Coloma de Gramenet',
+    'santa-cruz-de-tenerife': 'Santa Cruz de Tenerife', 'santander': 'Santander',
+    'santiago-de-compostela': 'Santiago de Compostela', 'sevilla': 'Sevilla',
+    'talavera-de-la-reina': 'Talavera de la Reina', 'tarragona': 'Tarragona',
+    'telde': 'Telde', 'terrassa': 'Terrassa', 'toledo': 'Toledo',
+    'torrejon-de-ardoz': 'Torrejón de Ardoz', 'torremolinos': 'Torremolinos',
+    'torrent': 'Torrent', 'torrevieja': 'Torrevieja', 'totana': 'Totana',
+    'tres-cantos': 'Tres Cantos', 'valdemoro': 'Valdemoro', 'valencia': 'Valencia',
+    'valladolid': 'Valladolid', 'velez-malaga': 'Vélez-Málaga', 'vigo': 'Vigo',
+    'viladecans': 'Viladecans', 'vilanova-i-la-geltru': 'Vilanova i la Geltrú',
+    'vitoria-gasteiz': 'Vitoria-Gasteiz', 'yecla': 'Yecla', 'zaragoza': 'Zaragoza',
   };
-  return map[slug.toLowerCase()] || slug.charAt(0).toUpperCase() + slug.slice(1);
+  if (map[slug.toLowerCase()]) return map[slug.toLowerCase()];
+  // Genérico: capitalizar cada palabra separada por guiones
+  return slug.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
 }
 
 /**
  * Fallback: contenido desde datos estáticos cuando Supabase falla.
- * Soporta slugs tipo "abogados-{service}-{city}" para cualquier ciudad.
+ * Soporta slugs tipo "abogados-{service}-{city}" para cualquier ciudad,
+ * incluyendo ciudades multi-palabra como "alcala-de-henares".
  */
 function getServiceContentFromStatic(slug: string): ServiceContent | null {
   // 1. Match exacto (Murcia)
@@ -49,15 +97,20 @@ function getServiceContentFromStatic(slug: string): ServiceContent | null {
   let cityName = 'Murcia';
   let citySlug = 'murcia';
 
-  // 2. Parsear "abogados-{serviceKey}-{citySlug}" para otras ciudades
+  // 2. Parsear "abogados-{serviceKey}-{citySlug}" para otras ciudades.
+  //    Recorremos los IDs de servicios estáticos y comprobamos si el slug
+  //    empieza por "abogados-{id}-", de modo que el resto sea la ciudad
+  //    (funciona con ciudades multi-palabra como "alcala-de-henares").
   if (!svc && slug.startsWith('abogados-')) {
     const rest = slug.slice(9); // quitar "abogados-"
-    const parts = rest.split('-');
-    if (parts.length >= 2) {
-      citySlug = parts[parts.length - 1];
-      cityName = slugToCityName(citySlug);
-      const possibleServiceKey = parts.slice(0, -1).join('-');
-      svc = staticServices.find((s) => s.id === possibleServiceKey);
+    for (const s of staticServices) {
+      const prefix = s.id + '-';
+      if (rest.startsWith(prefix) && rest.length > prefix.length) {
+        svc = s;
+        citySlug = rest.slice(prefix.length);
+        cityName = slugToCityName(citySlug);
+        break;
+      }
     }
   }
 
@@ -115,7 +168,7 @@ function getServiceContentFromStatic(slug: string): ServiceContent | null {
  * Si falla, usa datos estáticos como fallback.
  */
 export async function getServiceContentBySlug(slug: string): Promise<ServiceContent | null> {
-  const { data, error } = await supabase
+  const { data, error } = await supabaseAdmin
     .from('service_content')
     .select(`
       id,
@@ -190,7 +243,7 @@ export async function getServiceContentBySlug(slug: string): Promise<ServiceCont
  * Si Supabase falla, usa slugs de datos estáticos como fallback.
  */
 export async function getAllServiceContentSlugs(): Promise<{ slug: string }[]> {
-  const { data, error } = await supabase
+  const { data, error } = await supabaseAdmin
     .from('service_content')
     .select('slug_es')
     .order('slug_es');

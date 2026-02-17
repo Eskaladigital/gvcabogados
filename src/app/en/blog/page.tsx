@@ -1,4 +1,4 @@
-import { supabase } from '@/lib/supabase';
+import { supabaseAdmin } from '@/lib/supabase';
 import { SITE_URL } from '@/lib/site-config';
 import { Metadata } from 'next';
 import Image from 'next/image';
@@ -28,34 +28,45 @@ export const metadata: Metadata = {
 };
 
 async function getPosts() {
-  const { data, error } = await supabase
-    .from('blog_posts')
-    .select('id, slug_en, title_en, excerpt_en, published_at, reading_time_minutes, category_id')
-    .eq('status', 'published')
-    .not('slug_en', 'is', null)
-    .not('title_en', 'is', null)
-    .order('published_at', { ascending: false });
+  try {
+    const { data, error } = await supabaseAdmin
+      .from('blog_posts')
+      .select('id, slug_en, title_en, excerpt_en, published_at, reading_time_minutes, category_id')
+      .eq('status', 'published')
+      .not('slug_en', 'is', null)
+      .not('title_en', 'is', null)
+      .order('published_at', { ascending: false });
 
-  if (error) {
-    console.error('Error fetching posts:', error);
+    if (error) {
+      console.error('[Blog EN] Error fetching posts:', error.message, error.details, error.hint);
+      return [];
+    }
+
+    console.log(`[Blog EN] Posts cargados: ${data?.length ?? 0}`);
+    return data || [];
+  } catch (e) {
+    console.error('[Blog EN] Excepción al cargar posts:', e);
     return [];
   }
-
-  return data || [];
 }
 
 async function getCategories() {
-  const { data, error } = await supabase
-    .from('blog_categories')
-    .select('id, name_en, slug_en, color')
-    .order('name_en');
+  try {
+    const { data, error } = await supabaseAdmin
+      .from('blog_categories')
+      .select('id, name_en, slug_en, color')
+      .order('name_en');
 
-  if (error) {
-    console.error('Error fetching categories:', error);
+    if (error) {
+      console.error('[Blog EN] Error fetching categories:', error.message, error.details);
+      return [];
+    }
+
+    return data || [];
+  } catch (e) {
+    console.error('[Blog EN] Excepción al cargar categorías:', e);
     return [];
   }
-
-  return data || [];
 }
 
 export default async function BlogPageEn() {
