@@ -20,7 +20,7 @@ export const team: TeamMember[] = [
       'Fundador del bufete. Amplia trayectoria en derecho privado y público en la Región de Murcia. Con décadas de experiencia ejerciendo la abogacía con excelencia.',
     bioEn:
       'Firm founder. Extensive career in private and public law in the Region of Murcia. With decades of experience practicing law with excellence.',
-    image: '/images/team/garcia_valcarcel_caceres_abogados_equipo_pedro.png',
+    image: '/images/team/garcia_valcarcel_caceres_abogados_equipo_pedro.webp',
     isFounder: true,
     isLawyer: true,
   },
@@ -33,7 +33,7 @@ export const team: TeamMember[] = [
       'Especialista en derecho civil, familia y sucesiones. Mediadora acreditada por el Ministerio de Justicia.',
     bioEn:
       'Specialist in civil, family and inheritance law. Mediator accredited by the Ministry of Justice.',
-    image: '/images/team/garcia_valcarcel_caceres_abogados_equipo_raquel.png',
+    image: '/images/team/garcia_valcarcel_caceres_abogados_equipo_raquel.webp',
     isLawyer: true,
   },
   {
@@ -45,7 +45,7 @@ export const team: TeamMember[] = [
       'Experto en derecho penal, defensa corporativa y delitos económicos. Amplia experiencia en juicios penales complejos.',
     bioEn:
       'Expert in criminal law, corporate defense and economic crimes. Extensive experience in complex criminal trials.',
-    image: '/images/team/garcia_valcarcel_caceres_abogados_equipo_miguel.png',
+    image: '/images/team/garcia_valcarcel_caceres_abogados_equipo_miguel.webp',
     isLawyer: true,
   },
   {
@@ -57,7 +57,7 @@ export const team: TeamMember[] = [
       'Especialista en negligencias médicas y responsabilidad civil. Dedicación y rigor en la defensa de los derechos de los pacientes.',
     bioEn:
       'Specialist in medical malpractice and civil liability. Dedication and rigor in defending patient rights.',
-    image: '/images/team/garcia_valcarcel_caceres_abogados_equipo_olga.png',
+    image: '/images/team/garcia_valcarcel_caceres_abogados_equipo_olga.webp',
     isLawyer: true,
   },
   {
@@ -69,7 +69,7 @@ export const team: TeamMember[] = [
       'Secretaria del bufete. Coordinación administrativa y atención al cliente con la máxima profesionalidad.',
     bioEn:
       'Firm secretary. Administrative coordination and customer service with the highest professionalism.',
-    image: '/images/team/garcia_valcarcel_caceres_abogados_equipo_carmen.png',
+    image: '/images/team/garcia_valcarcel_caceres_abogados_equipo_carmen.webp',
     isLawyer: false,
   },
 ];

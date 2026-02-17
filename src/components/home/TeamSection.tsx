@@ -54,7 +54,7 @@ export default function TeamSection({ locale }: TeamSectionProps) {
                 <div className="absolute top-4 right-4 w-11 h-11 bg-brand-brown-hover rounded-full flex items-center justify-center z-[3] border-2 border-white/20 group-hover:scale-110 transition-transform shadow-lg">
                   <div className="w-6 h-6 relative">
                     <Image
-                      src="/images/logo/gvcabogados_murcia_logo_leon_blanco.png"
+                      src="/images/logo/gvcabogados_murcia_logo_leon_blanco.webp"
                       alt="León"
                       fill
                       className="object-contain"

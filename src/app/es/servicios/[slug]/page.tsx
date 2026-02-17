@@ -131,7 +131,7 @@ export default async function ServiceDetailPage({ params }: Props) {
         <section className="relative min-h-[500px] md:min-h-[550px] flex items-center py-16">
           <div className="absolute inset-0 bg-brand-dark/90 z-10" />
           <Image
-            src="/images/slides/garcia_valcarcel_caceres_abogados_slide_home_v2.png"
+            src="/images/slides/garcia_valcarcel_caceres_abogados_slide_home_v2.webp"
             alt={service.nameEs}
             fill
             className="object-cover"
@@ -186,7 +186,7 @@ export default async function ServiceDetailPage({ params }: Props) {
                   <div className="relative aspect-[4/3] rounded-2xl overflow-hidden shadow-lg">
                     <div className="absolute inset-0 bg-gradient-to-br from-brand-brown/20 to-brand-brown-hover/20 z-10" />
                     <Image
-                      src="/images/slides/garcia_valcarcel_caceres_abogados_slide_home_v2.png"
+                      src="/images/slides/garcia_valcarcel_caceres_abogados_slide_home_v2.webp"
                       alt={service.nameEs}
                       fill
                       className="object-cover"
@@ -377,7 +377,7 @@ export default async function ServiceDetailPage({ params }: Props) {
             <div className="reveal text-center">
               <div className="w-20 h-20 bg-brand-brown rounded-2xl flex items-center justify-center mx-auto mb-6 relative">
                 <Image
-                  src="/images/logo/gvcabogados_murcia_logo_leon_blanco.png"
+                  src="/images/logo/gvcabogados_murcia_logo_leon_blanco.webp"
                   alt="León GVC"
                   fill
                   className="object-contain p-4"

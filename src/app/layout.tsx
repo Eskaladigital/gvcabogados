@@ -8,9 +8,9 @@ export const metadata: Metadata = {
   description:
     'Despacho de abogados en Murcia con más de 75 años de experiencia. Especialistas en accidentes de tráfico, divorcios, derecho bancario, penal, inmobiliario y sucesorio.',
   icons: {
-    icon: '/images/logo/gvcabogados_murcia_logo_favicon_marron_sinfondo.png',
-    shortcut: '/images/logo/gvcabogados_murcia_logo_favicon_marron_sinfondo.png',
-    apple: '/images/logo/gvcabogados_murcia_logo_favicon_marron_sinfondo.png',
+    icon: '/images/logo/gvcabogados_murcia_logo_favicon_marron_sinfondo.webp',
+    shortcut: '/images/logo/gvcabogados_murcia_logo_favicon_marron_sinfondo.webp',
+    apple: '/images/logo/gvcabogados_murcia_logo_favicon_marron_sinfondo.webp',
   },
 };
 

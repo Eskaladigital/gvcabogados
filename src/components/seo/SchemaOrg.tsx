@@ -17,8 +17,8 @@ export function LocalBusinessSchema({ locale }: SchemaProps) {
     name: 'García-Valcárcel & Cáceres Abogados',
     alternateName: 'GVC Abogados',
     url: SITE_URL,
-    logo: `${SITE_URL}/images/logo/gvc-logo.png`,
-    image: `${SITE_URL}/images/hero-bg.png`,
+    logo: `${SITE_URL}/images/logo/gvcabogados_murcia_logo_favicon_marron_sinfondo.webp`,
+    image: `${SITE_URL}/images/slides/garcia_valcarcel_caceres_abogados_slide_home_v2.webp`,
     description: locale === 'es'
       ? 'Bufete de abogados en Murcia fundado en 1946. Más de 75 años de experiencia en derecho privado y público. Especialistas en accidentes de tráfico, divorcios, derecho bancario, penal, inmobiliario y sucesorio.'
       : 'Law firm in Murcia, Spain founded in 1946. Over 75 years of experience in private and public law.',

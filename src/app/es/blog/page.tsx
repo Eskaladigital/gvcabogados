@@ -92,7 +92,7 @@ export default async function BlogPage() {
         <section className="relative min-h-[400px] md:min-h-[450px] flex items-center py-16">
           <div className="absolute inset-0 bg-brand-dark/90 z-10" />
           <Image
-            src="/images/slides/garcia_valcarcel_caceres_abogados_slide_home_v2.png"
+            src="/images/slides/garcia_valcarcel_caceres_abogados_slide_home_v2.webp"
             alt="Blog Jurídico GVC Abogados"
             fill
             className="object-cover"

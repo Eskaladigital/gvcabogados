@@ -133,7 +133,7 @@ export default function Navbar({ locale, alternateUrl }: NavbarProps) {
           <Link href={prefix} className="flex items-center gap-2.5 no-underline">
             <div className="w-[42px] h-[42px] md:w-[50px] md:h-[50px] relative flex items-center justify-center">
               <Image
-                src="/images/logo/gvcabogados_murcia_logo_favicon_marron_sinfondo.png"
+                src="/images/logo/gvcabogados_murcia_logo_favicon_marron_sinfondo.webp"
                 alt="GV&C Logo"
                 fill
                 className="object-contain"

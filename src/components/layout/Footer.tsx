@@ -21,7 +21,7 @@ export default function Footer({ locale }: FooterProps) {
             <Link href={prefix} className="flex flex-col items-start gap-2">
               <div className="w-16 h-16 relative flex items-center justify-center">
                 <Image
-                  src="/images/logo/gvcabogados_murcia_logo_favicon_marron_sinfondo.png"
+                  src="/images/logo/gvcabogados_murcia_logo_favicon_marron_sinfondo.webp"
                   alt="GV&C Logo"
                   fill
                   className="object-contain"

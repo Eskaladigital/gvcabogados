@@ -74,7 +74,7 @@ export default function AboutStrip({ locale }: AboutStripProps) {
                 {/* Imagen */}
                 <div className="absolute inset-0">
                   <Image
-                    src="/images/team/garcia_valcarcel_caceres_abogados_socio_fundador.png"
+                    src="/images/team/garcia_valcarcel_caceres_abogados_socio_fundador.webp"
                     alt="Pedro A. García-Valcárcel - Socio Fundador"
                     fill
                     className="object-cover"
@@ -87,7 +87,7 @@ export default function AboutStrip({ locale }: AboutStripProps) {
                 <div className="absolute bottom-6 right-6 w-16 h-16 md:w-20 md:h-20 bg-[#ccb27f] rounded-lg flex items-center justify-center z-[3] shadow-lg border-2 border-white/20">
                   <div className="w-10 h-10 md:w-12 md:h-12 relative">
                     <Image
-                      src="/images/logo/gvcabogados_murcia_logo_leon_blanco.png"
+                      src="/images/logo/gvcabogados_murcia_logo_leon_blanco.webp"
                       alt="León - Símbolo de Nobleza"
                       fill
                       className="object-contain opacity-90"

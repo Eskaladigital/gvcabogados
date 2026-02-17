@@ -14,7 +14,7 @@ export default function Hero({ locale }: HeroProps) {
       {/* Background image */}
       <div
         className="absolute inset-0 bg-center bg-cover bg-no-repeat opacity-30 z-0"
-        style={{ backgroundImage: "url('/images/slides/garcia_valcarcel_caceres_abogados_slide_home_v2.png')" }}
+        style={{ backgroundImage: "url('/images/slides/garcia_valcarcel_caceres_abogados_slide_home_v2.webp')" }}
       />
       {/* Gradient overlay */}
       <div className="absolute inset-0 bg-gradient-to-br from-[rgba(26,26,26,0.6)] via-[rgba(30,30,30,0.3)] to-[rgba(26,26,26,0.5)] z-[1]" />
