@@ -1,5 +1,6 @@
 import '@/styles/globals.css';
 import type { Metadata } from 'next';
+import { GoogleAnalytics } from '@/components/seo/GoogleAnalytics';
 
 export const metadata: Metadata = {
   title: 'García-Valcárcel & Cáceres — Bufete de Abogados en Murcia',
@@ -15,7 +16,10 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="es" className="scroll-smooth">
-      <body>{children}</body>
+      <body>
+        <GoogleAnalytics />
+        {children}
+      </body>
     </html>
   );
 }

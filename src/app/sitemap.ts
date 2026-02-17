@@ -1,12 +1,14 @@
 import { MetadataRoute } from 'next';
 import { services } from '@/data/services';
 import { landingPages } from '@/data/landings';
+import { supabase } from '@/lib/supabase';
 
 const BASE_URL = 'https://www.gvcabogados.com';
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticPagesEs = [
     '', '/sobre-nosotros', '/servicios', '/equipo', '/blog', '/contacto',
+    '/politica-cookies', '/politica-privacidad', '/aviso-legal', '/sitemap',
   ].map((path) => ({
     url: `${BASE_URL}/es${path}`,
     lastModified: new Date(),
@@ -15,7 +17,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   }));
 
   const staticPagesEn = [
-    '', '/about', '/services', '/team', '/blog', '/contact',
+    '', '/about', '/services', '/team', '/blog', '/contact', '/sitemap',
   ].map((path) => ({
     url: `${BASE_URL}/en${path}`,
     lastModified: new Date(),
@@ -51,6 +53,29 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.7,
   }));
 
+  // Blog posts from Supabase
+  const { data: blogPosts } = await supabase
+    .from('blog_posts')
+    .select('slug_es, slug_en, published_at, updated_at')
+    .eq('status', 'published')
+    .order('published_at', { ascending: false });
+
+  const blogPagesEs = (blogPosts || []).map((post) => ({
+    url: `${BASE_URL}/es/blog/${post.slug_es}`,
+    lastModified: new Date(post.updated_at || post.published_at),
+    changeFrequency: 'monthly' as const,
+    priority: 0.6,
+  }));
+
+  const blogPagesEn = (blogPosts || [])
+    .filter(post => post.slug_en)
+    .map((post) => ({
+      url: `${BASE_URL}/en/blog/${post.slug_en}`,
+      lastModified: new Date(post.updated_at || post.published_at),
+      changeFrequency: 'monthly' as const,
+      priority: 0.5,
+    }));
+
   return [
     ...staticPagesEs,
     ...staticPagesEn,
@@ -58,5 +83,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...servicesPagesEn,
     ...landingsEs,
     ...landingsEn,
+    ...blogPagesEs,
+    ...blogPagesEn,
   ];
 }
