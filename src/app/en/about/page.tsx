@@ -1,7 +1,6 @@
 import { Metadata } from 'next';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
-import BackToTopButton from '@/components/layout/WhatsAppButton';
 import ScrollReveal from '@/components/ui/ScrollReveal';
 import { getTranslations } from '@/data/translations';
 
@@ -60,7 +59,6 @@ export default function AboutPage() {
         </section>
       </main>
       <Footer locale={locale} />
-      <BackToTopButton />
       <ScrollReveal />
     </>
   );

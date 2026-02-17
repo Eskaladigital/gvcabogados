@@ -3,7 +3,6 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
-import BackToTopButton from '@/components/layout/WhatsAppButton';
 import SocialShare from '@/components/blog/SocialShare';
 import RelatedPostsEn from '@/components/blog/RelatedPostsEn';
 import { supabaseAdmin } from '@/lib/supabase';
@@ -137,7 +136,6 @@ export default async function BlogPostPageEn({ params }: Props) {
         </section>
       </main>
       <Footer locale={locale} />
-      <BackToTopButton />
     </>
   );
 }

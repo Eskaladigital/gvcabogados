@@ -1,7 +1,6 @@
 import { Metadata } from 'next';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
-import BackToTopButton from '@/components/layout/WhatsAppButton';
 import ScrollReveal from '@/components/ui/ScrollReveal';
 import Breadcrumbs from '@/components/ui/Breadcrumbs';
 import ContactSection from '@/components/home/ContactSection';
@@ -57,7 +56,6 @@ export default function ContactoPage() {
         </section>
       </main>
       <Footer locale={locale} />
-      <BackToTopButton />
       <ScrollReveal />
     </>
   );

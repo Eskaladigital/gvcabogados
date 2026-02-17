@@ -1,6 +1,7 @@
 import '@/styles/globals.css';
 import type { Metadata } from 'next';
 import { GoogleAnalytics } from '@/components/seo/GoogleAnalytics';
+import BackToTopButton from '@/components/layout/WhatsAppButton';
 
 export const metadata: Metadata = {
   title: 'García-Valcárcel & Cáceres — Bufete de Abogados en Murcia',
@@ -19,6 +20,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body>
         <GoogleAnalytics />
         {children}
+        <BackToTopButton />
       </body>
     </html>
   );
