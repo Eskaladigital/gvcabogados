@@ -10,7 +10,6 @@
     "db:verify": "tsx scripts/verify-database.ts",
     "migrate:murcia": "tsx scripts/migrate-murcia-content.ts",
     "populate:localities": "tsx scripts/populate-all-localities.ts",
-    "generate:content": "tsx scripts/generate-local-content.ts",
     "generate:accidentes": "tsx scripts/generate-accidentes-trafico.ts",
     "generate:familia": "tsx scripts/generate-derecho-familia.ts",
     "generate:negligencias": "tsx scripts/generate-negligencias-medicas.ts",

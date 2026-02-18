@@ -234,6 +234,17 @@ export async function getExistingContent(serviceId: string, localityId: string) 
   return data;
 }
 
+// ─── Mapeo service_key → prefijo inglés para slug_en ─────
+
+const SERVICE_KEY_EN: Record<string, string> = {
+  'accidentes-trafico': 'traffic-accidents',
+  'derecho-familia': 'family-law',
+  'negligencias-medicas': 'medical-malpractice',
+  'extranjeria': 'immigration',
+  'derecho-administrativo': 'administrative-law',
+  'responsabilidad-civil': 'civil-liability',
+};
+
 // ─── Supabase: upsert ────────────────────────────────────
 
 export async function upsertContent(params: {
@@ -249,7 +260,8 @@ export async function upsertContent(params: {
   if (dryRun) { console.log('  [dry-run] No se escribe en Supabase'); return; }
 
   const slug_es = `abogados-${serviceKey}-${localitySlug}`;
-  const slug_en = `${serviceKey}-lawyers-${localitySlug}`;
+  const enPrefix = SERVICE_KEY_EN[serviceKey] || serviceKey;
+  const slug_en = `${enPrefix}-lawyers-${localitySlug}`;
 
   const base: Record<string, any> = {
     service_id: serviceId,
