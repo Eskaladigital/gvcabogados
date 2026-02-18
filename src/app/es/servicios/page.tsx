@@ -14,16 +14,16 @@ import { getTranslations } from '@/data/translations';
 import { getServicesByLocale } from '@/data/services';
 
 export const metadata: Metadata = {
-  title: 'Áreas de Práctica — Abogados Especializados en Murcia | GVC Abogados',
+  title: 'Áreas de Práctica — Abogados Especialistas | GVC Abogados',
   description:
-    'Servicios jurídicos especializados en Murcia. Especialistas en responsabilidad civil: accidentes de tráfico, negligencias médicas, accidentes laborales y responsabilidad frente a la Administración. Más de 75 años de experiencia.',
+    'Servicios jurídicos especializados. Especialistas en responsabilidad civil: accidentes de tráfico, negligencias médicas, accidentes laborales y responsabilidad frente a la Administración. Más de 75 años de experiencia. Sede central en Murcia, actuación en toda España.',
   alternates: {
     canonical: 'https://www.gvcabogados.com/es/servicios',
     languages: { en: '/en/services' },
   },
   openGraph: {
-    title: 'Áreas de Práctica — Abogados Especializados en Murcia',
-    description: 'Servicios jurídicos especializados en Murcia. Especialistas en responsabilidad civil. Más de 75 años de experiencia.',
+    title: 'Áreas de Práctica — Abogados Especialistas',
+    description: 'Servicios jurídicos especializados. Especialistas en responsabilidad civil. Más de 75 años de experiencia.',
     locale: 'es_ES',
   },
 };
@@ -91,8 +91,8 @@ export default function ServiciosPage() {
           <div className="container-custom relative z-10">
             <Breadcrumbs items={breadcrumbs} />
             <h1 className="font-display text-3xl md:text-5xl font-bold text-white leading-tight max-w-[700px] mt-4">
-              Abogados especializados{' '}
-              <em className="italic text-brand-gold font-normal">en Murcia</em>: áreas de práctica
+              Abogados especializados:{' '}
+              <em className="italic text-brand-gold font-normal">áreas de práctica</em>
             </h1>
             <p className="text-neutral-300 text-base mt-4 max-w-[560px]">
               Nuestro equipo multidisciplinar cubre todas las áreas del derecho privado y público,

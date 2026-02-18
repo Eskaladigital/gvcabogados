@@ -239,6 +239,82 @@ export async function getServiceContentBySlug(slug: string): Promise<ServiceCont
 }
 
 /**
+ * Busca contenido por service_key + locality_slug (para la nueva ruta /servicios/[slug]/[ciudad]).
+ */
+export async function getServiceContentByServiceAndCity(
+  serviceKey: string,
+  citySlug: string
+): Promise<ServiceContent | null> {
+  const { data, error } = await supabaseAdmin
+    .from('service_content')
+    .select(`
+      id, service_id, locality_id,
+      slug_es, slug_en,
+      title_es, meta_description_es, short_description_es, long_description_es,
+      sections_es, process_es, faqs_es,
+      title_en, meta_description_en, short_description_en, long_description_en,
+      sections_en, process_en, faqs_en,
+      services!inner ( service_key, name_es, name_en ),
+      localities!inner ( name, slug )
+    `)
+    .eq('services.service_key', serviceKey)
+    .eq('localities.slug', citySlug)
+    .maybeSingle();
+
+  if (error || !data) {
+    // Fallback: construir el slug antiguo y usar la función existente
+    const legacySlug = `abogados-${serviceKey}-${citySlug}`;
+    return getServiceContentFromStatic(legacySlug);
+  }
+
+  return {
+    id: data.id,
+    serviceId: data.service_id,
+    serviceKey: (data.services as any).service_key,
+    serviceNameEs: (data.services as any).name_es,
+    serviceNameEn: (data.services as any).name_en,
+    localityId: data.locality_id,
+    localityName: (data.localities as any).name,
+    localitySlug: (data.localities as any).slug,
+    slugEs: data.slug_es,
+    slugEn: data.slug_en,
+    titleEs: data.title_es,
+    metaDescriptionEs: data.meta_description_es,
+    shortDescriptionEs: data.short_description_es,
+    longDescriptionEs: data.long_description_es,
+    sectionsEs: (data.sections_es as any) || [],
+    processEs: (data.process_es as any) || [],
+    faqsEs: (data.faqs_es as any) || [],
+    titleEn: data.title_en,
+    metaDescriptionEn: data.meta_description_en,
+    shortDescriptionEn: data.short_description_en,
+    longDescriptionEn: data.long_description_en,
+    sectionsEn: (data.sections_en as any) || null,
+    processEn: (data.process_en as any) || null,
+    faqsEn: (data.faqs_en as any) || null,
+  };
+}
+
+/**
+ * Obtiene todas las combinaciones servicio+ciudad para generateStaticParams de [slug]/[ciudad].
+ */
+export async function getAllServiceCityParams(): Promise<{ slug: string; ciudad: string }[]> {
+  const { data, error } = await supabaseAdmin
+    .from('service_content')
+    .select('services!inner(service_key), localities!inner(slug)')
+    .order('slug_es');
+
+  if (error || !data || data.length === 0) {
+    return staticServices.map((s) => ({ slug: s.genericSlugEs, ciudad: 'murcia' }));
+  }
+
+  return data.map((row: any) => ({
+    slug: staticServices.find(s => s.id === row.services.service_key)?.genericSlugEs || row.services.service_key,
+    ciudad: row.localities.slug,
+  }));
+}
+
+/**
  * Obtiene todos los slugs_es activos desde Supabase para generateStaticParams.
  * Si Supabase falla, usa slugs de datos estáticos como fallback.
  */

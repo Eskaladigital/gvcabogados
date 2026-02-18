@@ -1,8 +1,8 @@
 import { MetadataRoute } from 'next';
 import { supabaseAdmin } from '@/lib/supabase';
 import { SITE_URL } from '@/lib/site-config';
+import { services } from '@/data/services';
 
-// Regenerar el sitemap cada hora para incluir nuevos contenidos
 export const revalidate = 3600;
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
@@ -28,44 +28,50 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: path === '' ? 0.9 : 0.7,
   }));
 
-  // --- Todas las páginas de servicio+localidad desde Supabase (194 registros) ---
+  // --- Páginas genéricas de servicio (14 servicios, sin ciudad) ---
+  const genericServicesEs = services.map((s) => ({
+    url: `${SITE_URL}/es/servicios/${s.genericSlugEs}`,
+    lastModified: now,
+    changeFrequency: 'monthly' as const,
+    priority: 0.9,
+  }));
+
+  const genericServicesEn = services.map((s) => ({
+    url: `${SITE_URL}/en/services/${s.genericSlugEn}`,
+    lastModified: now,
+    changeFrequency: 'monthly' as const,
+    priority: 0.8,
+  }));
+
+  // --- Landings locales servicio+ciudad (nueva estructura /servicios/{servicio}/{ciudad}) ---
   const { data: servicePages } = await supabaseAdmin
     .from('service_content')
-    .select('slug_es, slug_en, updated_at')
+    .select('slug_es, slug_en, updated_at, services!inner(service_key), localities!inner(slug)')
     .order('slug_es');
 
-  const serviceContentEs = (servicePages || []).map((sc) => ({
-    url: `${SITE_URL}/es/servicios/${sc.slug_es}`,
-    lastModified: new Date(sc.updated_at || now),
-    changeFrequency: 'monthly' as const,
-    priority: 0.7,
-  }));
-
-  const serviceContentEn = (servicePages || [])
-    .filter((sc) => sc.slug_en)
-    .map((sc) => ({
-      url: `${SITE_URL}/en/services/${sc.slug_en}`,
+  const localPagesEs = (servicePages || []).map((sc: any) => {
+    const svc = services.find(s => s.id === sc.services.service_key);
+    const genericSlug = svc?.genericSlugEs || sc.services.service_key;
+    return {
+      url: `${SITE_URL}/es/servicios/${genericSlug}/${sc.localities.slug}`,
       lastModified: new Date(sc.updated_at || now),
       changeFrequency: 'monthly' as const,
-      priority: 0.6,
-    }));
+      priority: 0.7,
+    };
+  });
 
-  // --- Landings /es/abogados/ (mismos datos, ruta distinta) ---
-  const landingsEs = (servicePages || []).map((sc) => ({
-    url: `${SITE_URL}/es/abogados/${sc.slug_es}`,
-    lastModified: new Date(sc.updated_at || now),
-    changeFrequency: 'monthly' as const,
-    priority: 0.7,
-  }));
-
-  const landingsEn = (servicePages || [])
-    .filter((sc) => sc.slug_en)
-    .map((sc) => ({
-      url: `${SITE_URL}/en/lawyers/${sc.slug_en}`,
-      lastModified: new Date(sc.updated_at || now),
-      changeFrequency: 'monthly' as const,
-      priority: 0.6,
-    }));
+  const localPagesEn = (servicePages || [])
+    .filter((sc: any) => sc.slug_en)
+    .map((sc: any) => {
+      const svc = services.find(s => s.id === sc.services.service_key);
+      const genericSlug = svc?.genericSlugEn || sc.services.service_key;
+      return {
+        url: `${SITE_URL}/en/services/${genericSlug}/${sc.localities.slug}`,
+        lastModified: new Date(sc.updated_at || now),
+        changeFrequency: 'monthly' as const,
+        priority: 0.6,
+      };
+    });
 
   // --- Blog posts ---
   const { data: blogPosts } = await supabaseAdmin
@@ -93,15 +99,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const allUrls = [
     ...staticPagesEs,
     ...staticPagesEn,
-    ...serviceContentEs,
-    ...serviceContentEn,
-    ...landingsEs,
-    ...landingsEn,
+    ...genericServicesEs,
+    ...genericServicesEn,
+    ...localPagesEs,
+    ...localPagesEn,
     ...blogPagesEs,
     ...blogPagesEn,
   ];
 
-  console.log(`[Sitemap] Generado con ${allUrls.length} URLs (${servicePages?.length ?? 0} servicios, ${blogPosts?.length ?? 0} posts)`);
+  console.log(`[Sitemap] Generado con ${allUrls.length} URLs (${servicePages?.length ?? 0} servicios locales, 14 genéricos, ${blogPosts?.length ?? 0} posts)`);
 
   return allUrls;
 }

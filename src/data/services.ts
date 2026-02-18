@@ -12,6 +12,8 @@ export interface Service {
   id: string;
   slugEs: string;
   slugEn: string;
+  genericSlugEs: string;
+  genericSlugEn: string;
   nameEs: string;
   nameEn: string;
   descriptionEs: string;
@@ -35,6 +37,8 @@ export const services: Service[] = [
     id: 'accidentes-trafico',
     slugEs: 'abogados-accidentes-trafico-murcia',
     slugEn: 'traffic-accident-lawyers-murcia',
+    genericSlugEs: 'accidentes-trafico',
+    genericSlugEn: 'traffic-accidents',
     nameEs: 'Accidentes de Tráfico',
     nameEn: 'Traffic Accidents',
     descriptionEs: 'Reclamaciones por accidentes de tráfico. Expertos en el baremo de tráfico, indemnizaciones y defensa de víctimas',
@@ -112,6 +116,8 @@ export const services: Service[] = [
     id: 'derecho-familia',
     slugEs: 'abogados-derecho-familia-murcia',
     slugEn: 'family-law-lawyers-murcia',
+    genericSlugEs: 'derecho-familia',
+    genericSlugEn: 'family-law',
     nameEs: 'Derecho de Familia',
     nameEn: 'Family Law',
     descriptionEs: 'Divorcios, custodia, pensiones alimenticias y mediación familiar',
@@ -189,6 +195,8 @@ export const services: Service[] = [
     id: 'derecho-bancario',
     slugEs: 'abogados-derecho-bancario-murcia',
     slugEn: 'banking-law-lawyers-murcia',
+    genericSlugEs: 'derecho-bancario',
+    genericSlugEn: 'banking-law',
     nameEs: 'Derecho Bancario',
     nameEn: 'Banking Law',
     descriptionEs: 'Cláusulas abusivas, reclamaciones hipotecarias y tarjetas revolving',
@@ -261,6 +269,8 @@ export const services: Service[] = [
     id: 'derecho-penal',
     slugEs: 'abogados-derecho-penal-murcia',
     slugEn: 'criminal-law-lawyers-murcia',
+    genericSlugEs: 'derecho-penal',
+    genericSlugEn: 'criminal-law',
     nameEs: 'Derecho Penal',
     nameEn: 'Criminal Law',
     descriptionEs: 'Defensa penal integral, asistencia al detenido y delitos económicos',
@@ -331,6 +341,8 @@ export const services: Service[] = [
     id: 'derecho-inmobiliario',
     slugEs: 'abogados-derecho-inmobiliario-murcia',
     slugEn: 'real-estate-law-lawyers-murcia',
+    genericSlugEs: 'derecho-inmobiliario',
+    genericSlugEn: 'real-estate-law',
     nameEs: 'Derecho Inmobiliario',
     nameEn: 'Real Estate Law',
     descriptionEs: 'Compraventa, arrendamientos y propiedad horizontal',
@@ -401,6 +413,8 @@ export const services: Service[] = [
     id: 'derecho-sucesorio',
     slugEs: 'abogados-derecho-sucesorio-murcia',
     slugEn: 'inheritance-law-lawyers-murcia',
+    genericSlugEs: 'derecho-sucesorio',
+    genericSlugEn: 'inheritance-law',
     nameEs: 'Derecho Sucesorio',
     nameEn: 'Inheritance Law',
     descriptionEs: 'Herencias, testamentos, partición de bienes y planificación sucesoria',
@@ -471,6 +485,8 @@ export const services: Service[] = [
     id: 'derecho-mercantil',
     slugEs: 'abogados-derecho-mercantil-murcia',
     slugEn: 'commercial-law-lawyers-murcia',
+    genericSlugEs: 'derecho-mercantil',
+    genericSlugEn: 'commercial-law',
     nameEs: 'Derecho Mercantil',
     nameEn: 'Commercial Law',
     descriptionEs: 'Constitución de sociedades, contratos mercantiles y litigios empresariales',
@@ -523,6 +539,8 @@ export const services: Service[] = [
     id: 'responsabilidad-civil',
     slugEs: 'abogados-responsabilidad-civil-murcia',
     slugEn: 'civil-liability-insurance-lawyers-murcia',
+    genericSlugEs: 'responsabilidad-civil',
+    genericSlugEn: 'civil-liability',
     nameEs: 'Responsabilidad Civil y Seguros',
     nameEn: 'Civil Liability & Insurance',
     descriptionEs: 'Reclamaciones por daños, seguros y responsabilidad extracontractual',
@@ -573,6 +591,8 @@ export const services: Service[] = [
     id: 'obligaciones-contratos',
     slugEs: 'abogados-obligaciones-contratos-murcia',
     slugEn: 'contracts-obligations-lawyers-murcia',
+    genericSlugEs: 'obligaciones-contratos',
+    genericSlugEn: 'obligations-contracts',
     nameEs: 'Obligaciones y Contratos',
     nameEn: 'Obligations & Contracts',
     descriptionEs: 'Redacción, revisión e incumplimiento de contratos',
@@ -621,6 +641,8 @@ export const services: Service[] = [
     id: 'mediacion',
     slugEs: 'abogados-mediacion-murcia',
     slugEn: 'mediation-lawyers-murcia',
+    genericSlugEs: 'mediacion',
+    genericSlugEn: 'mediation',
     nameEs: 'Mediación Civil y Mercantil',
     nameEn: 'Civil & Commercial Mediation',
     descriptionEs: 'Resolución alternativa de conflictos y arbitraje',
@@ -669,6 +691,8 @@ export const services: Service[] = [
     id: 'extranjeria',
     slugEs: 'abogados-extranjeria-murcia',
     slugEn: 'immigration-lawyers-murcia',
+    genericSlugEs: 'extranjeria',
+    genericSlugEn: 'immigration',
     nameEs: 'Extranjería e Inmigración',
     nameEn: 'Immigration Law',
     descriptionEs: 'Permisos de residencia, trabajo, nacionalidad y visados',
@@ -721,6 +745,8 @@ export const services: Service[] = [
     id: 'derecho-administrativo',
     slugEs: 'abogados-derecho-administrativo-murcia',
     slugEn: 'administrative-law-lawyers-murcia',
+    genericSlugEs: 'derecho-administrativo',
+    genericSlugEn: 'administrative-law',
     nameEs: 'Derecho Administrativo',
     nameEn: 'Administrative Law',
     descriptionEs: 'Recursos administrativos, contencioso-administrativo y urbanismo',
@@ -769,6 +795,8 @@ export const services: Service[] = [
     id: 'defensa-fondos-buitre',
     slugEs: 'abogados-defensa-fondos-buitre-murcia',
     slugEn: 'vulture-fund-defense-lawyers-murcia',
+    genericSlugEs: 'defensa-fondos-buitre',
+    genericSlugEn: 'vulture-fund-defense',
     nameEs: 'Defensa frente a Fondos Buitre',
     nameEn: 'Vulture Fund Defense',
     descriptionEs: 'Protección legal para inquilinos frente a fondos buitre, acoso inmobiliario y desahucios abusivos',
@@ -851,6 +879,8 @@ export const services: Service[] = [
     id: 'negligencias-medicas',
     slugEs: 'abogados-negligencias-medicas-murcia',
     slugEn: 'medical-malpractice-lawyers-murcia',
+    genericSlugEs: 'negligencias-medicas',
+    genericSlugEn: 'medical-malpractice',
     nameEs: 'Negligencias Médicas',
     nameEn: 'Medical Malpractice',
     descriptionEs: 'Reclamaciones por errores médicos, responsabilidad sanitaria e indemnizaciones',
@@ -926,7 +956,8 @@ export function getServicesByLocale(locale: 'es' | 'en') {
     .sort((a, b) => a.priority - b.priority)
     .map((s) => ({
       id: s.id,
-      slug: locale === 'es' ? s.slugEs : s.slugEn,
+      slug: locale === 'es' ? s.genericSlugEs : s.genericSlugEn,
+      localSlug: locale === 'es' ? s.slugEs : s.slugEn,
       name: locale === 'es' ? s.nameEs : s.nameEn,
       description: locale === 'es' ? s.descriptionEs : s.descriptionEn,
       longDescription: locale === 'es' ? s.longDescriptionEs : s.longDescriptionEn,
@@ -941,4 +972,8 @@ export function getServicesByLocale(locale: 'es' | 'en') {
 
 export function getServiceBySlug(slug: string) {
   return services.find((s) => s.slugEs === slug || s.slugEn === slug);
+}
+
+export function getServiceByGenericSlug(slug: string) {
+  return services.find((s) => s.genericSlugEs === slug || s.genericSlugEn === slug);
 }
