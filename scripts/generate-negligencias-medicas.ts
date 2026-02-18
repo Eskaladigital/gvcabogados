@@ -1,165 +1,230 @@
 /**
- * Generador de contenido para el servicio "Negligencias Médicas".
- * Usa utilidades compartidas de ./lib/generate-utils y runGenerator().
+ * Generador multi-paso: Negligencias Médicas
+ * Tabla destino: svc_negligencias_medicas
  *
- * Uso:
- *   tsx scripts/generate-negligencias-medicas.ts
+ * Cada campo de la tabla se genera con una llamada IA independiente.
+ * Esto garantiza máxima calidad por sección.
  *
- * Flags:
- *   --locality=<slug|all>   (default: all)
- *   --force=true|false      (default: false)
- *   --dry-run=true|false    (default: false)
- *   --limit=<n>             (default: 0 sin límite)
- *   --verbose=true|false    (default: true)
- *   --model=<openai_model>   (default: gpt-4.1)
- *   --max-tokens=<n>        (default: 4500)
+ * Uso: tsx scripts/generate-negligencias-medicas.ts --locality=murcia --force=true
  */
 
 import {
-  runGenerator,
+  runMultiStepGenerator,
   baseSerpQueries,
-  baseSystemPrompt,
+  baseRules,
+  formatEvidence,
+  countWords,
+  normalizeText,
   type LocalityRow,
   type ServiceRow,
   type EvidenceItem,
-  type BasePayload,
-  normalizeText,
+  type FieldStep,
 } from './lib/generate-utils';
 
 const SERVICE_KEY = 'negligencias-medicas';
+const TABLE_NAME = 'svc_negligencias_medicas';
 
 function buildSerpQueries(locality: LocalityRow): string[] {
-  const base = baseSerpQueries(locality);
-  const specific = [
-    `hospital ${locality.name} quejas atención sanitaria`,
-    `Servicio de Salud reclamaciones ${locality.name}`,
-    `inspección médica reclamación ${locality.name}`,
-    `defensor del paciente ${locality.name}`,
-    `colegios médicos ${locality.name}`,
+  const region = locality.province || locality.name;
+  return [
+    ...baseSerpQueries(locality),
+    `hospital ${locality.name}`,
+    `centro salud ${locality.name}`,
+    `urgencias ${locality.name}`,
+    `negligencia médica ${locality.name}`,
+    `juzgados instrucción ${locality.name}`,
+    `servicio salud ${region}`,
   ];
-  return [...base, ...specific];
 }
 
-function buildSystemPrompt(): string {
-  const base = baseSystemPrompt();
-  const extension = normalizeText(`
-CUSTOM_SECTIONS_ES (obligatorio para este servicio):
-
-Debes incluir en custom_sections_es exactamente estas claves:
-
-1. tipos_negligencia: array de objetos {titulo, descripcion, icon}
-   - Tipos de negligencia médica más frecuentes.
-   - Incluir: errores diagnóstico, cirugía, farmacológicos, obstétrica, urgencias, estética.
-   - icon: nombre de icono (ej: "stethoscope", "scalpel", "pill", "baby", "ambulance", "aesthetic").
-   - Mínimo 5, máximo 6 elementos.
-
-2. proceso_reclamacion: array de objetos {paso, titulo, descripcion}
-   - Pasos concretos para interponer una reclamación por negligencia médica.
-   - paso: número (1, 2, 3...).
-   - titulo: título breve del paso.
-   - descripcion: texto explicativo.
-   - Exactamente 6 pasos.
-
-3. stats: array de objetos {value, label}
-   - Estadísticas relevantes sobre negligencia médica en España.
-   - Exactamente 4 elementos.
-   - value: número o texto (ej: "85%", "12.000").
-   - label: descripción breve.
-
-4. intro: string (HTML, opcional)
-   - Texto introductorio localizado para la ciudad.
-   - Usa <p>, <strong>, <em>. Sin clases ni estilos.
-
-TONO Y ESTILO (negligencia médica):
-- Serio y técnico pero accesible.
-- Empático con los pacientes y sus familias.
-- Evitar dramatismo; priorizar información útil y veraz.
-- Lenguaje jurídico preciso sin perder claridad.
-`);
-  return `${base}\n\n${extension}`;
+function ctx(locality: LocalityRow, evidence: EvidenceItem[]): string {
+  return `CIUDAD: ${locality.name}\nPROVINCIA: ${locality.province || '(misma)'}\nSERVICIO: Negligencias Médicas\n\n═══ EVIDENCIA SERP ═══\n${formatEvidence(evidence)}`;
 }
 
-function buildUserPrompt(
+function buildSteps(
   locality: LocalityRow,
-  service: ServiceRow,
+  _service: ServiceRow,
   evidence: EvidenceItem[],
-  existing: any
-): string {
-  const evidenceText = evidence
-    .map((e, idx) => `#${idx + 1}\nquery: ${e.query}\ntitle: ${e.title}\nurl: ${e.link}\nsnippet: ${e.snippet}`.trim())
-    .join('\n\n');
+  _existing: any
+): FieldStep[] {
+  const context = ctx(locality, evidence);
+  const rules = baseRules();
 
-  const existingBlock = existing?.long_description_es
-    ? `\nCONTENIDO PREVIO (reescríbelo con enfoque fresco; NO copies estructuras):\n${existing.long_description_es}\n`
-    : '';
+  return [
+    {
+      name: 'seo',
+      maxTokens: 1000,
+      systemPrompt: `Eres un experto SEO para despachos de abogados en España. ${rules}`,
+      userPrompt: normalizeText(`${context}
 
-  return normalizeText(`
-CONTEXTO:
-- Ciudad: ${locality.name}
-- Provincia: ${locality.province || '(misma)'}
-- Servicio: ${service.name_es} (${service.service_key})
+Genera JSON con:
+- title_es: título SEO (máx 65 chars). Patrón: "Abogados de Negligencias Médicas en ${locality.name} | GVC Abogados"
+- meta_description_es: (máx 160 chars) con mención a la ciudad
+- short_description_es: (260-320 chars) resumen atractivo
+- title_en: traducción del title_es al inglés
+- meta_description_en: traducción
+- short_description_en: traducción`),
+      validate: (r) => {
+        if (!r.title_es || !r.meta_description_es) throw new Error('Faltan campos SEO');
+        if (r.meta_description_es.length > 180) throw new Error('meta_description_es > 180 chars');
+      },
+    },
+    {
+      name: 'intro',
+      maxTokens: 3000,
+      systemPrompt: `Eres un abogado-redactor especialista en negligencia médica. Redactas contenido web extenso, específico y humano para SEO. ${rules}`,
+      userPrompt: normalizeText(`${context}
 
-${existingBlock}
+Genera JSON con:
+- intro_es: HTML semántico (<p>, <strong>, <em>, <h3>). 800-1200 palabras. Texto introductorio completo sobre negligencia médica en ${locality.name}. Incluye: contexto local verificado (hospitales, centros de salud de la evidencia), tipos de negligencia en la zona, relevancia del servicio, qué ofrece el despacho, procedimiento general de reclamación.
+- intro_en: traducción al inglés de intro_es. Misma longitud y estructura.
 
-═══ EVIDENCIA SERP ═══
-Usa EXCLUSIVAMENTE esta evidencia para extraer instituciones, direcciones y datos locales.
-Todo lo que no esté aquí, NO EXISTE. No extrapoles, no deduzcas, no inventes.
+Cuando no haya datos locales en evidencia: usa normativa real (Ley 41/2002, plazos de reclamación), procedimientos verificables.`),
+      validate: (r) => {
+        if (!r.intro_es) throw new Error('Falta intro_es');
+        const words = countWords(r.intro_es);
+        if (words < 500) throw new Error(`intro_es: ${words} palabras (mín 500)`);
+      },
+    },
+    {
+      name: 'tipos_negligencia',
+      maxTokens: 2000,
+      systemPrompt: `Eres un abogado especialista en responsabilidad sanitaria. ${rules}`,
+      userPrompt: normalizeText(`${context}
 
-${evidenceText || '(sin evidencia — sé completamente genérico en referencias locales)'}
+Genera JSON con:
+- tipos_negligencia_es: array de 4-6 objetos {titulo, descripcion, icon}. Tipos de negligencia médica relevantes. Incluir al menos: errores diagnóstico, quirúrgicas, urgencias/triaje, obstétricas, medicación, infecciones hospitalarias. Descripciones de 2-3 frases. icon: "stethoscope", "scalpel", "ambulance", "baby", "pill", "hospital".
+- tipos_negligencia_en: traducción al inglés.`),
+      validate: (r) => {
+        if (!Array.isArray(r.tipos_negligencia_es) || r.tipos_negligencia_es.length < 4)
+          throw new Error('tipos_negligencia_es: mín 4');
+      },
+    },
+    {
+      name: 'sections',
+      maxTokens: 4000,
+      systemPrompt: `Eres un abogado-redactor de contenido jurídico de alta calidad. Cada sección debe ser sustancial (150+ palabras), con información jurídica real y específica. ${rules}`,
+      userPrompt: normalizeText(`${context}
 
-═══ ESTRUCTURA JSON REQUERIDA ═══
+Genera JSON con:
+- sections_es: array de EXACTAMENTE 4 objetos {title, content}. content es HTML (mín 150 palabras cada uno). Secciones informativas sobre negligencia médica en ${locality.name}:
+  1. Reclamación por negligencia (proceso, requisitos, vías)
+  2. Peritaje médico (importancia, quién lo realiza, valor probatorio)
+  3. Vía judicial y administrativa (diferencias, cuándo usar cada una)
+  4. Plazos de reclamación (1 año civil, 1 año administrativo, prescripción)
+- sections_en: traducción al inglés.`),
+      validate: (r) => {
+        if (!Array.isArray(r.sections_es) || r.sections_es.length !== 4)
+          throw new Error('sections_es: exactamente 4');
+      },
+    },
+    {
+      name: 'hospitales',
+      maxTokens: 2000,
+      systemPrompt: `Eres un analista que extrae datos verificables de evidencia. SOLO incluyes lo que aparece TEXTUALMENTE en la evidencia. ${rules}`,
+      userPrompt: normalizeText(`${context}
 
-Devuelve un JSON con estas claves exactas:
+Genera JSON con:
+- hospitales_es: array de objetos {nombre, tipo, direccion}. Hospitales y centros de salud que aparezcan EXPLÍCITAMENTE en la evidencia SERP. tipo: "hospital", "centro de salud", "urgencias", etc. Si NO hay evidencia con nombres/direcciones verificables, devuelve array VACÍO [].
+- hospitales_en: traducción al inglés (mismo array, con nombres traducidos si procede; direcciones se mantienen).
 
-- title_es (máx 65 caracteres)
-- meta_description_es (máx 180 caracteres)
-- short_description_es (260-320 caracteres)
-- long_description_es (HTML semántico: <h2>, <h3>, <p>, <strong>, <em>, <ul>/<ol>/<li>, <blockquote>)
-- sections_es: EXACTAMENTE 4 objetos {title, content} — content en HTML
-- process_es: EXACTAMENTE 6 strings (pasos del proceso)
-- faqs_es: EXACTAMENTE 6 objetos {question, answer} — answer en HTML
-- custom_sections_es: objeto con:
-  - tipos_negligencia: array de {titulo, descripcion, icon}
-  - proceso_reclamacion: array de {paso, titulo, descripcion}
-  - stats: array de {value, label} (4 elementos)
-  - intro: string HTML opcional
-- local_entities: array (solo entidades con nombre EXACTO en evidencia)
-- quality: {score: 0-100, notes?: string}
+IMPORTANTE: Si la evidencia no contiene nombres exactos de hospitales o centros con dirección, devuelve []. No inventes.`),
+      validate: (r) => {
+        if (!Array.isArray(r.hospitales_es)) throw new Error('hospitales_es debe ser array');
+      },
+    },
+    {
+      name: 'process_faqs',
+      maxTokens: 3000,
+      systemPrompt: `Eres un abogado especialista en negligencia médica que explica el proceso legal de forma clara. ${rules}`,
+      userPrompt: normalizeText(`${context}
 
-REGLAS:
-- PROHIBIDO: "consulta gratuita", "gratuita", "gratis". Permitido: "primera consulta sin compromiso".
-- sections_es, process_es y faqs_es deben ser específicos de negligencia médica en ${locality.name}.
-- custom_sections_es es OBLIGATORIO con tipos_negligencia y proceso_reclamacion.
-- Tono: serio, técnico pero accesible, empático con los pacientes.
-`);
+Genera JSON con:
+- process_es: array de EXACTAMENTE 6 strings. Pasos del proceso legal de reclamación por negligencia médica (texto plano, 1-2 frases cada uno).
+- process_en: traducción al inglés.
+- faqs_es: array de EXACTAMENTE 6 objetos {question, answer}. question en texto plano, answer en HTML. Preguntas frecuentes sobre negligencia médica en ${locality.name}. Respuestas sustanciales (3-5 frases).
+- faqs_en: traducción al inglés.`),
+      validate: (r) => {
+        if (!Array.isArray(r.process_es) || r.process_es.length !== 6)
+          throw new Error('process_es: exactamente 6');
+        if (!Array.isArray(r.faqs_es) || r.faqs_es.length !== 6)
+          throw new Error('faqs_es: exactamente 6');
+      },
+    },
+    {
+      name: 'stats',
+      maxTokens: 500,
+      systemPrompt: `Eres un analista de datos de responsabilidad sanitaria. ${rules}`,
+      userPrompt: normalizeText(`${context}
+
+Genera JSON con:
+- stats_es: array de EXACTAMENTE 4 objetos {value, label}. Estadísticas relevantes para mostrar en la barra del hero. Pueden ser locales (de la evidencia) o nacionales verificables. Ejemplo: {value: "55+", label: "Años de experiencia"}, {value: "${locality.name}", label: "Atención presencial y online"}.
+- stats_en: traducción al inglés.`),
+      validate: (r) => {
+        if (!Array.isArray(r.stats_es) || r.stats_es.length !== 4)
+          throw new Error('stats_es: exactamente 4');
+      },
+    },
+    {
+      name: 'banner_plazos',
+      maxTokens: 800,
+      systemPrompt: `Eres un abogado que informa sobre plazos de reclamación. ${rules}`,
+      userPrompt: normalizeText(`${context}
+
+Genera JSON con:
+- banner_plazos_es: texto HTML breve (2-4 frases) sobre plazos de reclamación por negligencia médica. Mencionar: 1 año desde el conocimiento del daño (vía civil), 1 año (vía administrativa). Usa <p>, <strong>. Sin clases ni estilos.
+- banner_plazos_en: traducción al inglés.`),
+      validate: (r) => {
+        if (!r.banner_plazos_es) throw new Error('Falta banner_plazos_es');
+      },
+    },
+  ];
 }
 
-function validateCustom(payload: BasePayload): void {
-  const custom = payload.custom_sections_es;
-  if (!custom || typeof custom !== 'object') {
-    throw new Error('custom_sections_es es obligatorio y debe ser un objeto');
-  }
-  if (!Array.isArray(custom.tipos_negligencia)) {
-    throw new Error('custom_sections_es debe incluir tipos_negligencia (array)');
-  }
-  if (!Array.isArray(custom.proceso_reclamacion)) {
-    throw new Error('custom_sections_es debe incluir proceso_reclamacion (array)');
-  }
-  if (custom.tipos_negligencia.length < 5) {
-    throw new Error('tipos_negligencia debe tener al menos 5 elementos');
-  }
-  if (custom.proceso_reclamacion.length !== 6) {
-    throw new Error('proceso_reclamacion debe tener exactamente 6 elementos');
-  }
-  if (Array.isArray(custom.stats) && custom.stats.length !== 4) {
-    throw new Error('stats debe tener exactamente 4 elementos');
-  }
+function assembleRow(results: Record<string, any>, locality: LocalityRow): Record<string, any> {
+  const seo = results.seo;
+  const intro = results.intro;
+  const tipos = results.tipos_negligencia;
+  const sections = results.sections;
+  const hospitales = results.hospitales;
+  const pf = results.process_faqs;
+  const stats = results.stats;
+  const banner = results.banner_plazos;
+
+  return {
+    title_es: seo.title_es,
+    title_en: seo.title_en,
+    meta_description_es: seo.meta_description_es,
+    meta_description_en: seo.meta_description_en,
+    short_description_es: seo.short_description_es,
+    short_description_en: seo.short_description_en,
+    intro_es: intro.intro_es,
+    intro_en: intro.intro_en,
+    stats_es: stats.stats_es,
+    stats_en: stats.stats_en,
+    tipos_negligencia_es: tipos.tipos_negligencia_es,
+    tipos_negligencia_en: tipos.tipos_negligencia_en,
+    sections_es: sections.sections_es,
+    sections_en: sections.sections_en,
+    hospitales_es: hospitales.hospitales_es,
+    hospitales_en: hospitales.hospitales_en,
+    process_es: pf.process_es,
+    process_en: pf.process_en,
+    faqs_es: pf.faqs_es,
+    faqs_en: pf.faqs_en,
+    banner_plazos_es: banner.banner_plazos_es,
+    banner_plazos_en: banner.banner_plazos_en,
+    content_quality_score: 80,
+  };
 }
 
-runGenerator({
+runMultiStepGenerator({
   serviceKey: SERVICE_KEY,
+  tableName: TABLE_NAME,
   buildSerpQueries,
-  buildSystemPrompt,
-  buildUserPrompt,
-  validateCustom,
+  buildSteps,
+  assembleRow,
+}).catch((err) => {
+  console.error('Error fatal:', err);
+  process.exit(1);
 });

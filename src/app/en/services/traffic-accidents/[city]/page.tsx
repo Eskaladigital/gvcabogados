@@ -28,11 +28,17 @@ export const dynamicParams = false;
 
 export async function generateStaticParams() {
   const { data } = await supabaseAdmin
-    .from('service_content')
-    .select('localities!inner(slug), services!inner(service_key)')
-    .eq('services.service_key', SERVICE_KEY);
+    .from('svc_accidentes_trafico')
+    .select('localities!inner(slug)');
 
-  if (!data || data.length === 0) return [{ city: 'murcia' }];
+  if (!data || data.length === 0) {
+    const { data: legacy } = await supabaseAdmin
+      .from('service_content')
+      .select('localities!inner(slug), services!inner(service_key)')
+      .eq('services.service_key', SERVICE_KEY);
+    if (!legacy || legacy.length === 0) return [{ city: 'murcia' }];
+    return legacy.map((row: any) => ({ city: row.localities.slug }));
+  }
   return data.map((row: any) => ({ city: row.localities.slug }));
 }
 

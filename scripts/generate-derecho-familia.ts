@@ -1,155 +1,213 @@
 /**
- * Generador de contenido para el servicio "Derecho de Familia".
- * Usa utilidades compartidas de ./lib/generate-utils y runGenerator().
+ * Generador multi-paso: Derecho de Familia
+ * Tabla destino: svc_derecho_familia
  *
- * Uso:
- *   tsx scripts/generate-derecho-familia.ts
+ * Cada campo de la tabla se genera con una llamada IA independiente.
+ * Esto garantiza máxima calidad por sección.
  *
- * Flags:
- *   --locality=<slug|all>   (default: all)
- *   --force=true|false      (default: false)
- *   --dry-run=true|false    (default: false)
- *   --limit=<n>             (default: 0 sin límite)
- *   --verbose=true|false    (default: true)
- *   --model=<openai_model>   (default: gpt-4.1)
- *   --max-tokens=<n>        (default: 4500)
+ * Uso: tsx scripts/generate-derecho-familia.ts --locality=murcia --force=true
  */
 
 import {
-  runGenerator,
+  runMultiStepGenerator,
   baseSerpQueries,
-  baseSystemPrompt,
+  baseRules,
+  formatEvidence,
+  countWords,
+  normalizeText,
   type LocalityRow,
   type ServiceRow,
   type EvidenceItem,
-  type BasePayload,
-  normalizeText,
+  type FieldStep,
 } from './lib/generate-utils';
 
 const SERVICE_KEY = 'derecho-familia';
+const TABLE_NAME = 'svc_derecho_familia';
 
 function buildSerpQueries(locality: LocalityRow): string[] {
-  const base = baseSerpQueries(locality);
-  const loc = locality.province ? `${locality.name} (${locality.province})` : locality.name;
   return [
-    ...base,
-    `Juzgado de Familia ${locality.name}`,
-    `Punto de Encuentro Familiar ${loc}`,
-    `mediación familiar ${locality.name} servicio`,
-    `Registro Civil ${locality.name} matrimonio divorcio`,
+    ...baseSerpQueries(locality),
+    `juzgados familia ${locality.name}`,
+    `mediación familiar ${locality.name}`,
+    `divorcio ${locality.name} abogados`,
+    `custodia hijos ${locality.name} juzgado`,
+    `régimen visitas ${locality.name}`,
+    `pensión alimentos ${locality.name}`,
+    `servicios sociales ${locality.name} familia`,
+    `SAF SATAF ${locality.name} punto encuentro familiar`,
   ];
 }
 
-function buildSystemPrompt(): string {
-  const base = baseSystemPrompt();
-  return base + normalizeText(`
-
-═══════════════════════════════════════════
-ESPECÍFICO: DERECHO DE FAMILIA
-═══════════════════════════════════════════
-
-TONO: Empático y comprensivo. Los asuntos de familia son emocionalmente sensibles. Escribe con calidez profesional, sin dramatizar ni minimizar. Evita lenguaje frío o burocrático cuando hables de custodia, divorcio o pensiones.
-
-custom_sections_es (OBLIGATORIO) — Estructura exacta:
-- areas: array de objetos {titulo, descripcion} — Áreas del derecho de familia: divorcios, custodia, pensiones, régimen de visitas, liquidación de bienes, mediación. Mínimo 5-6 áreas.
-- que_saber: array de objetos {paso, titulo, descripcion} — Consejos prácticos antes de iniciar un proceso familiar. Mínimo 4-5 pasos.
-- stats: array de objetos {value, label} — Exactamente 4 estadísticas localizadas (ej: "60%", "Plazos de divorcio"; "3 meses", "Mediación familiar").
-- intro: string (HTML opcional) — Introducción breve localizada para la sección de derecho de familia. Puede ser vacío "" si no aplica.
-
-PROHIBIDO: "consulta gratuita", "gratuita", "gratis". PERMITIDO: "primera consulta sin compromiso".
-`);
+function ctx(locality: LocalityRow, evidence: EvidenceItem[]): string {
+  return `CIUDAD: ${locality.name}\nPROVINCIA: ${locality.province || '(misma)'}\nSERVICIO: Derecho de Familia\n\n═══ EVIDENCIA SERP ═══\n${formatEvidence(evidence)}`;
 }
 
-function buildUserPrompt(
+function buildSteps(
   locality: LocalityRow,
-  service: ServiceRow,
+  _service: ServiceRow,
   evidence: EvidenceItem[],
-  existing: any
-): string {
-  const existingBlock = existing?.long_description_es
-    ? `CONTENIDO PREVIO (reescríbelo con enfoque fresco; NO copies estructuras ni frases):\n${existing.long_description_es}\n\n`
-    : '';
+  _existing: any
+): FieldStep[] {
+  const context = ctx(locality, evidence);
+  const rules = baseRules();
 
-  const evidenceText = evidence
-    .map(
-      (e, idx) =>
-        `#${idx + 1}\nquery: ${e.query}\ntitle: ${e.title}\nurl: ${e.link}\nsnippet: ${e.snippet}`.trim()
-    )
-    .join('\n\n');
+  return [
+    {
+      name: 'seo',
+      maxTokens: 1000,
+      systemPrompt: `Eres un experto SEO para despachos de abogados en España. ${rules}`,
+      userPrompt: normalizeText(`${context}
 
-  return normalizeText(`
-CONTEXTO:
-- Ciudad: ${locality.name}
-- Provincia: ${locality.province || '(misma)'}
-- Servicio: ${service.name_es} (clave: ${service.service_key})
-- Slug URL: abogados-${SERVICE_KEY}-${locality.slug}
+Genera JSON con:
+- title_es: título SEO (máx 65 chars). Patrón: "Abogados de Derecho de Familia en ${locality.name} | GVC Abogados"
+- meta_description_es: (máx 160 chars) con mención a la ciudad
+- short_description_es: (260-320 chars) resumen atractivo
+- title_en: traducción del title_es al inglés
+- meta_description_en: traducción
+- short_description_en: traducción`),
+      validate: (r) => {
+        if (!r.title_es || !r.meta_description_es) throw new Error('Faltan campos SEO');
+        if (r.meta_description_es.length > 180) throw new Error('meta_description_es > 180 chars');
+      },
+    },
+    {
+      name: 'intro',
+      maxTokens: 3500,
+      systemPrompt: `Eres un abogado-redactor especialista en derecho de familia. Redactas contenido web extenso, específico y humano para SEO. Tono empático y comprensivo. ${rules}`,
+      userPrompt: normalizeText(`${context}
 
-${existingBlock}
+Genera JSON con:
+- intro_es: HTML semántico (<p>, <strong>, <em>, <h3>). 800-1200 palabras. Texto introductorio completo sobre derecho de familia en ${locality.name}. Incluye: contexto local verificado (juzgados de familia, mediación, SAF/SATAF de la evidencia), tipos de asuntos familiares en la zona, relevancia del servicio, qué ofrece el despacho, procedimiento general. CTA: "Primera consulta sin compromiso" (NUNCA "consulta gratuita").
+- intro_en: traducción al inglés de intro_es. Misma longitud y estructura. CTA: "No-obligation initial consultation" (NUNCA "Free consultation").
+- banner_confidencialidad_es: texto HTML breve (2-4 frases) para banner de confidencialidad. Mensaje de discreción y protección de datos en asuntos familiares.
+- banner_confidencialidad_en: traducción al inglés.
 
-═══ EVIDENCIA SERP ═══
-Usa EXCLUSIVAMENTE esta evidencia para instituciones, direcciones y datos locales. Si no está aquí, NO EXISTE. No extrapoles, no inventes.
+Cuando no haya datos locales en evidencia: usa normativa real (CC, LEC, Ley de Enjuiciamiento Civil), plazos, procedimientos verificables.`),
+      validate: (r) => {
+        if (!r.intro_es) throw new Error('Falta intro_es');
+        const words = countWords(r.intro_es);
+        if (words < 500) throw new Error(`intro_es: ${words} palabras (mín 500)`);
+        if (!r.banner_confidencialidad_es) throw new Error('Falta banner_confidencialidad_es');
+      },
+    },
+    {
+      name: 'areas',
+      maxTokens: 2000,
+      systemPrompt: `Eres un abogado especialista en derecho de familia. ${rules}`,
+      userPrompt: normalizeText(`${context}
 
-${evidenceText || '(sin evidencia — sé completamente genérico en referencias locales)'}
+Genera JSON con:
+- areas_es: array de 4-6 objetos {titulo, descripcion, icon}. Áreas de actuación: divorcios, custodias, pensiones alimenticias, régimen de visitas, liquidación sociedad gananciales, medidas paterno-filiales. Descripciones de 2-3 frases. Menciona datos locales de la evidencia cuando existan. icon: "heart", "users", "money", "calendar", "scale", "shield".
+- areas_en: traducción al inglés.`),
+      validate: (r) => {
+        if (!Array.isArray(r.areas_es) || r.areas_es.length < 4) throw new Error('areas_es: mín 4');
+      },
+    },
+    {
+      name: 'sections',
+      maxTokens: 4000,
+      systemPrompt: `Eres un abogado-redactor de contenido jurídico de alta calidad. Cada sección debe ser sustancial (150+ palabras), con información jurídica real y específica. ${rules}`,
+      userPrompt: normalizeText(`${context}
 
-═══ QUÉ NECESITO (JSON exacto) ═══
+Genera JSON con:
+- sections_es: array de EXACTAMENTE 4 objetos {title, content}. content es HTML (mín 150 palabras cada uno). Secciones informativas sobre derecho de familia en ${locality.name}:
+  1. Mediación familiar (ventajas, cuándo procede, recursos locales de la evidencia)
+  2. Convenio regulador (contenido, homologación, efectos)
+  3. Custodia compartida (criterios, requisitos, práctica en juzgados locales)
+  4. Modificación de medidas (cambio de circunstancias, procedimiento)
+- sections_en: traducción al inglés.`),
+      validate: (r) => {
+        if (!Array.isArray(r.sections_es) || r.sections_es.length !== 4) throw new Error('sections_es: exactamente 4');
+      },
+    },
+    {
+      name: 'que_saber',
+      maxTokens: 2000,
+      systemPrompt: `Eres un abogado que asesora en procesos de familia. ${rules}`,
+      userPrompt: normalizeText(`${context}
 
-Devuelve un objeto JSON con estas claves:
+Genera JSON con:
+- que_saber_es: array de 5-7 objetos {paso, titulo, descripcion}. Aspectos a considerar antes y durante un proceso de familia en ${locality.name}. paso es "1","2"... Menciona recursos locales de la evidencia (juzgados, mediación, PEF, etc). Cada descripcion: 1-2 frases.
+- que_saber_en: traducción al inglés.`),
+      validate: (r) => {
+        if (!Array.isArray(r.que_saber_es) || r.que_saber_es.length < 5) throw new Error('que_saber_es: mín 5');
+      },
+    },
+    {
+      name: 'process_faqs',
+      maxTokens: 3000,
+      systemPrompt: `Eres un abogado especialista en derecho de familia que explica el proceso legal de forma clara. ${rules}`,
+      userPrompt: normalizeText(`${context}
 
-1. title_es (máx 65 caracteres)
-2. meta_description_es (máx 180 caracteres)
-3. short_description_es (260-320 caracteres)
-4. long_description_es (900-1400 palabras, HTML semántico: <h2>, <h3>, <p>, <strong>, <em>, <ul>/<ol>/<li>, <blockquote>)
-5. sections_es: EXACTAMENTE 4 objetos {title, content}. content en HTML semántico.
-6. process_es: EXACTAMENTE 6 strings (pasos del proceso)
-7. faqs_es: EXACTAMENTE 6 objetos {question, answer}. answer en HTML semántico.
-8. custom_sections_es: objeto con:
-   - areas: array de {titulo, descripcion} — áreas del derecho de familia (divorcios, custodia, pensiones, régimen visitas, liquidación bienes, mediación)
-   - que_saber: array de {paso, titulo, descripcion} — consejos prácticos antes de iniciar un proceso familiar
-   - stats: array de {value, label} — exactamente 4 estadísticas localizadas
-   - intro: string (HTML opcional, puede ser "")
-9. local_entities: array de entidades verificadas en evidencia (entity_type, name, source_url, address/phone/website/notes solo si en evidencia)
-10. quality: {score: 0-100, notes?: string}
+Genera JSON con:
+- process_es: array de EXACTAMENTE 6 strings. Pasos del proceso legal en asuntos de familia (texto plano, 1-2 frases cada uno).
+- process_en: traducción al inglés.
+- faqs_es: array de EXACTAMENTE 6 objetos {question, answer}. question en texto plano, answer en HTML. Preguntas frecuentes sobre derecho de familia en ${locality.name}. Respuestas sustanciales (3-5 frases).
+- faqs_en: traducción al inglés.`),
+      validate: (r) => {
+        if (!Array.isArray(r.process_es) || r.process_es.length !== 6) throw new Error('process_es: exactamente 6');
+        if (!Array.isArray(r.faqs_es) || r.faqs_es.length !== 6) throw new Error('faqs_es: exactamente 6');
+      },
+    },
+    {
+      name: 'stats',
+      maxTokens: 500,
+      systemPrompt: `Eres un analista de datos jurídicos. ${rules}`,
+      userPrompt: normalizeText(`${context}
 
-REGLAS:
-- Tono empático: los asuntos de familia son sensibles.
-- PROHIBIDO: "consulta gratuita", "gratuita", "gratis". OK: "primera consulta sin compromiso".
-- Solo datos que aparezcan LITERALMENTE en la evidencia.
-- Preguntas FAQ específicas de ${locality.name} cuando sea posible.
-`);
+Genera JSON con:
+- stats_es: array de EXACTAMENTE 4 objetos {value, label}. Estadísticas relevantes para mostrar en la barra del hero. Pueden ser locales (de la evidencia) o nacionales verificables. Ejemplo: {value: "55+", label: "Años de experiencia"}, {value: "${locality.name}", label: "Atención presencial y online"}.
+- stats_en: traducción al inglés.`),
+      validate: (r) => {
+        if (!Array.isArray(r.stats_es) || r.stats_es.length !== 4) throw new Error('stats_es: exactamente 4');
+      },
+    },
+  ];
 }
 
-function validateCustom(payload: BasePayload): void {
-  const custom = payload.custom_sections_es;
-  if (!custom || typeof custom !== 'object') {
-    throw new Error('custom_sections_es es obligatorio y debe ser un objeto');
-  }
-  if (!Array.isArray(custom.areas) || custom.areas.length === 0) {
-    throw new Error('custom_sections_es.areas es obligatorio y debe ser un array no vacío');
-  }
-  if (!Array.isArray(custom.que_saber) || custom.que_saber.length === 0) {
-    throw new Error('custom_sections_es.que_saber es obligatorio y debe ser un array no vacío');
-  }
-  for (const a of custom.areas) {
-    if (!a.titulo || !a.descripcion) {
-      throw new Error('custom_sections_es.areas: cada elemento debe tener titulo y descripcion');
-    }
-  }
-  for (const q of custom.que_saber) {
-    if (q.paso == null || !q.titulo || !q.descripcion) {
-      throw new Error('custom_sections_es.que_saber: cada elemento debe tener paso, titulo y descripcion');
-    }
-  }
+function assembleRow(results: Record<string, any>, locality: LocalityRow): Record<string, any> {
+  const seo = results.seo;
+  const intro = results.intro;
+  const areas = results.areas;
+  const sections = results.sections;
+  const queSaber = results.que_saber;
+  const pf = results.process_faqs;
+  const stats = results.stats;
+
+  return {
+    title_es: seo.title_es,
+    title_en: seo.title_en,
+    meta_description_es: seo.meta_description_es,
+    meta_description_en: seo.meta_description_en,
+    short_description_es: seo.short_description_es,
+    short_description_en: seo.short_description_en,
+    intro_es: intro.intro_es,
+    intro_en: intro.intro_en,
+    banner_confidencialidad_es: intro.banner_confidencialidad_es,
+    banner_confidencialidad_en: intro.banner_confidencialidad_en,
+    stats_es: stats.stats_es,
+    stats_en: stats.stats_en,
+    areas_es: areas.areas_es,
+    areas_en: areas.areas_en,
+    sections_es: sections.sections_es,
+    sections_en: sections.sections_en,
+    que_saber_es: queSaber.que_saber_es,
+    que_saber_en: queSaber.que_saber_en,
+    process_es: pf.process_es,
+    process_en: pf.process_en,
+    faqs_es: pf.faqs_es,
+    faqs_en: pf.faqs_en,
+    content_quality_score: 80,
+  };
 }
 
-const config = {
+runMultiStepGenerator({
   serviceKey: SERVICE_KEY,
+  tableName: TABLE_NAME,
   buildSerpQueries,
-  buildSystemPrompt,
-  buildUserPrompt,
-  validateCustom,
-};
-
-runGenerator(config).catch((err) => {
+  buildSteps,
+  assembleRow,
+}).catch((err) => {
   console.error('Error fatal:', err);
   process.exit(1);
 });

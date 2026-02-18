@@ -30,7 +30,33 @@ export interface ServiceContent {
   customSectionsEn: Record<string, any> | null;
 }
 
-/** Convierte slug de ciudad a nombre legible con tildes y mayúsculas correctas. */
+const SERVICE_TABLE_MAP: Record<string, string> = {
+  'accidentes-trafico': 'svc_accidentes_trafico',
+  'derecho-familia': 'svc_derecho_familia',
+  'negligencias-medicas': 'svc_negligencias_medicas',
+  'extranjeria': 'svc_permisos_residencia',
+  'derecho-administrativo': 'svc_responsabilidad_admin',
+  'responsabilidad-civil': 'svc_responsabilidad_civil',
+};
+
+const SERVICE_NAME_MAP: Record<string, { es: string; en: string }> = {
+  'accidentes-trafico': { es: 'Accidentes de Tráfico', en: 'Traffic Accidents' },
+  'derecho-familia': { es: 'Derecho de Familia', en: 'Family Law' },
+  'negligencias-medicas': { es: 'Negligencias Médicas', en: 'Medical Malpractice' },
+  'extranjeria': { es: 'Extranjería e Inmigración', en: 'Immigration Law' },
+  'derecho-administrativo': { es: 'Derecho Administrativo', en: 'Administrative Law' },
+  'responsabilidad-civil': { es: 'Responsabilidad Civil y Seguros', en: 'Civil Liability and Insurance' },
+};
+
+const CUSTOM_FIELDS_MAP: Record<string, string[]> = {
+  'svc_accidentes_trafico': ['tipos_accidente', 'que_hacer', 'banner_baremo', 'stats'],
+  'svc_derecho_familia': ['areas', 'que_saber', 'banner_confidencialidad', 'stats'],
+  'svc_negligencias_medicas': ['tipos_negligencia', 'hospitales', 'banner_plazos', 'stats'],
+  'svc_permisos_residencia': ['tipos_permiso', 'documentacion', 'banner_oficina', 'stats'],
+  'svc_responsabilidad_admin': ['tipos_responsabilidad', 'organismos', 'banner_plazos', 'stats'],
+  'svc_responsabilidad_civil': ['tipos_responsabilidad', 'plazos_prescripcion', 'banner_conceptos', 'stats'],
+};
+
 function slugToCityName(slug: string): string {
   const map: Record<string, string> = {
     'a-coruna': 'A Coruña', 'aguilas': 'Águilas', 'albacete': 'Albacete',
@@ -84,27 +110,145 @@ function slugToCityName(slug: string): string {
     'vitoria-gasteiz': 'Vitoria-Gasteiz', 'yecla': 'Yecla', 'zaragoza': 'Zaragoza',
   };
   if (map[slug.toLowerCase()]) return map[slug.toLowerCase()];
-  // Genérico: capitalizar cada palabra separada por guiones
   return slug.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
 }
 
+function buildCustomSections(row: any, tableName: string, locale: 'es' | 'en'): Record<string, any> | null {
+  const fields = CUSTOM_FIELDS_MAP[tableName];
+  if (!fields) return null;
+
+  const result: Record<string, any> = {};
+  let hasData = false;
+  for (const field of fields) {
+    const col = `${field}_${locale}`;
+    if (row[col] != null) {
+      result[field] = row[col];
+      hasData = true;
+    }
+  }
+  return hasData ? result : null;
+}
+
+function mapServiceTableRow(row: any, serviceKey: string, tableName: string): ServiceContent {
+  const names = SERVICE_NAME_MAP[serviceKey] || { es: serviceKey, en: serviceKey };
+  const localityName = row.localities?.name || slugToCityName(row.slug_es?.split('/').pop() || '');
+  const localitySlug = row.localities?.slug || '';
+
+  return {
+    id: row.id,
+    serviceId: serviceKey,
+    serviceKey,
+    serviceNameEs: names.es,
+    serviceNameEn: names.en,
+    localityId: row.locality_id,
+    localityName,
+    localitySlug,
+    slugEs: row.slug_es,
+    slugEn: row.slug_en,
+    titleEs: row.title_es,
+    metaDescriptionEs: row.meta_description_es,
+    shortDescriptionEs: row.short_description_es,
+    longDescriptionEs: row.intro_es,
+    sectionsEs: (row.sections_es as any) || [],
+    processEs: (row.process_es as any) || [],
+    faqsEs: (row.faqs_es as any) || [],
+    customSectionsEs: buildCustomSections(row, tableName, 'es'),
+    titleEn: row.title_en,
+    metaDescriptionEn: row.meta_description_en,
+    shortDescriptionEn: row.short_description_en,
+    longDescriptionEn: row.intro_en,
+    sectionsEn: (row.sections_en as any) || null,
+    processEn: (row.process_en as any) || null,
+    faqsEn: (row.faqs_en as any) || null,
+    customSectionsEn: buildCustomSections(row, tableName, 'en'),
+  };
+}
+
 /**
- * Fallback: contenido desde datos estáticos cuando Supabase falla.
- * Soporta slugs tipo "abogados-{service}-{city}" para cualquier ciudad,
- * incluyendo ciudades multi-palabra como "alcala-de-henares".
+ * Fetches from the service-specific table. Falls back to legacy service_content.
  */
+export async function getServiceContentByServiceAndCity(
+  serviceKey: string,
+  citySlug: string
+): Promise<ServiceContent | null> {
+  const tableName = SERVICE_TABLE_MAP[serviceKey];
+
+  if (tableName) {
+    const { data, error } = await supabaseAdmin
+      .from(tableName)
+      .select('*, localities!inner(name, slug)')
+      .eq('localities.slug', citySlug)
+      .maybeSingle();
+
+    if (!error && data) {
+      return mapServiceTableRow(data, serviceKey, tableName);
+    }
+  }
+
+  return getServiceContentLegacy(serviceKey, citySlug);
+}
+
+async function getServiceContentLegacy(
+  serviceKey: string,
+  citySlug: string
+): Promise<ServiceContent | null> {
+  const { data, error } = await supabaseAdmin
+    .from('service_content')
+    .select(`
+      id, service_id, locality_id, slug_es, slug_en,
+      title_es, meta_description_es, short_description_es, long_description_es,
+      sections_es, process_es, faqs_es, custom_sections_es,
+      title_en, meta_description_en, short_description_en, long_description_en,
+      sections_en, process_en, faqs_en, custom_sections_en,
+      services!inner ( service_key, name_es, name_en ),
+      localities!inner ( name, slug )
+    `)
+    .eq('services.service_key', serviceKey)
+    .eq('localities.slug', citySlug)
+    .maybeSingle();
+
+  if (error || !data) {
+    const legacySlug = `abogados-${serviceKey}-${citySlug}`;
+    return getServiceContentFromStatic(legacySlug);
+  }
+
+  return {
+    id: data.id,
+    serviceId: data.service_id,
+    serviceKey: (data.services as any).service_key,
+    serviceNameEs: (data.services as any).name_es,
+    serviceNameEn: (data.services as any).name_en,
+    localityId: data.locality_id,
+    localityName: (data.localities as any).name,
+    localitySlug: (data.localities as any).slug,
+    slugEs: data.slug_es,
+    slugEn: data.slug_en,
+    titleEs: data.title_es,
+    metaDescriptionEs: data.meta_description_es,
+    shortDescriptionEs: data.short_description_es,
+    longDescriptionEs: data.long_description_es,
+    sectionsEs: (data.sections_es as any) || [],
+    processEs: (data.process_es as any) || [],
+    faqsEs: (data.faqs_es as any) || [],
+    customSectionsEs: (data.custom_sections_es as any) || null,
+    titleEn: data.title_en,
+    metaDescriptionEn: data.meta_description_en,
+    shortDescriptionEn: data.short_description_en,
+    longDescriptionEn: data.long_description_en,
+    sectionsEn: (data.sections_en as any) || null,
+    processEn: (data.process_en as any) || null,
+    faqsEn: (data.faqs_en as any) || null,
+    customSectionsEn: (data.custom_sections_en as any) || null,
+  };
+}
+
 function getServiceContentFromStatic(slug: string): ServiceContent | null {
-  // 1. Match exacto (Murcia)
   let svc = staticServices.find((s) => s.slugEs === slug || s.slugEn === slug);
   let cityName = 'Murcia';
   let citySlug = 'murcia';
 
-  // 2. Parsear "abogados-{serviceKey}-{citySlug}" para otras ciudades.
-  //    Recorremos los IDs de servicios estáticos y comprobamos si el slug
-  //    empieza por "abogados-{id}-", de modo que el resto sea la ciudad
-  //    (funciona con ciudades multi-palabra como "alcala-de-henares").
   if (!svc && slug.startsWith('abogados-')) {
-    const rest = slug.slice(9); // quitar "abogados-"
+    const rest = slug.slice(9);
     for (const s of staticServices) {
       const prefix = s.id + '-';
       if (rest.startsWith(prefix) && rest.length > prefix.length) {
@@ -167,10 +311,6 @@ function getServiceContentFromStatic(slug: string): ServiceContent | null {
   };
 }
 
-/**
- * Busca contenido de servicio por slug_es en Supabase.
- * Si falla, usa datos estáticos como fallback.
- */
 export async function getServiceContentBySlug(slug: string): Promise<ServiceContent | null> {
   const { data, error } = await supabaseAdmin
     .from('service_content')
@@ -223,66 +363,6 @@ export async function getServiceContentBySlug(slug: string): Promise<ServiceCont
   };
 }
 
-/**
- * Busca contenido por service_key + locality_slug (para la nueva ruta /servicios/[slug]/[ciudad]).
- */
-export async function getServiceContentByServiceAndCity(
-  serviceKey: string,
-  citySlug: string
-): Promise<ServiceContent | null> {
-  const { data, error } = await supabaseAdmin
-    .from('service_content')
-    .select(`
-      id, service_id, locality_id, slug_es, slug_en,
-      title_es, meta_description_es, short_description_es, long_description_es,
-      sections_es, process_es, faqs_es, custom_sections_es,
-      title_en, meta_description_en, short_description_en, long_description_en,
-      sections_en, process_en, faqs_en, custom_sections_en,
-      services!inner ( service_key, name_es, name_en ),
-      localities!inner ( name, slug )
-    `)
-    .eq('services.service_key', serviceKey)
-    .eq('localities.slug', citySlug)
-    .maybeSingle();
-
-  if (error || !data) {
-    const legacySlug = `abogados-${serviceKey}-${citySlug}`;
-    return getServiceContentFromStatic(legacySlug);
-  }
-
-  return {
-    id: data.id,
-    serviceId: data.service_id,
-    serviceKey: (data.services as any).service_key,
-    serviceNameEs: (data.services as any).name_es,
-    serviceNameEn: (data.services as any).name_en,
-    localityId: data.locality_id,
-    localityName: (data.localities as any).name,
-    localitySlug: (data.localities as any).slug,
-    slugEs: data.slug_es,
-    slugEn: data.slug_en,
-    titleEs: data.title_es,
-    metaDescriptionEs: data.meta_description_es,
-    shortDescriptionEs: data.short_description_es,
-    longDescriptionEs: data.long_description_es,
-    sectionsEs: (data.sections_es as any) || [],
-    processEs: (data.process_es as any) || [],
-    faqsEs: (data.faqs_es as any) || [],
-    customSectionsEs: (data.custom_sections_es as any) || null,
-    titleEn: data.title_en,
-    metaDescriptionEn: data.meta_description_en,
-    shortDescriptionEn: data.short_description_en,
-    longDescriptionEn: data.long_description_en,
-    sectionsEn: (data.sections_en as any) || null,
-    processEn: (data.process_en as any) || null,
-    faqsEn: (data.faqs_en as any) || null,
-    customSectionsEn: (data.custom_sections_en as any) || null,
-  };
-}
-
-/**
- * Obtiene todas las combinaciones servicio+ciudad para generateStaticParams de [slug]/[ciudad].
- */
 export async function getAllServiceCityParams(): Promise<{ slug: string; ciudad: string }[]> {
   const { data, error } = await supabaseAdmin
     .from('service_content')
@@ -299,10 +379,6 @@ export async function getAllServiceCityParams(): Promise<{ slug: string; ciudad:
   }));
 }
 
-/**
- * Obtiene todos los slugs_es activos desde Supabase para generateStaticParams.
- * Si Supabase falla, usa slugs de datos estáticos como fallback.
- */
 export async function getAllServiceContentSlugs(): Promise<{ slug: string }[]> {
   const { data, error } = await supabaseAdmin
     .from('service_content')

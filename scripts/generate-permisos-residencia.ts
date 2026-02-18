@@ -1,181 +1,223 @@
 /**
- * Generador de contenido para el servicio "Permisos de Residencia" (extranjería).
- * Usa utilidades compartidas de ./lib/generate-utils y runGenerator().
+ * Generador multi-paso: Permisos de Residencia / Extranjería
+ * Tabla destino: svc_permisos_residencia
  *
- * IMPORTANTE: El serviceKey en Supabase es 'extranjeria', no 'permisos-residencia'.
+ * Cada campo de la tabla se genera con una llamada IA independiente.
+ * Esto garantiza máxima calidad por sección.
  *
- * Uso:
- *   tsx scripts/generate-permisos-residencia.ts
- *
- * Flags:
- *   --locality=<slug|all>   (default: all)
- *   --force=true|false      (default: false)
- *   --dry-run=true|false    (default: false)
- *   --limit=<n>             (default: 0 sin límite)
- *   --verbose=true|false    (default: true)
- *   --model=<openai_model>   (default: gpt-4.1)
- *   --max-tokens=<n>        (default: 4500)
+ * Uso: tsx scripts/generate-permisos-residencia.ts --locality=murcia --force=true
  */
 
 import {
-  runGenerator,
+  runMultiStepGenerator,
   baseSerpQueries,
-  baseSystemPrompt,
+  baseRules,
+  formatEvidence,
+  countWords,
+  normalizeText,
   type LocalityRow,
   type ServiceRow,
   type EvidenceItem,
-  type BasePayload,
-  normalizeText,
+  type FieldStep,
 } from './lib/generate-utils';
 
 const SERVICE_KEY = 'extranjeria';
+const TABLE_NAME = 'svc_permisos_residencia';
 
 function buildSerpQueries(locality: LocalityRow): string[] {
-  const base = baseSerpQueries(locality);
-  const specific = [
-    `Oficina de Extranjería ${locality.name}`,
-    `cita previa extranjería ${locality.name}`,
-    `comisaría expedición TIE ${locality.name}`,
-    `Subdelegación del Gobierno ${locality.name}`,
-    `ONG ayuda inmigrantes ${locality.name}`,
+  return [
+    ...baseSerpQueries(locality),
+    `oficina extranjería ${locality.name}`,
+    `delegación gobierno ${locality.name}`,
+    `NIE ${locality.name}`,
+    `empadronamiento ${locality.name}`,
+    `consulado ${locality.name}`,
+    `arraigo social ${locality.name}`,
   ];
-  return [...base, ...specific];
 }
 
-function buildSystemPrompt(): string {
-  const base = baseSystemPrompt();
-  const extension = normalizeText(`
-═══════════════════════════════════════════
-ESPECÍFICO: PERMISOS DE RESIDENCIA / EXTRANJERÍA
-═══════════════════════════════════════════
-
-TONO: Útil, práctico y comprensivo con la complejidad de los procesos de inmigración. Los trámites de extranjería son exigentes y a menudo confusos. Escribe con claridad, orientación práctica y empatía hacia las personas que buscan regularizar su situación.
-
-CUSTOM_SECTIONS_ES (obligatorio para este servicio):
-
-Debes incluir en custom_sections_es exactamente estas claves:
-
-1. tipos_permiso: array de objetos {titulo, descripcion, icon}
-   - Tipos de permisos de residencia más habituales.
-   - Incluir: arraigo social, arraigo laboral, residencia no lucrativa, reagrupación familiar, trabajo por cuenta ajena, estudiante.
-   - icon: nombre de icono (ej: "home", "briefcase", "wallet", "family", "user", "graduation").
-   - Mínimo 5, máximo 6 elementos.
-
-2. documentacion: array de objetos {paso, titulo, descripcion}
-   - Documentación requerida y pasos para tramitar permisos de residencia.
-   - paso: número (1, 2, 3...).
-   - titulo: título breve del paso.
-   - descripcion: texto explicativo.
-   - Mínimo 5, máximo 7 elementos.
-
-3. stats: array de objetos {value, label}
-   - Estadísticas relevantes sobre inmigración y permisos de residencia en España.
-   - Exactamente 4 elementos.
-   - value: número o texto (ej: "85%", "500.000").
-   - label: descripción breve.
-
-4. intro: string (HTML, opcional)
-   - Texto introductorio localizado para la ciudad.
-   - Usa <p>, <strong>, <em>. Sin clases ni estilos.
-
-PROHIBIDO: "consulta gratuita", "gratuita", "gratis". PERMITIDO: "primera consulta sin compromiso".
-`);
-  return `${base}\n\n${extension}`;
+function ctx(locality: LocalityRow, evidence: EvidenceItem[]): string {
+  return `CIUDAD: ${locality.name}\nPROVINCIA: ${locality.province || '(misma)'}\nSERVICIO: Permisos de Residencia / Extranjería\n\n═══ EVIDENCIA SERP ═══\n${formatEvidence(evidence)}`;
 }
 
-function buildUserPrompt(
+function buildSteps(
   locality: LocalityRow,
-  service: ServiceRow,
+  _service: ServiceRow,
   evidence: EvidenceItem[],
-  existing: any
-): string {
-  const evidenceText = evidence
-    .map((e, idx) => `#${idx + 1}\nquery: ${e.query}\ntitle: ${e.title}\nurl: ${e.link}\nsnippet: ${e.snippet}`.trim())
-    .join('\n\n');
+  _existing: any
+): FieldStep[] {
+  const context = ctx(locality, evidence);
+  const rules = baseRules();
 
-  const existingBlock = existing?.long_description_es
-    ? `\nCONTENIDO PREVIO (reescríbelo con enfoque fresco; NO copies estructuras):\n${existing.long_description_es}\n`
-    : '';
+  return [
+    {
+      name: 'seo',
+      maxTokens: 1000,
+      systemPrompt: `Eres un experto SEO para despachos de abogados en España. ${rules}`,
+      userPrompt: normalizeText(`${context}
 
-  return normalizeText(`
-CONTEXTO:
-- Ciudad: ${locality.name}
-- Provincia: ${locality.province || '(misma)'}
-- Servicio: ${service.name_es} (${service.service_key})
+Genera JSON con:
+- title_es: título SEO (máx 65 chars). Patrón: "Abogados de Extranjería en ${locality.name} | GVC Abogados"
+- meta_description_es: (máx 160 chars) con mención a la ciudad
+- short_description_es: (260-320 chars) resumen atractivo
+- title_en: traducción del title_es al inglés
+- meta_description_en: traducción
+- short_description_en: traducción`),
+      validate: (r) => {
+        if (!r.title_es || !r.meta_description_es) throw new Error('Faltan campos SEO');
+        if (r.meta_description_es.length > 180) throw new Error('meta_description_es > 180 chars');
+      },
+    },
+    {
+      name: 'intro',
+      maxTokens: 3500,
+      systemPrompt: `Eres un abogado-redactor especialista en extranjería e inmigración. Redactas contenido web extenso, específico y humano para SEO. ${rules}`,
+      userPrompt: normalizeText(`${context}
 
-${existingBlock}
+Genera JSON con:
+- intro_es: HTML semántico (<p>, <strong>, <em>, <h3>). 800-1200 palabras. Texto introductorio completo sobre permisos de residencia y extranjería en ${locality.name}. Incluye: contexto local verificado (oficina de extranjería, delegación de gobierno de la evidencia), tipos de permisos más solicitados en la zona, relevancia del servicio, qué ofrece el despacho, procedimiento general de tramitación. CTA: "Primera consulta sin compromiso" (NUNCA "consulta gratuita").
+- intro_en: traducción al inglés de intro_es. Misma longitud y estructura. CTA: "No-obligation initial consultation" (NUNCA "Free consultation").
+- banner_oficina_es: texto HTML breve (2-4 frases) sobre la oficina de extranjería local o delegación de gobierno en ${locality.name}. Información práctica para el ciudadano extranjero. Usa <p>, <strong>. Sin clases ni estilos.
+- banner_oficina_en: traducción al inglés.
 
-═══ EVIDENCIA SERP ═══
-Usa EXCLUSIVAMENTE esta evidencia para extraer instituciones, direcciones y datos locales.
-Todo lo que no esté aquí, NO EXISTE. No extrapoles, no deduzcas, no inventes.
+Cuando no haya datos locales en evidencia: usa normativa real (Ley Orgánica 4/2000, Reglamento de Extranjería RD 557/2011), plazos, procedimientos verificables.`),
+      validate: (r) => {
+        if (!r.intro_es) throw new Error('Falta intro_es');
+        const words = countWords(r.intro_es);
+        if (words < 500) throw new Error(`intro_es: ${words} palabras (mín 500)`);
+        if (!r.banner_oficina_es) throw new Error('Falta banner_oficina_es');
+      },
+    },
+    {
+      name: 'tipos_permiso',
+      maxTokens: 2000,
+      systemPrompt: `Eres un abogado especialista en extranjería e inmigración en España. ${rules}`,
+      userPrompt: normalizeText(`${context}
 
-${evidenceText || '(sin evidencia — sé completamente genérico en referencias locales)'}
+Genera JSON con:
+- tipos_permiso_es: array de EXACTAMENTE 6 objetos {titulo, descripcion, icon}. Tipos de permisos de residencia:
+  1. Arraigo social (3 años residencia + contrato/medios)
+  2. Arraigo familiar (padre de menor español o hijo de residente)
+  3. Arraigo laboral (2 años residencia + relación laboral acreditada)
+  4. Residencia comunitaria (familiar de ciudadano UE)
+  5. Reagrupación familiar (requisitos, familiares reagrupables)
+  6. Renovaciones (plazos, requisitos para renovar permisos)
+  Descripciones de 2-3 frases con normativa real. Menciona datos locales de la evidencia cuando existan. icon: "home", "users", "briefcase", "flag", "heart", "refresh".
+- tipos_permiso_en: traducción al inglés.`),
+      validate: (r) => {
+        if (!Array.isArray(r.tipos_permiso_es) || r.tipos_permiso_es.length < 6)
+          throw new Error('tipos_permiso_es: mín 6');
+      },
+    },
+    {
+      name: 'sections',
+      maxTokens: 4000,
+      systemPrompt: `Eres un abogado-redactor de contenido jurídico de alta calidad. Cada sección debe ser sustancial (150+ palabras), con información jurídica real y específica. ${rules}`,
+      userPrompt: normalizeText(`${context}
 
-═══ ESTRUCTURA JSON REQUERIDA ═══
+Genera JSON con:
+- sections_es: array de EXACTAMENTE 4 objetos {title, content}. content es HTML (mín 150 palabras cada uno). Secciones informativas sobre permisos de residencia en ${locality.name}:
+  1. Arraigo social: requisitos y procedimiento (3 años, empadronamiento, contrato, informe de integración social)
+  2. Reagrupación familiar (quién puede reagrupar, requisitos económicos, vivienda adecuada)
+  3. Renovación de permisos (plazos: 60 días antes / 90 días después, documentación necesaria)
+  4. Recursos ante denegaciones (reposición, contencioso-administrativo, plazos)
+- sections_en: traducción al inglés.`),
+      validate: (r) => {
+        if (!Array.isArray(r.sections_es) || r.sections_es.length !== 4)
+          throw new Error('sections_es: exactamente 4');
+      },
+    },
+    {
+      name: 'documentacion',
+      maxTokens: 2000,
+      systemPrompt: `Eres un abogado que asesora a extranjeros sobre documentación para permisos de residencia en España. ${rules}`,
+      userPrompt: normalizeText(`${context}
 
-Devuelve un JSON con estas claves exactas:
+Genera JSON con:
+- documentacion_es: array de 5-7 objetos {paso, titulo, descripcion}. Documentación y pasos necesarios para tramitar un permiso de residencia en ${locality.name}. paso es "1","2"... Menciona recursos locales de la evidencia (oficina de extranjería, delegación de gobierno, empadronamiento, etc). Cada descripcion: 1-2 frases. Incluir: empadronamiento, pasaporte vigente, antecedentes penales, informe de arraigo, contrato de trabajo, seguro médico, medios económicos.
+- documentacion_en: traducción al inglés.`),
+      validate: (r) => {
+        if (!Array.isArray(r.documentacion_es) || r.documentacion_es.length < 5)
+          throw new Error('documentacion_es: mín 5');
+      },
+    },
+    {
+      name: 'process_faqs',
+      maxTokens: 3000,
+      systemPrompt: `Eres un abogado especialista en extranjería que explica el proceso legal de forma clara. ${rules}`,
+      userPrompt: normalizeText(`${context}
 
-- title_es (máx 65 caracteres)
-- meta_description_es (máx 180 caracteres)
-- short_description_es (260-320 caracteres)
-- long_description_es (HTML semántico: <h2>, <h3>, <p>, <strong>, <em>, <ul>/<ol>/<li>, <blockquote>)
-- sections_es: EXACTAMENTE 4 objetos {title, content} — content en HTML
-- process_es: EXACTAMENTE 6 strings (pasos del proceso)
-- faqs_es: EXACTAMENTE 6 objetos {question, answer} — answer en HTML
-- custom_sections_es: objeto con:
-  - tipos_permiso: array de {titulo, descripcion, icon}
-  - documentacion: array de {paso, titulo, descripcion}
-  - stats: array de {value, label} (4 elementos)
-  - intro: string HTML opcional
-- local_entities: array (solo entidades con nombre EXACTO en evidencia)
-- quality: {score: 0-100, notes?: string}
+Genera JSON con:
+- process_es: array de EXACTAMENTE 6 strings. Pasos del proceso legal de tramitación de permisos de residencia (texto plano, 1-2 frases cada uno).
+- process_en: traducción al inglés.
+- faqs_es: array de EXACTAMENTE 6 objetos {question, answer}. question en texto plano, answer en HTML. Preguntas frecuentes sobre permisos de residencia y extranjería en ${locality.name}. Respuestas sustanciales (3-5 frases).
+- faqs_en: traducción al inglés.`),
+      validate: (r) => {
+        if (!Array.isArray(r.process_es) || r.process_es.length !== 6)
+          throw new Error('process_es: exactamente 6');
+        if (!Array.isArray(r.faqs_es) || r.faqs_es.length !== 6)
+          throw new Error('faqs_es: exactamente 6');
+      },
+    },
+    {
+      name: 'stats',
+      maxTokens: 500,
+      systemPrompt: `Eres un analista de datos de inmigración y extranjería. ${rules}`,
+      userPrompt: normalizeText(`${context}
 
-REGLAS:
-- PROHIBIDO: "consulta gratuita", "gratuita", "gratis". Permitido: "primera consulta sin compromiso".
-- sections_es, process_es y faqs_es deben ser específicos de permisos de residencia y extranjería en ${locality.name}.
-- custom_sections_es es OBLIGATORIO con tipos_permiso y documentacion.
-- Tono: útil, práctico, comprensivo con la complejidad de los procesos de inmigración.
-`);
+Genera JSON con:
+- stats_es: array de EXACTAMENTE 4 objetos {value, label}. Estadísticas relevantes para mostrar en la barra del hero. Pueden ser locales (de la evidencia) o nacionales verificables. Ejemplo: {value: "55+", label: "Años de experiencia"}, {value: "${locality.name}", label: "Atención presencial y online"}.
+- stats_en: traducción al inglés.`),
+      validate: (r) => {
+        if (!Array.isArray(r.stats_es) || r.stats_es.length !== 4)
+          throw new Error('stats_es: exactamente 4');
+      },
+    },
+  ];
 }
 
-function validateCustom(payload: BasePayload): void {
-  if (!Array.isArray(payload.sections_es) || payload.sections_es.length !== 4) {
-    throw new Error('sections_es debe tener exactamente 4 secciones');
-  }
-  if (!Array.isArray(payload.process_es) || payload.process_es.length !== 6) {
-    throw new Error('process_es debe tener exactamente 6 pasos');
-  }
-  if (!Array.isArray(payload.faqs_es) || payload.faqs_es.length !== 6) {
-    throw new Error('faqs_es debe tener exactamente 6 FAQs');
-  }
+function assembleRow(results: Record<string, any>, locality: LocalityRow): Record<string, any> {
+  const seo = results.seo;
+  const intro = results.intro;
+  const tipos = results.tipos_permiso;
+  const sections = results.sections;
+  const documentacion = results.documentacion;
+  const pf = results.process_faqs;
+  const stats = results.stats;
 
-  const custom = payload.custom_sections_es;
-  if (!custom || typeof custom !== 'object') {
-    throw new Error('custom_sections_es es obligatorio y debe ser un objeto');
-  }
-  if (!Array.isArray(custom.tipos_permiso)) {
-    throw new Error('custom_sections_es debe incluir tipos_permiso (array)');
-  }
-  if (!Array.isArray(custom.documentacion)) {
-    throw new Error('custom_sections_es debe incluir documentacion (array)');
-  }
-  if (custom.tipos_permiso.length < 5) {
-    throw new Error('tipos_permiso debe tener al menos 5 elementos');
-  }
-  if (custom.documentacion.length < 5) {
-    throw new Error('documentacion debe tener al menos 5 elementos');
-  }
-  if (Array.isArray(custom.stats) && custom.stats.length !== 4) {
-    throw new Error('stats debe tener exactamente 4 elementos');
-  }
+  return {
+    title_es: seo.title_es,
+    title_en: seo.title_en,
+    meta_description_es: seo.meta_description_es,
+    meta_description_en: seo.meta_description_en,
+    short_description_es: seo.short_description_es,
+    short_description_en: seo.short_description_en,
+    intro_es: intro.intro_es,
+    intro_en: intro.intro_en,
+    banner_oficina_es: intro.banner_oficina_es,
+    banner_oficina_en: intro.banner_oficina_en,
+    stats_es: stats.stats_es,
+    stats_en: stats.stats_en,
+    tipos_permiso_es: tipos.tipos_permiso_es,
+    tipos_permiso_en: tipos.tipos_permiso_en,
+    sections_es: sections.sections_es,
+    sections_en: sections.sections_en,
+    documentacion_es: documentacion.documentacion_es,
+    documentacion_en: documentacion.documentacion_en,
+    process_es: pf.process_es,
+    process_en: pf.process_en,
+    faqs_es: pf.faqs_es,
+    faqs_en: pf.faqs_en,
+    content_quality_score: 80,
+  };
 }
 
-runGenerator({
+runMultiStepGenerator({
   serviceKey: SERVICE_KEY,
+  tableName: TABLE_NAME,
   buildSerpQueries,
-  buildSystemPrompt,
-  buildUserPrompt,
-  validateCustom,
+  buildSteps,
+  assembleRow,
 }).catch((err) => {
   console.error('Error fatal:', err);
   process.exit(1);
