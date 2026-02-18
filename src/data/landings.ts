@@ -33,7 +33,7 @@ export const landingPages: LandingPage[] = [
     titleEs: 'Abogados Accidentes de Tráfico en Alicante | GVC Abogados',
     titleEn: 'Traffic Accident Lawyers in Alicante | GVC Lawyers',
     metaDescriptionEs:
-      'Abogados especializados en accidentes de tráfico en Alicante. Expertos en el baremo de tráfico. Reclamamos tu indemnización. Consulta gratuita. ☎ 968 241 025.',
+      'Abogados especializados en accidentes de tráfico en Alicante. Expertos en el baremo de tráfico. Reclamamos tu indemnización. Primera consulta sin compromiso. ☎ 968 241 025.',
     metaDescriptionEn:
       'Specialized traffic accident lawyers for Alicante. Experts in the traffic injury scale. We claim your compensation. Free consultation. ☎ +34 968 241 025.',
     h1Es: 'Abogados de Accidentes de Tráfico en Alicante',
@@ -51,7 +51,7 @@ export const landingPages: LandingPage[] = [
       'Atención presencial y por videoconferencia para clientes de Alicante',
       'Tramitación ante juzgados de Alicante y Murcia',
       'Coordinación con peritos médicos en la provincia de Alicante',
-      'Primera consulta gratuita sin compromiso',
+      'Primera consulta sin compromiso sin compromiso',
       'Solo cobramos si ganamos su caso',
     ],
     advantagesEn: [
@@ -89,7 +89,7 @@ export const landingPages: LandingPage[] = [
       'Conocimiento de los juzgados de Cartagena y sus particularidades',
       'Experiencia en accidentes en A-30, carreteras de La Manga y zona portuaria',
       'Red de peritos médicos en Cartagena y comarca',
-      'Primera consulta gratuita presencial o por videoconferencia',
+      'Primera consulta sin compromiso presencial o por videoconferencia',
       'Más de 75 años de experiencia en la Región de Murcia',
     ],
     advantagesEn: [
@@ -128,7 +128,7 @@ export const landingPages: LandingPage[] = [
       'Coordinación con procuradores en Juzgados de Familia de Madrid',
       'Experiencia con divorcios que implican bienes en varias comunidades autónomas',
       'Divorcio de mutuo acuerdo desde 600€',
-      'Primera consulta gratuita por videollamada',
+      'Primera consulta sin compromiso por videollamada',
     ],
     advantagesEn: [
       'Competitive fees: up to 40% less than central Madrid firms',
@@ -166,7 +166,7 @@ export const landingPages: LandingPage[] = [
       'Conocimiento de los criterios de custodia compartida de los juzgados alicantinos',
       'Atención presencial en Murcia y por videoconferencia',
       'Coordinación con procuradores en Alicante capital y Elche',
-      'Primera consulta gratuita',
+      'Primera consulta sin compromiso',
     ],
     advantagesEn: [
       'Less than 1 hour away: Murcia-Alicante via the A-7',
@@ -185,7 +185,7 @@ export const landingPages: LandingPage[] = [
     titleEs: 'Abogados Derecho Inmobiliario en Toledo | GVC Abogados',
     titleEn: 'Real Estate Lawyers in Toledo | GVC Lawyers',
     metaDescriptionEs:
-      'Abogados inmobiliarios en Toledo. Compraventa, arrendamientos, desahucios, propiedad horizontal. Consulta gratuita por videoconferencia. ☎ 968 241 025.',
+      'Abogados inmobiliarios en Toledo. Compraventa, arrendamientos, desahucios, propiedad horizontal. Primera consulta sin compromiso por videoconferencia. ☎ 968 241 025.',
     metaDescriptionEn:
       'Real estate lawyers for Toledo. Property sales, leases, evictions, condominium law. Free video consultation. ☎ +34 968 241 025.',
     h1Es: 'Abogados de Derecho Inmobiliario en Toledo',
@@ -204,7 +204,7 @@ export const landingPages: LandingPage[] = [
       'Tarifas competitivas frente a despachos de Madrid o Toledo capital',
       'Coordinación con procuradores y notarías en Toledo',
       'Revisión de contratos de arras y escrituras de compraventa',
-      'Primera consulta gratuita',
+      'Primera consulta sin compromiso',
     ],
     advantagesEn: [
       'Video conference advice without the need to travel',
@@ -223,7 +223,7 @@ export const landingPages: LandingPage[] = [
     titleEs: 'Abogados Derecho Bancario en Valencia — Tarjetas Revolving y Cláusulas Abusivas | GVC',
     titleEn: 'Banking Law Lawyers in Valencia — Revolving Cards & Unfair Clauses | GVC',
     metaDescriptionEs:
-      'Abogados bancarios en Valencia. Tarjetas revolving, cláusulas suelo, gastos hipotecarios. 95% de éxito. Consulta gratuita. ☎ 968 241 025.',
+      'Abogados bancarios en Valencia. Tarjetas revolving, cláusulas suelo, gastos hipotecarios. 95% de éxito. Primera consulta sin compromiso. ☎ 968 241 025.',
     metaDescriptionEn:
       'Banking lawyers for Valencia. Revolving cards, floor clauses, mortgage expenses. 95% success rate. Free consultation. ☎ +34 968 241 025.',
     h1Es: 'Abogados de Derecho Bancario en Valencia',
@@ -261,7 +261,7 @@ export const landingPages: LandingPage[] = [
     titleEs: 'Abogados Penalistas en Albacete — Defensa Penal 24h | GVC Abogados',
     titleEn: 'Criminal Lawyers in Albacete — 24h Criminal Defense | GVC Lawyers',
     metaDescriptionEs:
-      'Abogados penalistas en Albacete. Asistencia al detenido 24h, defensa penal integral, delitos económicos. Consulta gratuita. ☎ 968 241 025.',
+      'Abogados penalistas en Albacete. Asistencia al detenido 24h, defensa penal integral, delitos económicos. Primera consulta sin compromiso. ☎ 968 241 025.',
     metaDescriptionEn:
       'Criminal lawyers in Albacete. 24h detainee assistance, comprehensive criminal defense, economic crimes. Free consultation. ☎ +34 968 241 025.',
     h1Es: 'Abogados Penalistas en Albacete',
@@ -280,7 +280,7 @@ export const landingPages: LandingPage[] = [
       'Experiencia en delitos económicos y contra la propiedad',
       'Atención presencial y por videoconferencia',
       'Conocimiento de los juzgados penales de Albacete',
-      'Primera consulta gratuita y confidencial',
+      'Primera consulta sin compromiso y confidencial',
     ],
     advantagesEn: [
       'Detainee assistance coordinated with lawyers in Albacete',
@@ -299,7 +299,7 @@ export const landingPages: LandingPage[] = [
     titleEs: 'Abogados Herencias en Almería — Testamentos y Sucesiones | GVC Abogados',
     titleEn: 'Inheritance Lawyers in Almería — Wills & Succession | GVC Lawyers',
     metaDescriptionEs:
-      'Abogados de herencias en Almería. Testamentos, partición de bienes, legítimas, impuesto de sucesiones. Consulta gratuita. ☎ 968 241 025.',
+      'Abogados de herencias en Almería. Testamentos, partición de bienes, legítimas, impuesto de sucesiones. Primera consulta sin compromiso. ☎ 968 241 025.',
     metaDescriptionEn:
       'Inheritance lawyers for Almería. Wills, estate division, legitimate portions, inheritance tax. Free consultation. ☎ +34 968 241 025.',
     h1Es: 'Abogados de Herencias en Almería',
@@ -318,7 +318,7 @@ export const landingPages: LandingPage[] = [
       'Valoración de fincas rústicas y explotaciones agrícolas',
       'Gestión de herencias con bienes en varias comunidades autónomas',
       'Atención en español e inglés para herederos extranjeros',
-      'Primera consulta gratuita por videoconferencia',
+      'Primera consulta sin compromiso por videoconferencia',
     ],
     advantagesEn: [
       'Experience in international inheritances (European Succession Regulation)',

@@ -21,7 +21,7 @@ const GENERIC_SLUG_EN = 'traffic-accidents';
 export const metadata: Metadata = {
   title: 'Abogados de Accidentes de Tráfico — Especialistas en Indemnizaciones | GVC Abogados',
   description:
-    'Abogados especialistas en accidentes de tráfico. Expertos en el baremo de valoración de daños (Ley 35/2015), indemnizaciones máximas y defensa de víctimas. Más de 75 años de experiencia. Consulta gratuita. ☎ 968 241 025.',
+    'Abogados especialistas en accidentes de tráfico. Expertos en el baremo de valoración de daños (Ley 35/2015), indemnizaciones máximas y defensa de víctimas. Más de 75 años de experiencia. Primera consulta sin compromiso. ☎ 968 241 025.',
   alternates: {
     canonical: `https://www.gvcabogados.com/es/servicios/${FOLDER_SLUG}`,
     languages: { en: `/en/services/${GENERIC_SLUG_EN}` },
@@ -67,7 +67,7 @@ const BAREMO_CONCEPTOS = [
 ];
 
 const PROCESO = [
-  { step: 1, title: 'Consulta y evaluación gratuita', desc: 'Analizamos la viabilidad de su caso sin compromiso. Revisamos partes, atestados e informes médicos.' },
+  { step: 1, title: 'Consulta y evaluación inicial', desc: 'Analizamos la viabilidad de su caso sin compromiso. Revisamos partes, atestados e informes médicos.' },
   { step: 2, title: 'Recopilación de pruebas', desc: 'Reunimos toda la documentación: informe de la aseguradora, historial clínico, informes periciales y testigos.' },
   { step: 3, title: 'Reclamación extrajudicial', desc: 'Negociamos directamente con la compañía de seguros. El 80 % de los casos se resuelve en esta fase.' },
   { step: 4, title: 'Demanda judicial', desc: 'Si la oferta es insuficiente, interponemos demanda civil o penal ante los tribunales competentes.' },
@@ -77,7 +77,7 @@ const PROCESO = [
 const FAQS = [
   { question: '¿Cuánto tiempo tengo para reclamar tras un accidente de tráfico?', answer: 'El plazo general es de <strong>1 año</strong> desde la fecha del accidente o desde el alta médica definitiva (estabilización de secuelas). Si hay procedimiento penal, el plazo se interrumpe hasta que la sentencia o el sobreseimiento sean firmes. Es fundamental actuar cuanto antes para preservar las pruebas.' },
   { question: '¿Qué indemnización me corresponde por un accidente de tráfico?', answer: 'Depende de la gravedad de las lesiones, las secuelas permanentes, su edad, situación laboral y familiar. El <strong>baremo de tráfico (Ley 35/2015)</strong> establece tablas con horquillas de valoración. Un latigazo cervical leve puede suponer entre 2.000 y 6.000 €, mientras que lesiones graves con secuelas permanentes pueden superar los 200.000 €. Nuestros abogados realizan un cálculo personalizado para cada caso.' },
-  { question: '¿Tengo que adelantar dinero para reclamar?', answer: 'En García-Valcárcel & Cáceres, la <strong>primera consulta es gratuita</strong>. Además, ofrecemos la posibilidad de trabajar con una provisión de fondos muy reducida, abonando la mayor parte de nuestros honorarios al cobrar la indemnización. De esta forma, minimizamos el riesgo económico para el cliente.' },
+  { question: '¿Tengo que adelantar dinero para reclamar?', answer: 'En García-Valcárcel & Cáceres, la <strong>primera consulta es sin compromiso</strong>. Además, ofrecemos la posibilidad de trabajar con una provisión de fondos muy reducida, abonando la mayor parte de nuestros honorarios al cobrar la indemnización. De esta forma, minimizamos el riesgo económico para el cliente.' },
   { question: '¿Qué pasa si el responsable se da a la fuga o no tiene seguro?', answer: 'Puede reclamar al <strong>Consorcio de Compensación de Seguros</strong>, un organismo público que cubre estos supuestos. Nosotros nos encargamos de toda la tramitación para que reciba su indemnización igualmente.' },
   { question: '¿Puedo reclamar si el accidente fue parcialmente culpa mía?', answer: 'Sí. En España se aplica el principio de <strong>concurrencia de culpas</strong>: si la otra parte también fue responsable, tendrá derecho a una indemnización proporcional a su grado de culpa. Nuestros abogados defenderán que su porcentaje de responsabilidad sea el menor posible.' },
   { question: '¿Cuánto tarda en resolverse una reclamación por accidente?', answer: 'La vía extrajudicial suele resolverse en <strong>3 a 8 meses</strong>. Si hay que acudir a juicio, el plazo se extiende a <strong>12-18 meses</strong> dependiendo del juzgado. Trabajamos para que su caso se resuelva lo antes posible sin renunciar a la indemnización que le corresponde.' },
@@ -154,7 +154,7 @@ export default async function AccidentesTraficoPage() {
 
               <div className="flex gap-3 md:gap-4 items-center flex-wrap">
                 <Link href="/es/contacto" className="btn-primary">
-                  Consulta gratuita →
+                  Primera consulta sin compromiso →
                 </Link>
                 <a href="tel:+34968241025" className="btn-outline">
                   ☎ 968 241 025
@@ -434,7 +434,7 @@ export default async function AccidentesTraficoPage() {
                     </h3>
                     <p className="text-sm text-white/80 leading-relaxed mb-6">
                       Llámenos ahora. Le indicaremos exactamente qué pasos dar para proteger su derecho a una indemnización justa.
-                      La primera consulta es completamente gratuita y sin compromiso.
+                      La primera consulta es sin compromiso.
                     </p>
                     <ul className="space-y-3 mb-8">
                       {[
@@ -485,7 +485,7 @@ export default async function AccidentesTraficoPage() {
                     { title: '5', desc: 'Profesionales especializados' },
                     { title: 'Toda España', desc: 'Sede en Murcia, actuación nacional' },
                     { title: 'Trato directo', desc: 'Con el abogado titular' },
-                    { title: 'Consulta gratis', desc: 'Evaluación sin compromiso' },
+                    { title: 'Sin compromiso', desc: 'Primera consulta' },
                   ].map((item, i) => (
                     <div key={i} className="bg-white/90 p-5 md:p-6 rounded-xl hover:bg-white hover:scale-[1.03] transition-all text-center">
                       <div className="font-display text-xl md:text-2xl font-bold text-brand-brown-hover mb-1">{item.title}</div>
@@ -594,7 +594,7 @@ export default async function AccidentesTraficoPage() {
                 No deje que la aseguradora decida cuánto vale su caso
               </h2>
               <p className="text-base md:text-lg text-neutral-300 leading-relaxed mb-10 max-w-2xl mx-auto">
-                Primera consulta gratuita. Le diremos con honestidad qué indemnización puede esperar
+                Primera consulta sin compromiso. Le diremos con honestidad qué indemnización puede esperar
                 y cómo vamos a luchar para conseguirla.
               </p>
               <div className="flex gap-3 md:gap-4 items-center flex-wrap justify-center">

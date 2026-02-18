@@ -53,6 +53,28 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
+const DEFAULT_STATS = [
+  { value: '75+', label: 'Años de experiencia' },
+  { value: 'Ley 35/2015', label: 'Baremo actualizado' },
+  { value: 'Sin compromiso', label: 'Primera consulta' },
+];
+
+const DEFAULT_TIPOS_ACCIDENTE = [
+  { titulo: 'Colisiones', descripcion: 'Choques frontales, laterales, alcances y colisiones múltiples.', icon: 'car' },
+  { titulo: 'Atropellos', descripcion: 'Peatones y ciclistas arrollados por vehículos.', icon: 'shield' },
+  { titulo: 'Salidas de vía', descripcion: 'Vuelcos, caídas por terraplén y siniestros por estado de la calzada.', icon: 'clock' },
+  { titulo: 'Motoristas', descripcion: 'Accidentes de moto con lesiones graves y secuelas permanentes.', icon: 'car' },
+];
+
+const DEFAULT_QUE_HACER = [
+  { paso: '1', titulo: 'Proteger la zona', descripcion: 'Señalice el lugar y encienda las luces de emergencia.' },
+  { paso: '2', titulo: 'Atender a los heridos', descripcion: 'Llame al 112 si hay lesionados. No mueva a las víctimas salvo peligro.' },
+  { paso: '3', titulo: 'Documentar el accidente', descripcion: 'Tome fotos, recoja datos del otro conductor y testigos.' },
+  { paso: '4', titulo: 'Parte amistoso', descripcion: 'Cumplimente el Parte Europeo de Accidente si es posible.' },
+  { paso: '5', titulo: 'Asistencia médica', descripcion: 'Acuda a urgencias incluso sin lesiones aparentes.' },
+  { paso: '6', titulo: 'Contactar con su abogado', descripcion: 'No firme nada con la aseguradora sin asesoramiento legal.' },
+];
+
 export default async function AccidentesTraficoLocalPage({ params }: Props) {
   const content = await getServiceContentByServiceAndCity(SERVICE_KEY, params.ciudad);
   if (!content) notFound();
@@ -61,6 +83,16 @@ export default async function AccidentesTraficoLocalPage({ params }: Props) {
   const faqs = content.faqsEs || [];
   const sections = content.sectionsEs || [];
   const process = content.processEs || [];
+  const custom = content.customSectionsEs || {};
+
+  const stats = (custom.stats as typeof DEFAULT_STATS) || [
+    ...DEFAULT_STATS.slice(0, 1),
+    { value: cityName, label: 'Atención presencial y online' },
+    ...DEFAULT_STATS.slice(1),
+  ];
+  const tiposAccidente = (custom.tipos_accidente as typeof DEFAULT_TIPOS_ACCIDENTE) || DEFAULT_TIPOS_ACCIDENTE;
+  const queHacer = (custom.que_hacer as typeof DEFAULT_QUE_HACER) || DEFAULT_QUE_HACER;
+  const customIntro = custom.intro as string | undefined;
 
   const breadcrumbs = [
     { name: 'Inicio', href: '/es' },
@@ -131,7 +163,7 @@ export default async function AccidentesTraficoLocalPage({ params }: Props) {
 
               <div className="flex gap-3 md:gap-4 items-center flex-wrap">
                 <Link href="/es/contacto" className="btn-primary">
-                  Consulta gratuita →
+                  Primera consulta sin compromiso →
                 </Link>
                 <a href="tel:+34968241025" className="btn-outline">
                   ☎ 968 241 025
@@ -140,16 +172,11 @@ export default async function AccidentesTraficoLocalPage({ params }: Props) {
             </div>
           </div>
 
-          {/* Stats bar local */}
+          {/* Stats bar local — dinámico desde custom_sections_es.stats */}
           <div className="relative z-[3] bg-brand-brown/90 backdrop-blur-sm border-t border-brand-dark/10">
             <div className="container-custom">
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-0">
-                {[
-                  { value: '75+', label: 'Años de experiencia' },
-                  { value: cityName, label: 'Atención presencial y online' },
-                  { value: 'Ley 35/2015', label: 'Baremo actualizado' },
-                  { value: 'Gratis', label: 'Primera consulta' },
-                ].map((stat, i) => (
+              <div className={`grid grid-cols-2 md:grid-cols-${stats.length} gap-0`}>
+                {stats.map((stat, i) => (
                   <div key={i} className="py-5 md:py-6 px-4 md:px-8 text-center border-r border-brand-dark/10 last:border-r-0 border-b md:border-b-0 border-brand-dark/10">
                     <div className="font-display text-xl md:text-2xl font-bold text-brand-dark leading-none mb-1.5">{stat.value}</div>
                     <div className="text-[0.6rem] md:text-[0.65rem] text-brand-dark/70 uppercase tracking-[0.12em]">{stat.label}</div>
@@ -177,7 +204,7 @@ export default async function AccidentesTraficoLocalPage({ params }: Props) {
                   {content.titleEs || `Abogados de accidentes de tráfico en ${cityName}`}
                 </h2>
                 <div className="text-sm text-neutral-500 leading-relaxed space-y-4">
-                  <RichTextContent content={content.longDescriptionEs || ''} />
+                  <RichTextContent content={customIntro || content.longDescriptionEs || ''} />
                 </div>
                 <div className="flex gap-3 flex-wrap mt-8">
                   <Link href="/es/contacto" className="btn-primary">Valorar mi caso →</Link>
@@ -208,6 +235,35 @@ export default async function AccidentesTraficoLocalPage({ params }: Props) {
             </div>
           </div>
         </section>
+
+        {/* ═══════════════════════════════════════
+            TIPOS DE ACCIDENTE — dinámico desde custom_sections_es
+        ═══════════════════════════════════════ */}
+        {tiposAccidente.length > 0 && (
+          <section className="py-16 md:py-24 bg-neutral-50">
+            <div className="container-custom max-w-6xl">
+              <div className="reveal text-center mb-14">
+                <div className="flex items-center gap-3 justify-center mb-4">
+                  <span className="w-9 h-0.5 bg-brand-brown" />
+                  <span className="text-[0.6rem] font-semibold text-brand-brown tracking-[0.2em] uppercase">Especialidades</span>
+                  <span className="w-9 h-0.5 bg-brand-brown" />
+                </div>
+                <h2 className="section-title mb-4">Tipos de accidentes de tráfico en {cityName}</h2>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+                {tiposAccidente.map((tipo, i) => (
+                  <div key={i} className="reveal group bg-white p-7 rounded-2xl border border-neutral-100 hover:border-brand-brown/30 hover:shadow-lg transition-all text-center">
+                    <div className="w-14 h-14 mx-auto mb-5 bg-brand-brown/10 rounded-xl flex items-center justify-center group-hover:bg-brand-brown transition-all">
+                      <Car size={24} className="text-brand-brown group-hover:text-white transition-colors" />
+                    </div>
+                    <h3 className="font-serif text-base font-semibold text-brand-dark mb-2">{tipo.titulo}</h3>
+                    <p className="text-[0.8rem] text-neutral-400 leading-relaxed">{tipo.descripcion}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
 
         {/* ═══════════════════════════════════════
             SECCIONES DE CONTENIDO LOCAL
@@ -280,6 +336,37 @@ export default async function AccidentesTraficoLocalPage({ params }: Props) {
         </section>
 
         {/* ═══════════════════════════════════════
+            QUÉ HACER TRAS UN ACCIDENTE — dinámico
+        ═══════════════════════════════════════ */}
+        {queHacer.length > 0 && (
+          <section className="py-16 md:py-24 bg-neutral-50">
+            <div className="container-custom max-w-5xl">
+              <div className="reveal text-center mb-14">
+                <div className="flex items-center gap-3 justify-center mb-4">
+                  <span className="w-9 h-0.5 bg-brand-brown" />
+                  <span className="text-[0.6rem] font-semibold text-brand-brown tracking-[0.2em] uppercase">Guía práctica</span>
+                  <span className="w-9 h-0.5 bg-brand-brown" />
+                </div>
+                <h2 className="section-title mb-4">Qué hacer tras un accidente de tráfico en {cityName}</h2>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                {queHacer.map((item, i) => (
+                  <div key={i} className="reveal group bg-white p-7 rounded-2xl border border-neutral-100 hover:border-brand-brown/30 hover:shadow-lg transition-all">
+                    <div className="flex items-start gap-4 mb-3">
+                      <div className="w-11 h-11 bg-brand-brown rounded-xl flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
+                        <span className="text-base font-bold text-white">{item.paso}</span>
+                      </div>
+                      <h3 className="font-serif text-base font-semibold text-brand-dark pt-2">{item.titulo}</h3>
+                    </div>
+                    <p className="text-[0.8rem] text-neutral-400 leading-relaxed pl-[60px]">{item.descripcion}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* ═══════════════════════════════════════
             PROCESO + CTA DE EMERGENCIA
         ═══════════════════════════════════════ */}
         {process.length > 0 && (
@@ -319,7 +406,7 @@ export default async function AccidentesTraficoLocalPage({ params }: Props) {
                       ¿Ha tenido un accidente en {cityName}?
                     </h3>
                     <p className="text-sm text-white/80 leading-relaxed mb-6">
-                      Le asesoramos desde el primer momento. Consulta gratuita y sin compromiso.
+                      Le asesoramos desde el primer momento. Primera consulta sin compromiso.
                     </p>
                     <ul className="space-y-3 mb-8">
                       {[
@@ -465,7 +552,7 @@ export default async function AccidentesTraficoLocalPage({ params }: Props) {
               </p>
               <p className="text-base md:text-lg text-neutral-300 leading-relaxed mb-10 max-w-2xl mx-auto">
                 Atendemos clientes de {cityName} de forma presencial y por videoconferencia.
-                Primera consulta gratuita.
+                Primera consulta sin compromiso.
               </p>
               <div className="flex gap-3 md:gap-4 items-center flex-wrap justify-center">
                 <Link href="/es/contacto" className="inline-flex items-center gap-2 bg-brand-brown text-white text-xs font-semibold px-8 py-4 tracking-wide transition-all duration-300 hover:bg-brand-brown/80 hover:-translate-y-0.5 hover:shadow-xl">

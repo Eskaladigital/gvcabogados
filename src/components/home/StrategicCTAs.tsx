@@ -26,7 +26,7 @@ const ctas: Record<string, CTAItem[]> = {
       icon: Users,
       title: 'Divorcios y custodia',
       description: 'Divorcio de mutuo acuerdo desde 4 semanas. Custodia, pensiones y mediación familiar.',
-      cta: 'Consulta gratuita',
+      cta: 'Primera consulta sin compromiso',
       href: '/es/servicios/abogados-derecho-familia-murcia',
       phone: false,
     },

@@ -19,6 +19,7 @@ export interface ServiceContent {
   sectionsEs: Array<{ title: string; content: string }>;
   processEs: string[];
   faqsEs: Array<{ question: string; answer: string }>;
+  customSectionsEs: Record<string, any> | null;
   titleEn: string | null;
   metaDescriptionEn: string | null;
   shortDescriptionEn: string | null;
@@ -26,6 +27,7 @@ export interface ServiceContent {
   sectionsEn: Array<{ title: string; content: string }> | null;
   processEn: string[] | null;
   faqsEn: Array<{ question: string; answer: string }> | null;
+  customSectionsEn: Record<string, any> | null;
 }
 
 /** Convierte slug de ciudad a nombre legible con tildes y mayúsculas correctas. */
@@ -153,6 +155,7 @@ function getServiceContentFromStatic(slug: string): ServiceContent | null {
     sectionsEs: svc.sectionsEs,
     processEs: svc.processEs,
     faqsEs: svc.faqsEs,
+    customSectionsEs: null,
     titleEn: `${svc.nameEn} Lawyers in ${cityName} | GVC Lawyers`,
     metaDescriptionEn: svc.descriptionEn,
     shortDescriptionEn: svc.descriptionEn,
@@ -160,6 +163,7 @@ function getServiceContentFromStatic(slug: string): ServiceContent | null {
     sectionsEn: svc.sectionsEn,
     processEn: svc.processEn,
     faqsEn: svc.faqsEn,
+    customSectionsEn: null,
   };
 }
 
@@ -171,34 +175,13 @@ export async function getServiceContentBySlug(slug: string): Promise<ServiceCont
   const { data, error } = await supabaseAdmin
     .from('service_content')
     .select(`
-      id,
-      service_id,
-      locality_id,
-      slug_es,
-      slug_en,
-      title_es,
-      meta_description_es,
-      short_description_es,
-      long_description_es,
-      sections_es,
-      process_es,
-      faqs_es,
-      title_en,
-      meta_description_en,
-      short_description_en,
-      long_description_en,
-      sections_en,
-      process_en,
-      faqs_en,
-      services!inner (
-        service_key,
-        name_es,
-        name_en
-      ),
-      localities!inner (
-        name,
-        slug
-      )
+      id, service_id, locality_id, slug_es, slug_en,
+      title_es, meta_description_es, short_description_es, long_description_es,
+      sections_es, process_es, faqs_es, custom_sections_es,
+      title_en, meta_description_en, short_description_en, long_description_en,
+      sections_en, process_en, faqs_en, custom_sections_en,
+      services!inner ( service_key, name_es, name_en ),
+      localities!inner ( name, slug )
     `)
     .eq('slug_es', slug)
     .maybeSingle();
@@ -228,6 +211,7 @@ export async function getServiceContentBySlug(slug: string): Promise<ServiceCont
     sectionsEs: (data.sections_es as any) || [],
     processEs: (data.process_es as any) || [],
     faqsEs: (data.faqs_es as any) || [],
+    customSectionsEs: (data.custom_sections_es as any) || null,
     titleEn: data.title_en,
     metaDescriptionEn: data.meta_description_en,
     shortDescriptionEn: data.short_description_en,
@@ -235,6 +219,7 @@ export async function getServiceContentBySlug(slug: string): Promise<ServiceCont
     sectionsEn: (data.sections_en as any) || null,
     processEn: (data.process_en as any) || null,
     faqsEn: (data.faqs_en as any) || null,
+    customSectionsEn: (data.custom_sections_en as any) || null,
   };
 }
 
@@ -248,12 +233,11 @@ export async function getServiceContentByServiceAndCity(
   const { data, error } = await supabaseAdmin
     .from('service_content')
     .select(`
-      id, service_id, locality_id,
-      slug_es, slug_en,
+      id, service_id, locality_id, slug_es, slug_en,
       title_es, meta_description_es, short_description_es, long_description_es,
-      sections_es, process_es, faqs_es,
+      sections_es, process_es, faqs_es, custom_sections_es,
       title_en, meta_description_en, short_description_en, long_description_en,
-      sections_en, process_en, faqs_en,
+      sections_en, process_en, faqs_en, custom_sections_en,
       services!inner ( service_key, name_es, name_en ),
       localities!inner ( name, slug )
     `)
@@ -262,7 +246,6 @@ export async function getServiceContentByServiceAndCity(
     .maybeSingle();
 
   if (error || !data) {
-    // Fallback: construir el slug antiguo y usar la función existente
     const legacySlug = `abogados-${serviceKey}-${citySlug}`;
     return getServiceContentFromStatic(legacySlug);
   }
@@ -285,6 +268,7 @@ export async function getServiceContentByServiceAndCity(
     sectionsEs: (data.sections_es as any) || [],
     processEs: (data.process_es as any) || [],
     faqsEs: (data.faqs_es as any) || [],
+    customSectionsEs: (data.custom_sections_es as any) || null,
     titleEn: data.title_en,
     metaDescriptionEn: data.meta_description_en,
     shortDescriptionEn: data.short_description_en,
@@ -292,6 +276,7 @@ export async function getServiceContentByServiceAndCity(
     sectionsEn: (data.sections_en as any) || null,
     processEn: (data.process_en as any) || null,
     faqsEn: (data.faqs_en as any) || null,
+    customSectionsEn: (data.custom_sections_en as any) || null,
   };
 }
 
