@@ -319,8 +319,8 @@ export default async function ServiceDetailPage({ params }: Props) {
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
                     {[
                       { title: '75+ años', desc: 'de experiencia' },
-                      { title: '3.000+', desc: 'casos resueltos' },
-                      { title: '97%', desc: 'éxito judicial' },
+                      { title: '14', desc: 'áreas de práctica' },
+                      { title: '1946', desc: 'año de fundación' },
                       { title: '5 profesionales', desc: 'especializados' },
                       { title: 'Trato', desc: 'personalizado' },
                       { title: 'Centro', desc: 'de Murcia' },

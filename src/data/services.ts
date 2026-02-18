@@ -37,12 +37,12 @@ export const services: Service[] = [
     slugEn: 'traffic-accident-lawyers-murcia',
     nameEs: 'Accidentes de Tráfico',
     nameEn: 'Traffic Accidents',
-    descriptionEs: 'Reclamaciones por accidentes de tráfico, indemnizaciones y defensa de víctimas',
-    descriptionEn: 'Traffic accident claims, compensation and victim defense',
+    descriptionEs: 'Reclamaciones por accidentes de tráfico. Expertos en el baremo de tráfico, indemnizaciones y defensa de víctimas',
+    descriptionEn: 'Traffic accident claims. Experts in the traffic injury scale, compensation and victim defense',
     longDescriptionEs:
-      'Nuestro equipo de abogados en Murcia está especializado en la tramitación de reclamaciones por accidentes de tráfico. Nos encargamos de todo el proceso: desde la recogida de pruebas y la negociación con las compañías aseguradoras, hasta la defensa judicial si fuera necesario. Luchamos por conseguir la máxima indemnización para nuestros clientes, cubriendo daños materiales, lesiones personales, lucro cesante y daño moral.',
+      'Nuestro equipo de abogados en Murcia está especializado en la tramitación de reclamaciones por accidentes de tráfico, con un profundo conocimiento del baremo de valoración de daños personales (Ley 35/2015). Nos encargamos de todo el proceso: desde la recogida de pruebas y la negociación con las compañías aseguradoras, hasta la defensa judicial si fuera necesario. Luchamos por conseguir la máxima indemnización para nuestros clientes, cubriendo daños materiales, lesiones personales, lucro cesante y daño moral.',
     longDescriptionEn:
-      'Our team of lawyers in Murcia specializes in handling traffic accident claims. We manage the entire process: from evidence collection and negotiation with insurance companies, to court defense if necessary. We fight to obtain the maximum compensation for our clients, covering material damages, personal injuries, lost earnings and moral damages.',
+      'Our team of lawyers in Murcia specializes in handling traffic accident claims, with deep expertise in the personal injury assessment scale (Law 35/2015). We manage the entire process: from evidence collection and negotiation with insurance companies, to court defense if necessary. We fight to obtain the maximum compensation for our clients, covering material damages, personal injuries, lost earnings and moral damages.',
     icon: '🚗',
     priority: 1,
     category: 'privado',

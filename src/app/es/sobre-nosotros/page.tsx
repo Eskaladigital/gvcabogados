@@ -10,7 +10,7 @@ import { getTranslations } from '@/data/translations';
 export const metadata: Metadata = {
   title: 'Sobre Nosotros — Bufete de Abogados en Murcia desde 1946 | García-Valcárcel & Cáceres',
   description:
-    'Conozca la historia de García-Valcárcel & Cáceres, bufete de abogados en Murcia fundado en 1946 por D. Blas García-Valcárcel. Más de 75 años de experiencia, 3.000+ casos resueltos y 5 profesionales especializados en responsabilidad civil.',
+    'Conozca la historia de García-Valcárcel & Cáceres, bufete de abogados en Murcia fundado en 1946 por D. Blas García-Valcárcel. Más de 75 años de experiencia y 5 profesionales especializados en responsabilidad civil.',
   alternates: {
     canonical: 'https://www.gvcabogados.com/es/sobre-nosotros',
     languages: { en: '/en/about' },
@@ -34,9 +34,9 @@ export default function SobreNosotrosPage() {
   const timeline = [
     { year: '1946', event: 'D. Blas García-Valcárcel inicia el ejercicio de la abogacía en Murcia el 6 de noviembre, fundando el despacho.' },
     { year: '1970s', event: 'D. Pedro-Alfonso García-Valcárcel y Escribano se incorpora al bufete, ampliando las áreas de práctica al derecho bancario y mercantil.' },
-    { year: '1990s', event: 'El despacho se consolida como referente en Murcia en accidentes de tráfico y derecho de familia, superando los 1.000 casos gestionados.' },
+    { year: '1990s', event: 'El despacho se consolida como referente en Murcia en accidentes de tráfico y derecho de familia.' },
     { year: '2000s', event: 'Incorporación de nuevos profesionales y apertura de las áreas de extranjería, derecho administrativo y mediación civil y mercantil.' },
-    { year: '2010s', event: 'El bufete alcanza los 2.500 casos resueltos. Inicio de la defensa masiva de consumidores frente a abusos bancarios: cláusulas suelo, gastos hipotecarios y tarjetas revolving.' },
+    { year: '2010s', event: 'Inicio de la defensa de consumidores frente a abusos bancarios: cláusulas suelo, gastos hipotecarios y tarjetas revolving.' },
     { year: 'Hoy', event: 'Con más de 75 años de experiencia acumulada, el equipo de 5 profesionales de García-Valcárcel & Cáceres es referente en responsabilidad civil en Murcia, ofreciendo un servicio integral y personalizado desde la Gran Vía.' },
   ];
 
@@ -65,8 +65,7 @@ export default function SobreNosotrosPage() {
             </h1>
             <p className="text-neutral-300 text-base mt-4 max-w-[560px]">
               Fundado en 1946, García-Valcárcel & Cáceres es uno de los despachos de abogados con más
-              historia de la Región de Murcia. Conozca quiénes somos y por qué más de 3.000 clientes
-              han confiado en nosotros.
+              historia de la Región de Murcia. Conozca quiénes somos y los valores que nos definen.
             </p>
           </div>
         </section>
@@ -90,8 +89,8 @@ export default function SobreNosotrosPage() {
                 </p>
                 <p className="text-sm text-brand-dark/80 leading-relaxed mb-4">
                   En García-Valcárcel & Cáceres somos especialistas en responsabilidad civil:
-                  accidentes de tráfico, negligencias médicas, accidentes laborales y reclamaciones
-                  de daños. También trabajamos en otras áreas del derecho privado y público, adaptando
+                  accidentes de tráfico, negligencias médicas, accidentes laborales y responsabilidad
+                  frente a la Administración. También trabajamos en otras áreas del derecho privado y público, adaptando
                   nuestro equipo de expertos a las necesidades de cada cliente. Nuestra filosofía se
                   basa en entender cada caso como único y ofrecer un asesoramiento personalizado.
                 </p>
@@ -158,8 +157,8 @@ export default function SobreNosotrosPage() {
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-0 text-center">
               {[
                 { value: '75+', label: 'Años de experiencia' },
-                { value: '3.000+', label: 'Casos resueltos' },
-                { value: '97%', label: 'Éxito judicial' },
+                { value: '14', label: 'Áreas de práctica' },
+                { value: '1946', label: 'Año de fundación' },
                 { value: '5', label: 'Profesionales' },
               ].map((stat, i) => (
                 <div
@@ -202,7 +201,7 @@ export default function SobreNosotrosPage() {
                 {
                   icon: '★',
                   title: 'Experiencia',
-                  desc: 'Más de 75 años de trayectoria y 3.000 casos resueltos nos permiten ofrecer un asesoramiento experto basado en una práctica contrastada.',
+                  desc: 'Más de 75 años de trayectoria nos permiten ofrecer un asesoramiento experto basado en una práctica contrastada.',
                 },
                 {
                   icon: '♦',

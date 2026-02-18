@@ -33,9 +33,9 @@ export const landingPages: LandingPage[] = [
     titleEs: 'Abogados Accidentes de Tráfico en Alicante | GVC Abogados',
     titleEn: 'Traffic Accident Lawyers in Alicante | GVC Lawyers',
     metaDescriptionEs:
-      'Abogados especializados en accidentes de tráfico en Alicante. Reclamamos tu indemnización con 97% de éxito. Consulta gratuita. ☎ 968 241 025.',
+      'Abogados especializados en accidentes de tráfico en Alicante. Expertos en el baremo de tráfico. Reclamamos tu indemnización. Consulta gratuita. ☎ 968 241 025.',
     metaDescriptionEn:
-      'Specialized traffic accident lawyers for Alicante. We claim your compensation with 97% success. Free consultation. ☎ +34 968 241 025.',
+      'Specialized traffic accident lawyers for Alicante. Experts in the traffic injury scale. We claim your compensation. Free consultation. ☎ +34 968 241 025.',
     h1Es: 'Abogados de Accidentes de Tráfico en Alicante',
     h1En: 'Traffic Accident Lawyers in Alicante',
     introEs:
