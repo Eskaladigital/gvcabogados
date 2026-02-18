@@ -3,8 +3,8 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import {
-  Car, Scale, Phone, MapPin, CheckCircle2, ChevronRight,
-  ArrowRight, Clock, ShieldCheck
+  Users, Heart, Scale, Phone, MapPin, CheckCircle2,
+  ArrowRight, ShieldCheck, Handshake, Baby, BadgeEuro, Clock, Home,
 } from 'lucide-react';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
@@ -15,12 +15,13 @@ import { BreadcrumbSchema, ServiceSchema, FAQSchema } from '@/components/seo/Sch
 import { getServiceContentByServiceAndCity } from '@/lib/service-content';
 import { supabaseAdmin } from '@/lib/supabase';
 
-const SERVICE_KEY = 'accidentes-trafico';
-const SERVICE_NAME = 'Accidentes de Tráfico';
-const FOLDER_SLUG = 'accidentes-trafico';
+const SERVICE_KEY = 'derecho-familia';
+const SERVICE_NAME = 'Family Law';
+const FOLDER_SLUG_EN = 'family-law';
+const FOLDER_SLUG_ES = 'derecho-familia';
 
 interface Props {
-  params: { ciudad: string };
+  params: { city: string };
 }
 
 export async function generateStaticParams() {
@@ -29,100 +30,100 @@ export async function generateStaticParams() {
     .select('localities!inner(slug), services!inner(service_key)')
     .eq('services.service_key', SERVICE_KEY);
 
-  if (!data || data.length === 0) return [{ ciudad: 'murcia' }];
-  return data.map((row: any) => ({ ciudad: row.localities.slug }));
+  if (!data || data.length === 0) return [{ city: 'murcia' }];
+  return data.map((row: any) => ({ city: row.localities.slug }));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const content = await getServiceContentByServiceAndCity(SERVICE_KEY, params.ciudad);
+  const content = await getServiceContentByServiceAndCity(SERVICE_KEY, params.city);
   if (!content) return {};
 
   const cityName = content.localityName;
-  const title = content.titleEs || `Abogados de Accidentes de Tráfico en ${cityName} — GVC Abogados`;
-  const description = content.metaDescriptionEs || content.shortDescriptionEs ||
-    `Abogados especialistas en accidentes de tráfico en ${cityName}. Indemnizaciones máximas, baremo de tráfico, defensa de víctimas. Más de 55 años de experiencia. ☎ 968 241 025.`;
+  const title = content.titleEn || `Family Law Lawyers in ${cityName} — GVC Lawyers`;
+  const description = content.metaDescriptionEn || content.shortDescriptionEn ||
+    `Specialist family law lawyers in ${cityName}. Divorce, child custody, child support, visitation rights. Over 55 years of experience. ☎ 968 241 025.`;
 
   return {
     title,
     description,
     alternates: {
-      canonical: `https://www.gvcabogados.com/es/servicios/${FOLDER_SLUG}/${params.ciudad}`,
-      languages: { en: `/en/services/traffic-accidents/${params.ciudad}` },
+      canonical: `https://www.gvcabogados.com/en/services/${FOLDER_SLUG_EN}/${params.city}`,
+      languages: { es: `/es/servicios/${FOLDER_SLUG_ES}/${params.city}` },
     },
-    openGraph: { title, description, locale: 'es_ES', type: 'website', url: `https://www.gvcabogados.com/es/servicios/${FOLDER_SLUG}/${params.ciudad}` },
+    openGraph: { title, description, locale: 'en_GB', type: 'website', url: `https://www.gvcabogados.com/en/services/${FOLDER_SLUG_EN}/${params.city}` },
   };
 }
 
 const DEFAULT_STATS = [
-  { value: '55+', label: 'Años de experiencia' },
-  { value: 'Ley 35/2015', label: 'Baremo actualizado' },
-  { value: 'Sin compromiso', label: 'Primera consulta' },
+  { value: '55+', label: 'Years of experience' },
+  { value: '70%', label: 'Resolved by agreement' },
+  { value: 'No obligation', label: 'Initial consultation' },
 ];
 
-const DEFAULT_TIPOS_ACCIDENTE = [
-  { titulo: 'Colisiones', descripcion: 'Choques frontales, laterales, alcances y colisiones múltiples.', icon: 'car' },
-  { titulo: 'Atropellos', descripcion: 'Peatones y ciclistas arrollados por vehículos.', icon: 'shield' },
-  { titulo: 'Salidas de vía', descripcion: 'Vuelcos, caídas por terraplén y siniestros por estado de la calzada.', icon: 'clock' },
-  { titulo: 'Motoristas', descripcion: 'Accidentes de moto con lesiones graves y secuelas permanentes.', icon: 'car' },
+const DEFAULT_AREAS = [
+  { titulo: 'Divorce', descripcion: 'Uncontested and contested, always seeking the best solution.' },
+  { titulo: 'Child custody', descripcion: 'Sole custody, joint custody or modification of the current arrangement.' },
+  { titulo: 'Child support', descripcion: 'Setting, modifying and claiming unpaid payments.' },
+  { titulo: 'Visitation rights', descripcion: 'Establishing, extending or restricting arrangements to protect the child.' },
+  { titulo: 'Division of assets', descripcion: 'Division of joint property: home, accounts, investments.' },
+  { titulo: 'Family mediation', descripcion: 'Agreement between the parties to reduce emotional and financial cost.' },
 ];
 
-const DEFAULT_QUE_HACER = [
-  { paso: '1', titulo: 'Proteger la zona', descripcion: 'Señalice el lugar y encienda las luces de emergencia.' },
-  { paso: '2', titulo: 'Atender a los heridos', descripcion: 'Llame al 112 si hay lesionados. No mueva a las víctimas salvo peligro.' },
-  { paso: '3', titulo: 'Documentar el accidente', descripcion: 'Tome fotos, recoja datos del otro conductor y testigos.' },
-  { paso: '4', titulo: 'Parte amistoso', descripcion: 'Cumplimente el Parte Europeo de Accidente si es posible.' },
-  { paso: '5', titulo: 'Asistencia médica', descripcion: 'Acuda a urgencias incluso sin lesiones aparentes.' },
-  { paso: '6', titulo: 'Contactar con su abogado', descripcion: 'No firme nada con la aseguradora sin asesoramiento legal.' },
+const DEFAULT_QUE_SABER = [
+  { paso: '1', titulo: 'Prepare the documentation', descripcion: 'Gather deeds, bank statements, payslips, the family book and any prior agreements.' },
+  { paso: '2', titulo: 'Think about the children', descripcion: 'Children are always the priority. The judge values their wellbeing above all else.' },
+  { paso: '3', titulo: 'Do not sign anything hastily', descripcion: 'A poorly negotiated regulatory agreement can harm you for years.' },
+  { paso: '4', titulo: 'Seek professional advice', descripcion: 'A specialist lawyer will help you protect your rights and those of your children.' },
 ];
 
-export default async function AccidentesTraficoLocalPage({ params }: Props) {
-  const content = await getServiceContentByServiceAndCity(SERVICE_KEY, params.ciudad);
+export default async function FamilyLawLocalPage({ params }: Props) {
+  const content = await getServiceContentByServiceAndCity(SERVICE_KEY, params.city);
   if (!content) notFound();
 
   const cityName = content.localityName;
-  const faqs = content.faqsEs || [];
-  const sections = content.sectionsEs || [];
-  const process = content.processEs || [];
-  const custom = content.customSectionsEs || {};
+  const faqs = content.faqsEn || [];
+  const sections = content.sectionsEn || [];
+  const process = content.processEn || [];
+  const custom = content.customSectionsEn || {};
 
   const stats = (custom.stats as typeof DEFAULT_STATS) || [
     ...DEFAULT_STATS.slice(0, 1),
-    { value: cityName, label: 'Atención presencial y online' },
+    { value: cityName, label: 'In-person and online service' },
     ...DEFAULT_STATS.slice(1),
   ];
-  const tiposAccidente = (custom.tipos_accidente as typeof DEFAULT_TIPOS_ACCIDENTE) || DEFAULT_TIPOS_ACCIDENTE;
-  const queHacer = (custom.que_hacer as typeof DEFAULT_QUE_HACER) || DEFAULT_QUE_HACER;
+  const areas = (custom.areas as typeof DEFAULT_AREAS) || DEFAULT_AREAS;
+  const queSaber = (custom.que_saber as typeof DEFAULT_QUE_SABER) || DEFAULT_QUE_SABER;
   const customIntro = custom.intro as string | undefined;
 
   const breadcrumbs = [
-    { name: 'Inicio', href: '/es' },
-    { name: 'Áreas de Práctica', href: '/es/servicios' },
-    { name: 'Accidentes de Tráfico', href: `/es/servicios/${FOLDER_SLUG}` },
-    { name: `${SERVICE_NAME} en ${cityName}`, href: `/es/servicios/${FOLDER_SLUG}/${params.ciudad}` },
+    { name: 'Home', href: '/en' },
+    { name: 'Practice Areas', href: '/en/services' },
+    { name: 'Family Law', href: `/en/services/${FOLDER_SLUG_EN}` },
+    { name: `${SERVICE_NAME} in ${cityName}`, href: `/en/services/${FOLDER_SLUG_EN}/${params.city}` },
   ];
 
   return (
     <>
       <BreadcrumbSchema items={breadcrumbs} />
       <ServiceSchema
-        name={content.titleEs || `Abogados de Accidentes de Tráfico en ${cityName}`}
-        description={content.longDescriptionEs || ''}
-        slug={`${FOLDER_SLUG}/${content.localitySlug}`}
-        locale="es"
+        name={content.titleEn || `Family Law Lawyers in ${cityName}`}
+        description={content.longDescriptionEn || ''}
+        slug={`${FOLDER_SLUG_EN}/${content.localitySlug}`}
+        locale="en"
       />
       {faqs.length > 0 && <FAQSchema faqs={faqs} />}
 
-      <Navbar locale="es" />
+      <Navbar locale="en" />
 
       <main>
         {/* ═══════════════════════════════════════
-            HERO — local, con nombre de ciudad prominente
+            HERO
         ═══════════════════════════════════════ */}
         <section className="bg-[#1a1a1a] relative overflow-hidden min-h-[75vh] md:min-h-[80vh] flex flex-col">
-          <div className="absolute inset-0 opacity-25 z-0">
+          <div className="absolute inset-0 opacity-20 z-0">
             <Image
               src="/images/slides/garcia_valcarcel_caceres_abogados_slide_home_v2.webp"
-              alt={`Abogados de accidentes de tráfico en ${cityName}`}
+              alt={`Family law lawyers in ${cityName}`}
               fill
               className="object-cover"
               priority
@@ -130,7 +131,7 @@ export default async function AccidentesTraficoLocalPage({ params }: Props) {
               quality={60}
             />
           </div>
-          <div className="absolute inset-0 bg-gradient-to-br from-[rgba(26,26,26,0.7)] via-[rgba(30,30,30,0.4)] to-[rgba(26,26,26,0.6)] z-[1]" />
+          <div className="absolute inset-0 bg-gradient-to-br from-[rgba(26,26,26,0.75)] via-[rgba(30,30,30,0.45)] to-[rgba(26,26,26,0.65)] z-[1]" />
           <div
             className="absolute inset-0 opacity-[0.03] z-[1]"
             style={{
@@ -152,18 +153,17 @@ export default async function AccidentesTraficoLocalPage({ params }: Props) {
               </div>
 
               <h1 className="font-display text-3xl sm:text-4xl md:text-5xl lg:text-[3.5rem] font-bold text-white leading-[1.15] mb-5 md:mb-6">
-                Abogados de{' '}
-                <em className="italic text-brand-gold font-normal">accidentes de tráfico</em>{' '}
-                en {cityName}
+                <em className="italic text-brand-gold font-normal">Family law</em>{' '}
+                lawyers in {cityName}
               </h1>
 
               <p className="text-base md:text-lg text-neutral-300 leading-relaxed mb-8 md:mb-10 max-w-[580px]">
-                {content.shortDescriptionEs || `Especialistas en reclamaciones por accidentes de tráfico en ${cityName}. Indemnizaciones máximas, negociación con aseguradoras y defensa judicial.`}
+                {content.shortDescriptionEn || `Specialists in divorce, child custody, child support and visitation rights in ${cityName}. We stand by you with empathy and rigour.`}
               </p>
 
               <div className="flex gap-3 md:gap-4 items-center flex-wrap">
-                <Link href="/es/contacto" className="btn-primary">
-                  Primera consulta sin compromiso →
+                <Link href="/en/contact" className="btn-primary">
+                  No-obligation initial consultation →
                 </Link>
                 <a href="tel:+34968241025" className="btn-outline">
                   ☎ 968 241 025
@@ -172,7 +172,6 @@ export default async function AccidentesTraficoLocalPage({ params }: Props) {
             </div>
           </div>
 
-          {/* Stats bar local — dinámico desde custom_sections_es.stats */}
           <div className="relative z-[3] bg-brand-brown/90 backdrop-blur-sm border-t border-brand-dark/10">
             <div className="container-custom">
               <div className={`grid grid-cols-2 md:grid-cols-${stats.length} gap-0`}>
@@ -188,7 +187,7 @@ export default async function AccidentesTraficoLocalPage({ params }: Props) {
         </section>
 
         {/* ═══════════════════════════════════════
-            INTRO — Contenido local
+            INTRO — Local content
         ═══════════════════════════════════════ */}
         <section className="py-16 md:py-24 bg-white">
           <div className="container-custom max-w-6xl">
@@ -197,18 +196,18 @@ export default async function AccidentesTraficoLocalPage({ params }: Props) {
                 <div className="flex items-center gap-3 mb-4">
                   <span className="w-9 h-0.5 bg-brand-brown" />
                   <span className="text-[0.6rem] font-semibold text-brand-brown tracking-[0.2em] uppercase">
-                    Especialistas en {cityName}
+                    Specialists in {cityName}
                   </span>
                 </div>
                 <h2 className="section-title mb-6">
-                  {content.titleEs || `Abogados de accidentes de tráfico en ${cityName}`}
+                  {content.titleEn || `Family law lawyers in ${cityName}`}
                 </h2>
                 <div className="text-sm text-neutral-500 leading-relaxed space-y-4">
-                  <RichTextContent content={customIntro || content.longDescriptionEs || ''} />
+                  <RichTextContent content={customIntro || content.longDescriptionEn || ''} />
                 </div>
                 <div className="flex gap-3 flex-wrap mt-8">
-                  <Link href="/es/contacto" className="btn-primary">Valorar mi caso →</Link>
-                  <a href="tel:+34968241025" className="btn-outline-dark">☎ Llamar ahora</a>
+                  <Link href="/en/contact" className="btn-primary">Discuss my case →</Link>
+                  <a href="tel:+34968241025" className="btn-outline-dark">☎ Call now</a>
                 </div>
               </div>
 
@@ -217,7 +216,7 @@ export default async function AccidentesTraficoLocalPage({ params }: Props) {
                   <div className="relative aspect-[3/4] rounded-2xl overflow-hidden shadow-xl">
                     <Image
                       src="/images/slides/garcia_valcarcel_caceres_abogados_slide_home_v2.webp"
-                      alt={`Abogados accidentes de tráfico ${cityName}`}
+                      alt={`Family lawyers ${cityName}`}
                       fill
                       className="object-cover"
                       sizes="(max-width: 1024px) 100vw, 400px"
@@ -228,7 +227,7 @@ export default async function AccidentesTraficoLocalPage({ params }: Props) {
                   <div className="absolute -bottom-6 -left-6 bg-brand-brown-hover text-white p-6 rounded-2xl shadow-xl max-w-[220px]">
                     <MapPin size={20} className="text-brand-brown mb-2" />
                     <div className="font-display text-xl font-bold mb-1">{cityName}</div>
-                    <div className="text-[0.65rem] text-white/80 uppercase tracking-wider">Atención presencial y online</div>
+                    <div className="text-[0.65rem] text-white/80 uppercase tracking-wider">In-person and online service</div>
                   </div>
                 </div>
               </div>
@@ -237,27 +236,27 @@ export default async function AccidentesTraficoLocalPage({ params }: Props) {
         </section>
 
         {/* ═══════════════════════════════════════
-            TIPOS DE ACCIDENTE — dinámico desde custom_sections_es
+            AREAS — dynamic from custom_sections_en
         ═══════════════════════════════════════ */}
-        {tiposAccidente.length > 0 && (
+        {areas.length > 0 && (
           <section className="py-16 md:py-24 bg-neutral-50">
             <div className="container-custom max-w-6xl">
               <div className="reveal text-center mb-14">
                 <div className="flex items-center gap-3 justify-center mb-4">
                   <span className="w-9 h-0.5 bg-brand-brown" />
-                  <span className="text-[0.6rem] font-semibold text-brand-brown tracking-[0.2em] uppercase">Especialidades</span>
+                  <span className="text-[0.6rem] font-semibold text-brand-brown tracking-[0.2em] uppercase">Areas of practice</span>
                   <span className="w-9 h-0.5 bg-brand-brown" />
                 </div>
-                <h2 className="section-title mb-4">Tipos de accidentes de tráfico en {cityName}</h2>
+                <h2 className="section-title mb-4">Family law in {cityName}: how we can help</h2>
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-                {tiposAccidente.map((tipo, i) => (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                {areas.map((area, i) => (
                   <div key={i} className="reveal group bg-white p-7 rounded-2xl border border-neutral-100 hover:border-brand-brown/30 hover:shadow-lg transition-all text-center">
                     <div className="w-14 h-14 mx-auto mb-5 bg-brand-brown/10 rounded-xl flex items-center justify-center group-hover:bg-brand-brown transition-all">
-                      <Car size={24} className="text-brand-brown group-hover:text-white transition-colors" />
+                      <Heart size={24} className="text-brand-brown group-hover:text-white transition-colors" />
                     </div>
-                    <h3 className="font-serif text-base font-semibold text-brand-dark mb-2">{tipo.titulo}</h3>
-                    <p className="text-[0.8rem] text-neutral-400 leading-relaxed">{tipo.descripcion}</p>
+                    <h3 className="font-serif text-base font-semibold text-brand-dark mb-2">{area.titulo}</h3>
+                    <p className="text-[0.8rem] text-neutral-400 leading-relaxed">{area.descripcion}</p>
                   </div>
                 ))}
               </div>
@@ -266,25 +265,25 @@ export default async function AccidentesTraficoLocalPage({ params }: Props) {
         )}
 
         {/* ═══════════════════════════════════════
-            SECCIONES DE CONTENIDO LOCAL
+            LOCAL CONTENT SECTIONS
         ═══════════════════════════════════════ */}
         {sections.length > 0 && (
-          <section className="py-16 md:py-24 bg-neutral-50">
+          <section className="py-16 md:py-24 bg-white">
             <div className="container-custom max-w-6xl">
               <div className="reveal text-center mb-14">
                 <div className="flex items-center gap-3 justify-center mb-4">
                   <span className="w-9 h-0.5 bg-brand-brown" />
-                  <span className="text-[0.6rem] font-semibold text-brand-brown tracking-[0.2em] uppercase">Información relevante</span>
+                  <span className="text-[0.6rem] font-semibold text-brand-brown tracking-[0.2em] uppercase">Relevant information</span>
                   <span className="w-9 h-0.5 bg-brand-brown" />
                 </div>
-                <h2 className="section-title mb-4">Accidentes de tráfico en {cityName}: lo que debe saber</h2>
+                <h2 className="section-title mb-4">Family law in {cityName}: what you should know</h2>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {sections.map((section, i) => (
                   <div
                     key={i}
-                    className="reveal group bg-white p-7 md:p-8 rounded-2xl border border-neutral-100 hover:border-brand-brown/30 hover:shadow-lg transition-all"
+                    className="reveal group bg-neutral-50 p-7 md:p-8 rounded-2xl border border-neutral-100 hover:border-brand-brown/30 hover:shadow-lg transition-all"
                   >
                     <div className="flex items-start gap-4 mb-4">
                       <div className="w-11 h-11 bg-brand-brown rounded-xl flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
@@ -303,7 +302,7 @@ export default async function AccidentesTraficoLocalPage({ params }: Props) {
         )}
 
         {/* ═══════════════════════════════════════
-            BAREMO BANNER — igual que en genérica
+            BANNER — Confidentiality
         ═══════════════════════════════════════ */}
         <section className="py-16 md:py-20 bg-brand-dark relative overflow-hidden">
           <div
@@ -315,20 +314,21 @@ export default async function AccidentesTraficoLocalPage({ params }: Props) {
           <div className="container-custom max-w-5xl relative z-10">
             <div className="reveal flex flex-col md:flex-row items-center gap-8 md:gap-12">
               <div className="w-20 h-20 md:w-24 md:h-24 bg-brand-brown rounded-2xl flex items-center justify-center shrink-0">
-                <Scale size={40} className="text-white" />
+                <ShieldCheck size={40} className="text-white" />
               </div>
               <div className="flex-1 text-center md:text-left">
                 <h3 className="font-serif text-xl md:text-2xl font-semibold text-white mb-3">
-                  Expertos en el Baremo de Tráfico en {cityName}
+                  Maximum confidentiality in {cityName}
                 </h3>
                 <p className="text-sm text-neutral-300 leading-relaxed max-w-2xl">
-                  Aplicamos el <strong className="text-white">Sistema de Valoración de Daños (Ley 35/2015)</strong> para calcular
-                  la indemnización máxima en cada caso: lesiones temporales, secuelas permanentes, perjuicio patrimonial y lucro cesante.
+                  Everything you tell us is protected by <strong className="text-white">professional privilege</strong>.
+                  Family matters require absolute discretion, and at García-Valcárcel & Cáceres
+                  we guarantee it from the very first moment.
                 </p>
               </div>
               <div className="shrink-0">
-                <Link href="/es/contacto" className="btn-primary whitespace-nowrap">
-                  Valorar mi caso →
+                <Link href="/en/contact" className="btn-primary whitespace-nowrap">
+                  Discuss my case →
                 </Link>
               </div>
             </div>
@@ -336,21 +336,21 @@ export default async function AccidentesTraficoLocalPage({ params }: Props) {
         </section>
 
         {/* ═══════════════════════════════════════
-            QUÉ HACER TRAS UN ACCIDENTE — dinámico
+            WHAT YOU SHOULD KNOW — dynamic
         ═══════════════════════════════════════ */}
-        {queHacer.length > 0 && (
+        {queSaber.length > 0 && (
           <section className="py-16 md:py-24 bg-neutral-50">
             <div className="container-custom max-w-5xl">
               <div className="reveal text-center mb-14">
                 <div className="flex items-center gap-3 justify-center mb-4">
                   <span className="w-9 h-0.5 bg-brand-brown" />
-                  <span className="text-[0.6rem] font-semibold text-brand-brown tracking-[0.2em] uppercase">Guía práctica</span>
+                  <span className="text-[0.6rem] font-semibold text-brand-brown tracking-[0.2em] uppercase">Practical advice</span>
                   <span className="w-9 h-0.5 bg-brand-brown" />
                 </div>
-                <h2 className="section-title mb-4">Qué hacer tras un accidente de tráfico en {cityName}</h2>
+                <h2 className="section-title mb-4">Before starting a family law process in {cityName}</h2>
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-                {queHacer.map((item, i) => (
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                {queSaber.map((item, i) => (
                   <div key={i} className="reveal group bg-white p-7 rounded-2xl border border-neutral-100 hover:border-brand-brown/30 hover:shadow-lg transition-all">
                     <div className="flex items-start gap-4 mb-3">
                       <div className="w-11 h-11 bg-brand-brown rounded-xl flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
@@ -367,7 +367,7 @@ export default async function AccidentesTraficoLocalPage({ params }: Props) {
         )}
 
         {/* ═══════════════════════════════════════
-            PROCESO + CTA DE EMERGENCIA
+            PROCESS + CTA
         ═══════════════════════════════════════ */}
         {process.length > 0 && (
           <section className="py-16 md:py-24 bg-white">
@@ -376,9 +376,9 @@ export default async function AccidentesTraficoLocalPage({ params }: Props) {
                 <div className="lg:col-span-3">
                   <div className="flex items-center gap-3 mb-4">
                     <span className="w-9 h-0.5 bg-brand-brown" />
-                    <span className="text-[0.6rem] font-semibold text-brand-brown tracking-[0.2em] uppercase">Nuestro proceso</span>
+                    <span className="text-[0.6rem] font-semibold text-brand-brown tracking-[0.2em] uppercase">Our process</span>
                   </div>
-                  <h2 className="section-title mb-8">Cómo gestionamos su caso en {cityName}</h2>
+                  <h2 className="section-title mb-8">How we handle your case in {cityName}</h2>
 
                   <div className="space-y-0">
                     {process.map((step, i) => (
@@ -403,16 +403,16 @@ export default async function AccidentesTraficoLocalPage({ params }: Props) {
                       <Phone size={24} className="text-brand-brown" />
                     </div>
                     <h3 className="font-serif text-xl font-semibold mb-4">
-                      ¿Ha tenido un accidente en {cityName}?
+                      Need a family lawyer in {cityName}?
                     </h3>
                     <p className="text-sm text-white/80 leading-relaxed mb-6">
-                      Le asesoramos desde el primer momento. Primera consulta sin compromiso.
+                      We listen to you in complete confidentiality. No-obligation initial consultation.
                     </p>
                     <ul className="space-y-3 mb-8">
                       {[
-                        'Evaluación inmediata de su caso',
-                        `Atención presencial y online en ${cityName}`,
-                        'Sin adelanto de honorarios',
+                        'Personalised assessment of your case',
+                        `In-person and online service in ${cityName}`,
+                        'Maximum discretion guaranteed',
                       ].map((item, i) => (
                         <li key={i} className="flex items-center gap-2 text-sm text-white/90">
                           <CheckCircle2 size={14} className="text-brand-brown shrink-0" />
@@ -424,8 +424,8 @@ export default async function AccidentesTraficoLocalPage({ params }: Props) {
                       <a href="tel:+34968241025" className="inline-flex items-center justify-center gap-2 bg-brand-brown text-white text-sm font-semibold px-6 py-4 rounded-xl transition-all hover:bg-brand-brown/80 hover:shadow-xl">
                         <Phone size={18} /> 968 241 025
                       </a>
-                      <Link href="/es/contacto" className="inline-flex items-center justify-center gap-2 bg-white/10 text-white text-sm font-medium px-6 py-3 rounded-xl border border-white/20 transition-all hover:bg-white/20">
-                        Escribir por formulario →
+                      <Link href="/en/contact" className="inline-flex items-center justify-center gap-2 bg-white/10 text-white text-sm font-medium px-6 py-3 rounded-xl border border-white/20 transition-all hover:bg-white/20">
+                        Send us a message →
                       </Link>
                     </div>
                   </div>
@@ -436,7 +436,7 @@ export default async function AccidentesTraficoLocalPage({ params }: Props) {
         )}
 
         {/* ═══════════════════════════════════════
-            POR QUÉ ELEGIRNOS — localizado
+            WHY CHOOSE US
         ═══════════════════════════════════════ */}
         <section className="py-16 md:py-20 bg-neutral-50">
           <div className="container-custom max-w-6xl">
@@ -444,17 +444,17 @@ export default async function AccidentesTraficoLocalPage({ params }: Props) {
               <div className="bg-gradient-to-br from-brand-brown to-brand-brown/95 p-10 md:p-14 rounded-2xl">
                 <div className="text-center mb-10">
                   <h2 className="font-serif text-2xl md:text-3xl font-semibold text-brand-dark mb-3">
-                    ¿Por qué elegir García-Valcárcel & Cáceres en {cityName}?
+                    Why choose García-Valcárcel & Cáceres in {cityName}?
                   </h2>
                 </div>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-5 max-w-4xl mx-auto">
                   {[
-                    { title: '55+', desc: 'Años de experiencia' },
-                    { title: '1970', desc: 'Fundación del bufete' },
-                    { title: '5', desc: 'Profesionales especializados' },
-                    { title: cityName, desc: 'Presencial y videoconferencia' },
-                    { title: 'Trato directo', desc: 'Con el abogado titular' },
-                    { title: 'Sede Murcia', desc: 'Actuación en toda España' },
+                    { title: '55+', desc: 'Years of experience' },
+                    { title: '1970', desc: 'Year the firm was founded' },
+                    { title: '5', desc: 'Specialist professionals' },
+                    { title: cityName, desc: 'In-person and video conference' },
+                    { title: 'Direct contact', desc: 'With the lead lawyer' },
+                    { title: 'Murcia HQ', desc: 'Serving all of Spain' },
                   ].map((item, i) => (
                     <div key={i} className="bg-white/90 p-5 md:p-6 rounded-xl hover:bg-white hover:scale-[1.03] transition-all text-center">
                       <div className="font-display text-xl md:text-2xl font-bold text-brand-brown-hover mb-1">{item.title}</div>
@@ -476,10 +476,10 @@ export default async function AccidentesTraficoLocalPage({ params }: Props) {
               <div className="reveal text-center mb-12">
                 <div className="flex items-center gap-3 justify-center mb-4">
                   <span className="w-9 h-0.5 bg-brand-brown" />
-                  <span className="text-[0.6rem] font-semibold text-brand-brown tracking-[0.2em] uppercase">Resolvemos sus dudas</span>
+                  <span className="text-[0.6rem] font-semibold text-brand-brown tracking-[0.2em] uppercase">We answer your questions</span>
                   <span className="w-9 h-0.5 bg-brand-brown" />
                 </div>
-                <h2 className="section-title mb-4">Preguntas frecuentes sobre accidentes de tráfico en {cityName}</h2>
+                <h2 className="section-title mb-4">Frequently asked questions about family law in {cityName}</h2>
               </div>
               <div className="reveal space-y-4">
                 {faqs.map((faq, i) => (
@@ -504,27 +504,27 @@ export default async function AccidentesTraficoLocalPage({ params }: Props) {
         )}
 
         {/* ═══════════════════════════════════════
-            ENLACE A GENÉRICA + OTRAS CIUDADES
+            LINK TO GENERIC + OTHER CITIES
         ═══════════════════════════════════════ */}
         <section className="py-12 md:py-16 bg-neutral-50 border-t border-neutral-200">
           <div className="container-custom max-w-4xl">
             <div className="reveal text-center">
               <p className="text-sm text-neutral-400 mb-4">
-                Consulte también nuestra página general sobre accidentes de tráfico con información
-                sobre el baremo, tipos de siniestros y el proceso de reclamación completo.
+                Also visit our general family law page for information
+                on procedures, types of divorce and frequently asked questions.
               </p>
               <Link
-                href={`/es/servicios/${FOLDER_SLUG}`}
+                href={`/en/services/${FOLDER_SLUG_EN}`}
                 className="inline-flex items-center gap-2 text-sm font-semibold text-brand-brown hover:text-brand-brown-hover transition-colors"
               >
-                Ver página general de Accidentes de Tráfico <ArrowRight size={16} />
+                View general Family Law page <ArrowRight size={16} />
               </Link>
             </div>
           </div>
         </section>
 
         {/* ═══════════════════════════════════════
-            CTA FINAL
+            FINAL CTA
         ═══════════════════════════════════════ */}
         <section className="py-16 md:py-24 bg-brand-dark relative overflow-hidden">
           <div
@@ -538,25 +538,25 @@ export default async function AccidentesTraficoLocalPage({ params }: Props) {
               <div className="w-20 h-20 bg-brand-brown rounded-2xl flex items-center justify-center mx-auto mb-8 relative">
                 <Image
                   src="/images/logo/gvcabogados_murcia_logo_leon_blanco.webp"
-                  alt="GVC Abogados"
+                  alt="GVC Lawyers"
                   fill
                   className="object-contain p-4"
                   sizes="80px"
                 />
               </div>
               <h2 className="section-title-white mb-6">
-                Abogados de accidentes de tráfico en {cityName}
+                Family lawyers in {cityName}
               </h2>
               <p className="text-base md:text-lg text-neutral-300 leading-relaxed mb-4 max-w-2xl mx-auto">
-                Nuestra sede central está en <strong className="text-white">Gran Vía, 15 — 3ª Planta, 30008 Murcia</strong>.
+                Our head office is at <strong className="text-white">Gran Vía, 15 — 3rd Floor, 30008 Murcia</strong>.
               </p>
               <p className="text-base md:text-lg text-neutral-300 leading-relaxed mb-10 max-w-2xl mx-auto">
-                Atendemos clientes de {cityName} de forma presencial y por videoconferencia.
-                Primera consulta sin compromiso.
+                We serve clients from {cityName} in person and by video conference.
+                No-obligation initial consultation.
               </p>
               <div className="flex gap-3 md:gap-4 items-center flex-wrap justify-center">
-                <Link href="/es/contacto" className="inline-flex items-center gap-2 bg-brand-brown text-white text-xs font-semibold px-8 py-4 tracking-wide transition-all duration-300 hover:bg-brand-brown/80 hover:-translate-y-0.5 hover:shadow-xl">
-                  Consultar sin compromiso →
+                <Link href="/en/contact" className="inline-flex items-center gap-2 bg-brand-brown text-white text-xs font-semibold px-8 py-4 tracking-wide transition-all duration-300 hover:bg-brand-brown/80 hover:-translate-y-0.5 hover:shadow-xl">
+                  Get in touch — no obligation →
                 </Link>
                 <a href="tel:+34968241025" className="btn-outline">
                   ☎ 968 241 025
@@ -567,7 +567,7 @@ export default async function AccidentesTraficoLocalPage({ params }: Props) {
         </section>
       </main>
 
-      <Footer locale="es" />
+      <Footer locale="en" />
       <ScrollReveal />
     </>
   );

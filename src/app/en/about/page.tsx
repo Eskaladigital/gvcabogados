@@ -6,7 +6,7 @@ import { getTranslations } from '@/data/translations';
 
 export const metadata: Metadata = {
   title: 'About Us — Lawyers in Murcia | García-Valcárcel & Cáceres',
-  description: 'Learn about the history and values of our law firm in Murcia. Founded in 1946 by D. Blas García-Valcárcel. Specialists in civil liability with over 75 years of experience.',
+  description: 'Learn about the history and values of our law firm in Murcia. Established in 1970, with roots dating back to 1946. Specialists in civil liability with over 55 years of experience.',
   alternates: { canonical: 'https://www.gvcabogados.com/en/about' },
 };
 
@@ -21,7 +21,7 @@ export default function AboutPage() {
           <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'linear-gradient(rgba(255,255,255,.5) 1px,transparent 1px), linear-gradient(90deg,rgba(255,255,255,.5) 1px,transparent 1px)', backgroundSize: '80px 80px' }} />
           <div className="container-custom relative z-10">
             <div className="flex items-center gap-3 mb-4"><span className="w-9 h-0.5 bg-brand-brown" /><span className="text-[0.7rem] font-semibold text-brand-brown tracking-[0.2em] uppercase">The Firm</span></div>
-            <h1 className="font-display text-3xl md:text-5xl font-bold text-white leading-tight max-w-[700px]">Law firm in Murcia with <em className="italic text-brand-gold font-normal">over 75 years</em> of legal tradition</h1>
+            <h1 className="font-display text-3xl md:text-5xl font-bold text-white leading-tight max-w-[700px]">Law firm in Murcia with <em className="italic text-brand-gold font-normal">over 55 years</em> of legal tradition</h1>
           </div>
         </section>
         <section className="py-12 md:py-20">
@@ -29,9 +29,9 @@ export default function AboutPage() {
             <div className="reveal grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
               <div>
                 <h2 className="section-title mb-6">Our <span className="text-brand-brown">History</span></h2>
-                <p className="text-sm text-neutral-500 leading-relaxed mb-4">This firm was founded by <strong className="text-brand-dark">D. Blas García-Valcárcel</strong>, who began practicing law in Murcia on November 6, 1946. His nephew <strong className="text-brand-dark">D. Pedro-Alfonso García-Valcárcel y Escribano</strong> later joined the firm, expanding its practice areas.</p>
-                <p className="text-sm text-neutral-500 leading-relaxed mb-4">At García-Valcárcel & Cáceres we specialize in civil liability: traffic accidents, medical malpractice, workplace accidents and claims against public authorities. We also practice other areas of private and public law, adapting our team to the needs of each client.</p>
-                <p className="text-sm text-neutral-500 leading-relaxed">Based in Gran Vía, Murcia, our firm has witnessed the evolution of Spanish law for over seven decades, always maintaining our commitment to excellence.</p>
+                <p className="text-sm text-neutral-500 leading-relaxed mb-4">The origins of this firm date back to 1946, when <strong className="text-brand-dark">D. Blas García-Valcárcel</strong> began practicing law in Murcia. In 1970, his nephew <strong className="text-brand-dark">D. Pedro-Alfonso García-Valcárcel y Escribano</strong> joined and formally established the firm García-Valcárcel & Cáceres, which quickly gained prestige in traffic accident cases and civil liability.</p>
+                <p className="text-sm text-neutral-500 leading-relaxed mb-4">From the year 2000 onwards, the firm also specialized in medical malpractice, establishing itself as a benchmark in civil liability in the Region of Murcia. Today we specialize in traffic accidents, medical malpractice, workplace accidents and claims against public authorities. We also practice other areas of private and public law, adapting our team to the needs of each client.</p>
+                <p className="text-sm text-neutral-500 leading-relaxed">Based in Gran Vía, Murcia, our firm has witnessed the evolution of Spanish law for over five decades, always maintaining our commitment to excellence.</p>
               </div>
               <div className="bg-neutral-50 border border-neutral-200 p-8">
                 <div className="font-serif text-4xl text-brand-brown/30 leading-none mb-3">&ldquo;</div>
@@ -47,7 +47,7 @@ export default function AboutPage() {
           <div className="container-custom">
             <h2 className="section-title mb-10 text-center">Our <span className="text-brand-brown">Values</span></h2>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-              {[{ icon: '✦', title: 'Quality', desc: 'Maximum rigor in every case' }, { icon: '◆', title: 'Trust', desc: 'Total transparency with clients' }, { icon: '★', title: 'Experience', desc: 'Over 75 years of practice' }, { icon: '♦', title: 'Nobility', desc: 'Professional integrity and honesty' }].map((v, i) => (
+              {[{ icon: '✦', title: 'Quality', desc: 'Maximum rigor in every case' }, { icon: '◆', title: 'Trust', desc: 'Total transparency with clients' }, { icon: '★', title: 'Experience', desc: 'Over 55 years of practice' }, { icon: '♦', title: 'Nobility', desc: 'Professional integrity and honesty' }].map((v, i) => (
                 <div key={i} className="reveal text-center p-6 bg-white border border-neutral-200 hover:border-brand-brown transition-colors">
                   <div className="text-2xl text-brand-brown mb-3">{v.icon}</div>
                   <h3 className="font-serif text-lg font-semibold text-brand-dark mb-2">{v.title}</h3>

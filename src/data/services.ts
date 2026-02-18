@@ -969,6 +969,15 @@ const FOLDER_SLUG_MAP: Record<string, string> = {
   'responsabilidad-civil': 'responsabilidad-civil',
 };
 
+const FOLDER_SLUG_MAP_EN: Record<string, string> = {
+  'accidentes-trafico': 'traffic-accidents',
+  'derecho-familia': 'family-law',
+  'negligencias-medicas': 'medical-malpractice',
+  'extranjeria': 'immigration',
+  'derecho-administrativo': 'administrative-law',
+  'responsabilidad-civil': 'civil-liability',
+};
+
 const DISPLAY_NAME_ES: Record<string, string> = {
   'extranjeria': 'Permisos de Residencia e Inmigración',
   'derecho-administrativo': 'Responsabilidad de la Administración',
@@ -983,7 +992,8 @@ export function getActiveServices() {
   return services.filter((s) => ACTIVE_SERVICE_IDS.includes(s.id));
 }
 
-export function getFolderSlug(serviceId: string): string {
+export function getFolderSlug(serviceId: string, locale: 'es' | 'en' = 'es'): string {
+  if (locale === 'en') return FOLDER_SLUG_MAP_EN[serviceId] || serviceId;
   return FOLDER_SLUG_MAP[serviceId] || serviceId;
 }
 
@@ -992,7 +1002,7 @@ export function getServicesByLocale(locale: 'es' | 'en') {
     .sort((a, b) => a.priority - b.priority)
     .map((s) => ({
       id: s.id,
-      slug: getFolderSlug(s.id),
+      slug: getFolderSlug(s.id, locale),
       localSlug: locale === 'es' ? s.slugEs : s.slugEn,
       name: locale === 'es'
         ? (DISPLAY_NAME_ES[s.id] || s.nameEs)

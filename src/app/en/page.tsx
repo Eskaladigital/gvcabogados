@@ -12,16 +12,16 @@ import StrategicCTAs from '@/components/home/StrategicCTAs';
 import { LocalBusinessSchema } from '@/components/seo/SchemaOrg';
 
 export const metadata: Metadata = {
-  title: 'Lawyers in Murcia, Spain — García-Valcárcel & Cáceres | Law Firm since 1946',
+  title: 'Lawyers in Murcia, Spain — García-Valcárcel & Cáceres | Law Firm since 1970',
   description:
-    'Lawyers in Murcia, Spain with over 75 years of experience. Specialists in civil liability: traffic accidents, medical malpractice, workplace accidents and claims against public authorities. Free initial consultation. ☎ +34 968 241 025.',
+    'Lawyers in Murcia, Spain with over 55 years of experience. Specialists in civil liability: traffic accidents, medical malpractice, workplace accidents and claims against public authorities. Free initial consultation. ☎ +34 968 241 025.',
   alternates: {
     canonical: 'https://www.gvcabogados.com/en',
     languages: { es: '/es' },
   },
   openGraph: {
     title: 'Lawyers in Murcia, Spain — García-Valcárcel & Cáceres',
-    description: 'Law firm in Murcia founded in 1946. Specialists in civil liability with over 75 years of experience. Free initial consultation.',
+    description: 'Law firm in Murcia established in 1970. Specialists in civil liability with over 55 years of experience. Free initial consultation.',
     url: 'https://www.gvcabogados.com/en',
     siteName: 'García-Valcárcel & Cáceres Lawyers',
     locale: 'en_GB',

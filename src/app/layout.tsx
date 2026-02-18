@@ -6,7 +6,7 @@ import BackToTopButton from '@/components/layout/WhatsAppButton';
 export const metadata: Metadata = {
   title: 'García-Valcárcel & Cáceres — Bufete de Abogados en Murcia',
   description:
-    'Despacho de abogados en Murcia con más de 75 años de experiencia. Especialistas en responsabilidad civil: accidentes de tráfico, negligencias médicas, accidentes laborales y responsabilidad frente a la Administración.',
+    'Despacho de abogados en Murcia con más de 55 años de experiencia. Especialistas en responsabilidad civil: accidentes de tráfico, negligencias médicas, accidentes laborales y responsabilidad frente a la Administración.',
   icons: {
     icon: '/images/logo/gvcabogados_murcia_logo_favicon_marron_sinfondo.webp',
     shortcut: '/images/logo/gvcabogados_murcia_logo_favicon_marron_sinfondo.webp',

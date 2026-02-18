@@ -2,37 +2,36 @@ import { Metadata } from 'next';
 import Link from 'next/link';
 import Image from 'next/image';
 import {
-  Car, Scale, ShieldCheck, FileSearch, Gavel, Clock,
-  Phone, AlertTriangle, HeartPulse, BadgeEuro, ArrowRight,
-  CheckCircle2, ChevronRight, MapPin
+  Users, Heart, ShieldCheck, Scale, FileText, Home,
+  Phone, ChevronRight, MapPin, ArrowRight, CheckCircle2, Clock,
+  Handshake, Baby, BadgeEuro, BookOpen,
 } from 'lucide-react';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import ScrollReveal from '@/components/ui/ScrollReveal';
 import Breadcrumbs from '@/components/ui/Breadcrumbs';
 import { BreadcrumbSchema, ServiceSchema, FAQSchema } from '@/components/seo/SchemaOrg';
-import { services } from '@/data/services';
 import { supabaseAdmin } from '@/lib/supabase';
 
-const SERVICE_KEY = 'accidentes-trafico';
-const FOLDER_SLUG = 'accidentes-trafico';
-const GENERIC_SLUG_EN = 'traffic-accidents';
+const SERVICE_KEY = 'derecho-familia';
+const FOLDER_SLUG_EN = 'family-law';
+const FOLDER_SLUG_ES = 'derecho-familia';
 
 export const metadata: Metadata = {
-  title: 'Abogados de Accidentes de Tráfico — Especialistas en Indemnizaciones | GVC Abogados',
+  title: 'Family Law Lawyers — Divorce, Custody, Child Support | GVC Lawyers',
   description:
-    'Abogados especialistas en accidentes de tráfico. Expertos en el baremo de valoración de daños (Ley 35/2015), indemnizaciones máximas y defensa de víctimas. Más de 55 años de experiencia. Primera consulta sin compromiso. ☎ 968 241 025.',
+    'Specialist family law lawyers: divorce, child custody, child support, visitation rights, division of assets. Over 55 years of experience. ☎ 968 241 025.',
   alternates: {
-    canonical: `https://www.gvcabogados.com/es/servicios/${FOLDER_SLUG}`,
-    languages: { en: `/en/services/${GENERIC_SLUG_EN}` },
+    canonical: `https://www.gvcabogados.com/en/services/${FOLDER_SLUG_EN}`,
+    languages: { es: `/es/servicios/${FOLDER_SLUG_ES}` },
   },
   openGraph: {
-    title: 'Abogados de Accidentes de Tráfico — GVC Abogados',
+    title: 'Family Law Lawyers — GVC Lawyers',
     description:
-      'Especialistas en reclamaciones por accidentes de tráfico, indemnizaciones y defensa de víctimas. Más de 55 años de experiencia.',
-    url: `https://www.gvcabogados.com/es/servicios/${FOLDER_SLUG}`,
-    siteName: 'García-Valcárcel & Cáceres Abogados',
-    locale: 'es_ES',
+      'Specialists in family law: divorce, custody, child support, visitation rights and property division. Over 55 years of experience.',
+    url: `https://www.gvcabogados.com/en/services/${FOLDER_SLUG_EN}`,
+    siteName: 'García-Valcárcel & Cáceres Lawyers',
+    locale: 'en_GB',
     type: 'website',
   },
 };
@@ -48,73 +47,104 @@ async function getCitiesForService(): Promise<{ name: string; slug: string }[]> 
   return data.map((row: any) => ({ name: row.localities.name, slug: row.localities.slug }));
 }
 
-const TIPOS_ACCIDENTE = [
-  { icon: Car, title: 'Colisiones entre vehículos', desc: 'Alcances, choques frontales, laterales y en cadena. Reclamamos a la aseguradora del responsable la máxima indemnización.' },
-  { icon: AlertTriangle, title: 'Atropellos a peatones', desc: 'Defensa integral de la víctima atropellada: indemnización por lesiones, daño moral y lucro cesante.' },
-  { icon: HeartPulse, title: 'Lesiones graves y secuelas', desc: 'Latigazo cervical, fracturas, lesiones medulares, TCE. Valoramos cada secuela para maximizar la compensación.' },
-  { icon: ShieldCheck, title: 'Accidentes con fuga o sin seguro', desc: 'Reclamamos al Consorcio de Compensación de Seguros cuando el responsable huye o carece de póliza.' },
-  { icon: Gavel, title: 'Accidentes laborales in itinere', desc: 'Accidentes de tráfico ocurridos durante el trayecto al trabajo. Doble vía de reclamación: laboral y civil.' },
-  { icon: FileSearch, title: 'Defectos de vía pública', desc: 'Siniestros por mal estado de la carretera: baches, señalización deficiente, obras sin proteger. Responsabilidad patrimonial de la Administración.' },
+const FAMILY_AREAS = [
+  {
+    icon: Heart,
+    title: 'Divorce and separation',
+    desc: 'We handle uncontested and contested divorces with the utmost discretion. We protect your interests and those of your children at every stage of the process.',
+  },
+  {
+    icon: Baby,
+    title: 'Child custody',
+    desc: 'Sole custody, joint custody or modification of the current arrangement. We uphold the best interests of the child as the guiding principle.',
+  },
+  {
+    icon: BadgeEuro,
+    title: 'Child support',
+    desc: 'Setting, modifying or claiming unpaid support. We act to ensure maintenance payments are fair and effectively enforced.',
+  },
+  {
+    icon: Clock,
+    title: 'Visitation rights',
+    desc: 'Establishing, extending or restricting visitation arrangements. We safeguard the emotional stability of the children.',
+  },
+  {
+    icon: Home,
+    title: 'Division of assets',
+    desc: 'Division of joint property after divorce: family home, bank accounts, investments and shared debts.',
+  },
+  {
+    icon: Handshake,
+    title: 'Family mediation',
+    desc: 'We encourage agreement between the parties to reduce the emotional and financial cost. Dialogue as the preferred path.',
+  },
+  {
+    icon: BookOpen,
+    title: 'Domestic partnerships',
+    desc: 'Advice on establishing, financial arrangements and dissolution of domestic partnerships. Legal rights and obligations.',
+  },
+  {
+    icon: Scale,
+    title: 'Domestic violence',
+    desc: 'Comprehensive legal assistance for victims: protection orders, interim measures and support throughout the entire process.',
+  },
 ];
 
-const BAREMO_CONCEPTOS = [
-  { label: 'Lesiones temporales', desc: 'Perjuicio personal básico + particular durante la curación', value: '30-100 €/día' },
-  { label: 'Secuelas permanentes', desc: 'Valoradas de 1 a 100 puntos según gravedad', value: '800-250.000 €' },
-  { label: 'Perjuicio estético', desc: 'De "ligero" (1-6) a "importantísimo" (50)', value: '1.000-150.000 €' },
-  { label: 'Lucro cesante', desc: 'Ingresos dejados de percibir durante la baja y de forma permanente', value: 'Variable' },
-  { label: 'Gastos sanitarios futuros', desc: 'Rehabilitación, prótesis, adaptación del domicilio', value: 'Variable' },
-  { label: 'Gran invalidez', desc: 'Necesidad de ayuda de tercera persona permanente', value: '+300.000 €' },
+const CONCERNS = [
+  { question: 'What will happen to my children?', answer: 'The best interests of the child always prevail. We work to achieve the custody and visitation arrangement most beneficial for them, preserving the relationship with both parents.' },
+  { question: 'Will I lose my home?', answer: 'Use of the family home is assigned based on several factors (child custody, ownership, financial situation). We advise you to protect your rights over the property.' },
+  { question: 'How long will the process take?', answer: 'An uncontested divorce can be resolved in 2–3 months. A contested one may take 8–14 months depending on complexity. We give you realistic estimates from day one.' },
+  { question: 'Can I modify the support later?', answer: 'Yes. When economic or personal circumstances change (job loss, remarriage, change of residence), you can apply to the court for a modification of the existing measures.' },
 ];
 
-const PROCESO = [
-  { step: 1, title: 'Consulta y evaluación inicial', desc: 'Analizamos la viabilidad de su caso sin compromiso. Revisamos partes, atestados e informes médicos.' },
-  { step: 2, title: 'Recopilación de pruebas', desc: 'Reunimos toda la documentación: informe de la aseguradora, historial clínico, informes periciales y testigos.' },
-  { step: 3, title: 'Reclamación extrajudicial', desc: 'Negociamos directamente con la compañía de seguros. El 80 % de los casos se resuelve en esta fase.' },
-  { step: 4, title: 'Demanda judicial', desc: 'Si la oferta es insuficiente, interponemos demanda civil o penal ante los tribunales competentes.' },
-  { step: 5, title: 'Cobro de indemnización', desc: 'Gestionamos el cobro íntegro y verificamos que incluye todos los conceptos del baremo.' },
+const PROCESS = [
+  { step: 1, title: 'No-obligation initial consultation', desc: 'We listen to your situation in complete confidentiality. We evaluate the legal options and clearly explain what to expect in each scenario.' },
+  { step: 2, title: 'Personalized strategy', desc: 'We design an action plan tailored to your circumstances: amicable resolution, mediation or litigation. You decide with all the information at hand.' },
+  { step: 3, title: 'Negotiation or mediation', desc: 'We always try to reach a reasonable agreement. 70% of our family cases are resolved without the need for a trial.' },
+  { step: 4, title: 'Court proceedings', desc: 'If an agreement is not possible, we defend your position before the court with determination and rigour. We prepare every detail of the case.' },
+  { step: 5, title: 'Enforcement and follow-up', desc: 'We ensure the judgment is enforced: maintenance, visitation, division of assets. We stand by you until the end.' },
 ];
 
 const FAQS = [
-  { question: '¿Cuánto tiempo tengo para reclamar tras un accidente de tráfico?', answer: 'El plazo general es de <strong>1 año</strong> desde la fecha del accidente o desde el alta médica definitiva (estabilización de secuelas). Si hay procedimiento penal, el plazo se interrumpe hasta que la sentencia o el sobreseimiento sean firmes. Es fundamental actuar cuanto antes para preservar las pruebas.' },
-  { question: '¿Qué indemnización me corresponde por un accidente de tráfico?', answer: 'Depende de la gravedad de las lesiones, las secuelas permanentes, su edad, situación laboral y familiar. El <strong>baremo de tráfico (Ley 35/2015)</strong> establece tablas con horquillas de valoración. Un latigazo cervical leve puede suponer entre 2.000 y 6.000 €, mientras que lesiones graves con secuelas permanentes pueden superar los 200.000 €. Nuestros abogados realizan un cálculo personalizado para cada caso.' },
-  { question: '¿Tengo que adelantar dinero para reclamar?', answer: 'En García-Valcárcel & Cáceres, la <strong>primera consulta es sin compromiso</strong>. Además, ofrecemos la posibilidad de trabajar con una provisión de fondos muy reducida, abonando la mayor parte de nuestros honorarios al cobrar la indemnización. De esta forma, minimizamos el riesgo económico para el cliente.' },
-  { question: '¿Qué pasa si el responsable se da a la fuga o no tiene seguro?', answer: 'Puede reclamar al <strong>Consorcio de Compensación de Seguros</strong>, un organismo público que cubre estos supuestos. Nosotros nos encargamos de toda la tramitación para que reciba su indemnización igualmente.' },
-  { question: '¿Puedo reclamar si el accidente fue parcialmente culpa mía?', answer: 'Sí. En España se aplica el principio de <strong>concurrencia de culpas</strong>: si la otra parte también fue responsable, tendrá derecho a una indemnización proporcional a su grado de culpa. Nuestros abogados defenderán que su porcentaje de responsabilidad sea el menor posible.' },
-  { question: '¿Cuánto tarda en resolverse una reclamación por accidente?', answer: 'La vía extrajudicial suele resolverse en <strong>3 a 8 meses</strong>. Si hay que acudir a juicio, el plazo se extiende a <strong>12-18 meses</strong> dependiendo del juzgado. Trabajamos para que su caso se resuelva lo antes posible sin renunciar a la indemnización que le corresponde.' },
+  { question: 'How much does a divorce cost?', answer: 'It depends on the type of divorce. An <strong>uncontested divorce</strong> is significantly more affordable than a contested one. At the initial consultation, after learning about your case, we provide a detailed and transparent quote with no surprises.' },
+  { question: 'Can I get divorced without my spouse\'s agreement?', answer: 'Yes. In Spain, the other spouse\'s consent is not required to get divorced. It is sufficient that <strong>3 months have passed since the marriage</strong>. The divorce will proceed as contested if there is no agreement.' },
+  { question: 'What is joint custody and when is it granted?', answer: 'Joint custody means both parents live with the children in alternating periods (weeks, fortnights or months). Courts grant it when it is shown to be <strong>in the best interests of the child</strong>, considering proximity of homes, work schedules and the prior relationship with both parents.' },
+  { question: 'How much is child support?', answer: 'There is no fixed amount. It is calculated based on the <strong>income of the person obliged to pay</strong>, the children\'s needs (education, healthcare, leisure) and the family\'s previous standard of living. Courts apply indicative tables, but each case is unique.' },
+  { question: 'Can a regulatory agreement already signed be modified?', answer: 'Yes, through a <strong>modification of measures</strong> procedure. It is necessary to demonstrate a substantial change in circumstances (job loss, relocation, illness, new needs of the children). We can process it by mutual agreement or through contested proceedings.' },
+  { question: 'What rights do I have as a non-custodial parent?', answer: 'You have the right to a <strong>visitation and communication arrangement</strong> with your children, to be informed about their education, health and wellbeing, and to participate in the important decisions of their lives. If you are being prevented from having contact, we can apply for enforcement measures through the court.' },
 ];
 
-export default async function AccidentesTraficoPage() {
-  const svc = services.find(s => s.id === SERVICE_KEY)!;
+export default async function FamilyLawPage() {
   const cities = await getCitiesForService();
 
   const breadcrumbs = [
-    { name: 'Inicio', href: '/es' },
-    { name: 'Áreas de Práctica', href: '/es/servicios' },
-    { name: 'Accidentes de Tráfico', href: `/es/servicios/${FOLDER_SLUG}` },
+    { name: 'Home', href: '/en' },
+    { name: 'Practice Areas', href: '/en/services' },
+    { name: 'Family Law', href: `/en/services/${FOLDER_SLUG_EN}` },
   ];
 
   return (
     <>
       <BreadcrumbSchema items={breadcrumbs} />
       <ServiceSchema
-        name="Abogados de Accidentes de Tráfico — García-Valcárcel & Cáceres"
-        description={svc.descriptionEs}
-        slug={FOLDER_SLUG}
-        locale="es"
+        name="Family Law Lawyers — García-Valcárcel & Cáceres"
+        description="Specialist family law lawyers: divorce, child custody, child support, visitation rights and division of assets."
+        slug={FOLDER_SLUG_EN}
+        locale="en"
       />
       <FAQSchema faqs={FAQS} />
 
-      <Navbar locale="es" alternateUrl={`/en/services/${GENERIC_SLUG_EN}`} />
+      <Navbar locale="en" alternateUrl={`/es/servicios/${FOLDER_SLUG_ES}`} />
 
       <main>
         {/* ═══════════════════════════════════════
-            HERO — full-bleed, sobrio, potente
+            HERO
         ═══════════════════════════════════════ */}
         <section className="bg-[#1a1a1a] relative overflow-hidden min-h-[85vh] flex flex-col">
-          <div className="absolute inset-0 opacity-25 z-0">
+          <div className="absolute inset-0 opacity-20 z-0">
             <Image
               src="/images/slides/garcia_valcarcel_caceres_abogados_slide_home_v2.webp"
-              alt="Abogados de accidentes de tráfico"
+              alt="Family law lawyers"
               fill
               className="object-cover"
               priority
@@ -122,7 +152,7 @@ export default async function AccidentesTraficoPage() {
               quality={60}
             />
           </div>
-          <div className="absolute inset-0 bg-gradient-to-br from-[rgba(26,26,26,0.7)] via-[rgba(30,30,30,0.4)] to-[rgba(26,26,26,0.6)] z-[1]" />
+          <div className="absolute inset-0 bg-gradient-to-br from-[rgba(26,26,26,0.75)] via-[rgba(30,30,30,0.45)] to-[rgba(26,26,26,0.65)] z-[1]" />
           <div
             className="absolute inset-0 opacity-[0.03] z-[1]"
             style={{
@@ -138,23 +168,23 @@ export default async function AccidentesTraficoPage() {
               <div className="flex items-center gap-3 mb-6 md:mb-8 mt-6">
                 <span className="w-9 h-0.5 bg-brand-brown" />
                 <span className="text-[0.7rem] font-semibold text-brand-brown tracking-[0.2em] uppercase">
-                  Especialistas en responsabilidad civil
+                  Family Law
                 </span>
               </div>
 
               <h1 className="font-display text-3xl sm:text-4xl md:text-5xl lg:text-[3.8rem] font-bold text-white leading-[1.15] mb-5 md:mb-6">
-                Abogados de{' '}
-                <em className="italic text-brand-gold font-normal">accidentes de tráfico</em>
+                <em className="italic text-brand-gold font-normal">Family law</em>{' '}
+                lawyers
               </h1>
 
               <p className="text-base md:text-lg text-neutral-300 leading-relaxed mb-8 md:mb-10 max-w-[560px]">
-                Luchamos para que reciba la <strong className="text-white">máxima indemnización</strong> posible.
-                Expertos en el baremo de tráfico, negociación con aseguradoras y defensa ante los tribunales.
+                We stand by you during the most difficult times with <strong className="text-white">empathy, discretion and legal rigour</strong>.
+                Divorce, custody, child support and everything that affects your family.
               </p>
 
               <div className="flex gap-3 md:gap-4 items-center flex-wrap">
-                <Link href="/es/contacto" className="btn-primary">
-                  Primera consulta sin compromiso →
+                <Link href="/en/contact" className="btn-primary">
+                  No-obligation initial consultation →
                 </Link>
                 <a href="tel:+34968241025" className="btn-outline">
                   ☎ 968 241 025
@@ -168,10 +198,10 @@ export default async function AccidentesTraficoPage() {
             <div className="container-custom">
               <div className="grid grid-cols-2 md:grid-cols-4 gap-0">
                 {[
-                  { value: '55+', label: 'Años de experiencia' },
-                  { value: '80%', label: 'Resueltos sin juicio' },
-                  { value: 'Ley 35/2015', label: 'Baremo actualizado' },
-                  { value: '100%', label: 'Compromiso con el cliente' },
+                  { value: '55+', label: 'Years of experience' },
+                  { value: '70%', label: 'Resolved by agreement' },
+                  { value: 'Since 1970', label: 'Family firm' },
+                  { value: 'No obligation', label: 'Initial consultation' },
                 ].map((stat, i) => (
                   <div
                     key={i}
@@ -191,7 +221,7 @@ export default async function AccidentesTraficoPage() {
         </section>
 
         {/* ═══════════════════════════════════════
-            INTRO — Qué hacemos
+            INTRO — Human approach
         ═══════════════════════════════════════ */}
         <section className="py-16 md:py-24 bg-white">
           <div className="container-custom max-w-6xl">
@@ -200,30 +230,32 @@ export default async function AccidentesTraficoPage() {
                 <div className="flex items-center gap-3 mb-4">
                   <span className="w-9 h-0.5 bg-brand-brown" />
                   <span className="text-[0.6rem] font-semibold text-brand-brown tracking-[0.2em] uppercase">
-                    ¿Ha sufrido un accidente?
+                    We understand your situation
                   </span>
                 </div>
                 <h2 className="section-title mb-6">
-                  Defendemos sus derechos como víctima de un accidente de tráfico
+                  A firm that understands there is a family behind every case file
                 </h2>
                 <div className="space-y-4 text-sm text-neutral-500 leading-relaxed">
                   <p>
-                    Tras un accidente de tráfico, las compañías aseguradoras buscan minimizar las indemnizaciones.
-                    Nuestro equipo conoce sus estrategias y trabaja para que usted reciba la <strong className="text-brand-dark">compensación íntegra</strong> que le corresponde
-                    según el baremo de valoración de daños personales.
+                    Family matters are not just another procedure. They affect the most important things in your life:
+                    your children, your home, your emotional and financial stability. We know this, and that is why we work
+                    with an approach that combines <strong className="text-brand-dark">legal firmness</strong> and <strong className="text-brand-dark">personal sensitivity</strong>.
                   </p>
                   <p>
-                    Nos encargamos de <strong className="text-brand-dark">todo el proceso</strong>: desde la recogida de pruebas y la obtención del atestado policial,
-                    hasta la negociación directa con la aseguradora o, si es necesario, la defensa de su caso ante los tribunales.
+                    Since 1970, García-Valcárcel & Cáceres has supported hundreds of families through divorce,
+                    custody and support proceedings. Our experience allows us to anticipate scenarios,
+                    propose realistic solutions and, above all, protect what matters most to you.
                   </p>
                   <p>
-                    Contamos con una red de peritos médicos, reconstructores de accidentes y forenses que respaldan
-                    nuestras reclamaciones con informes técnicos rigurosos.
+                    We always prioritise agreement and mediation, because a negotiated divorce is better for everyone
+                    — especially for the children. But when agreement is not possible, we defend your position
+                    before the courts with all the strength the case demands.
                   </p>
                 </div>
                 <div className="flex gap-3 flex-wrap mt-8">
-                  <Link href="/es/contacto" className="btn-primary">Valorar mi caso →</Link>
-                  <a href="tel:+34968241025" className="btn-outline-dark">☎ Llamar ahora</a>
+                  <Link href="/en/contact" className="btn-primary">Discuss my case →</Link>
+                  <a href="tel:+34968241025" className="btn-outline-dark">☎ Call now</a>
                 </div>
               </div>
 
@@ -232,7 +264,7 @@ export default async function AccidentesTraficoPage() {
                   <div className="relative aspect-[3/4] rounded-2xl overflow-hidden shadow-xl">
                     <Image
                       src="/images/slides/garcia_valcarcel_caceres_abogados_slide_home_v2.webp"
-                      alt="Abogados especialistas en accidentes de tráfico"
+                      alt="Specialist family law lawyers"
                       fill
                       className="object-cover"
                       sizes="(max-width: 1024px) 100vw, 400px"
@@ -241,8 +273,9 @@ export default async function AccidentesTraficoPage() {
                     <div className="absolute inset-0 bg-gradient-to-t from-brand-dark/60 via-transparent to-transparent" />
                   </div>
                   <div className="absolute -bottom-6 -left-6 bg-brand-brown-hover text-white p-6 rounded-2xl shadow-xl max-w-[220px]">
-                    <div className="font-display text-3xl font-bold mb-1">Desde 1970</div>
-                    <div className="text-[0.65rem] text-white/80 uppercase tracking-wider">Defendiendo víctimas de accidentes</div>
+                    <Heart size={20} className="text-brand-brown mb-2" />
+                    <div className="font-display text-3xl font-bold mb-1">Since 1970</div>
+                    <div className="text-[0.65rem] text-white/80 uppercase tracking-wider">Protecting families</div>
                   </div>
                 </div>
               </div>
@@ -251,25 +284,25 @@ export default async function AccidentesTraficoPage() {
         </section>
 
         {/* ═══════════════════════════════════════
-            TIPOS DE ACCIDENTE
+            FAMILY LAW AREAS
         ═══════════════════════════════════════ */}
         <section className="py-16 md:py-24 bg-neutral-50">
           <div className="container-custom max-w-6xl">
             <div className="reveal text-center mb-14">
               <div className="flex items-center gap-3 justify-center mb-4">
                 <span className="w-9 h-0.5 bg-brand-brown" />
-                <span className="text-[0.6rem] font-semibold text-brand-brown tracking-[0.2em] uppercase">Ámbito de actuación</span>
+                <span className="text-[0.6rem] font-semibold text-brand-brown tracking-[0.2em] uppercase">Areas of practice</span>
                 <span className="w-9 h-0.5 bg-brand-brown" />
               </div>
-              <h2 className="section-title mb-4">Tipos de accidentes que gestionamos</h2>
+              <h2 className="section-title mb-4">How we can help you</h2>
               <p className="text-sm text-neutral-400 max-w-xl mx-auto">
-                Cada tipo de siniestro tiene sus particularidades legales. Nuestro equipo cuenta con experiencia específica en todos ellos.
+                Family law encompasses very different situations. Our team has specific experience in each of them.
               </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {TIPOS_ACCIDENTE.map((tipo, i) => {
-                const Icon = tipo.icon;
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+              {FAMILY_AREAS.map((area, i) => {
+                const Icon = area.icon;
                 return (
                   <div
                     key={i}
@@ -278,8 +311,8 @@ export default async function AccidentesTraficoPage() {
                     <div className="w-12 h-12 bg-brand-brown/10 rounded-xl flex items-center justify-center mb-5 group-hover:bg-brand-brown group-hover:scale-110 transition-all">
                       <Icon size={22} className="text-brand-brown group-hover:text-white transition-colors" />
                     </div>
-                    <h3 className="font-serif text-lg font-semibold text-brand-dark mb-2">{tipo.title}</h3>
-                    <p className="text-[0.8rem] text-neutral-400 leading-relaxed">{tipo.desc}</p>
+                    <h3 className="font-serif text-base font-semibold text-brand-dark mb-2">{area.title}</h3>
+                    <p className="text-[0.8rem] text-neutral-400 leading-relaxed">{area.desc}</p>
                   </div>
                 );
               })}
@@ -288,7 +321,7 @@ export default async function AccidentesTraficoPage() {
         </section>
 
         {/* ═══════════════════════════════════════
-            BAREMO DE TRÁFICO — Ley 35/2015
+            COMMON CONCERNS
         ═══════════════════════════════════════ */}
         <section className="py-16 md:py-24 bg-brand-dark relative overflow-hidden">
           <div
@@ -303,46 +336,41 @@ export default async function AccidentesTraficoPage() {
                 <div className="flex items-center gap-3 mb-4">
                   <span className="w-9 h-0.5 bg-brand-brown" />
                   <span className="text-[0.6rem] font-semibold text-brand-brown tracking-[0.2em] uppercase">
-                    Ley 35/2015
+                    We know what worries you
                   </span>
                 </div>
                 <h2 className="font-serif text-2xl md:text-3xl lg:text-4xl font-semibold text-white mb-6">
-                  Baremo de valoración de daños personales
+                  The questions you ask yourself before taking the step
                 </h2>
                 <p className="text-sm text-neutral-300 leading-relaxed mb-6">
-                  El baremo de tráfico es el sistema legal que establece cómo se calculan las indemnizaciones.
-                  Conocerlo a fondo es la diferencia entre una oferta insuficiente de la aseguradora y la <strong className="text-white">indemnización máxima</strong> que le corresponde.
+                  Before starting a family law process, it is normal to have doubts and fears.
+                  We answer them transparently so you can make informed decisions.
                 </p>
                 <div className="flex items-center gap-4 p-5 bg-white/5 border border-white/10 rounded-xl">
-                  <Scale size={28} className="text-brand-brown shrink-0" />
+                  <ShieldCheck size={28} className="text-brand-brown shrink-0" />
                   <p className="text-[0.8rem] text-neutral-300">
-                    Nuestros abogados calculan con precisión cada concepto indemnizatorio para que <strong className="text-white">ningún daño quede sin reclamar</strong>.
+                    Everything you tell us is protected by <strong className="text-white">professional privilege</strong>.
+                    Maximum confidentiality guaranteed.
                   </p>
                 </div>
               </div>
 
               <div className="lg:col-span-7">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  {BAREMO_CONCEPTOS.map((concepto, i) => (
-                    <div key={i} className="reveal bg-white/[0.06] backdrop-blur-sm border border-white/10 p-5 rounded-xl hover:bg-white/[0.1] transition-all">
-                      <div className="flex items-start justify-between mb-2">
-                        <h4 className="font-serif text-base font-semibold text-white">{concepto.label}</h4>
-                        <span className="text-[0.65rem] font-semibold text-brand-brown bg-brand-brown/15 px-2 py-0.5 rounded whitespace-nowrap ml-2">{concepto.value}</span>
-                      </div>
-                      <p className="text-[0.75rem] text-neutral-400 leading-relaxed">{concepto.desc}</p>
+                <div className="space-y-4">
+                  {CONCERNS.map((item, i) => (
+                    <div key={i} className="reveal bg-white/[0.06] backdrop-blur-sm border border-white/10 p-6 rounded-xl hover:bg-white/[0.1] transition-all">
+                      <h4 className="font-serif text-base font-semibold text-white mb-2">{item.question}</h4>
+                      <p className="text-[0.8rem] text-neutral-400 leading-relaxed">{item.answer}</p>
                     </div>
                   ))}
                 </div>
-                <p className="text-[0.65rem] text-neutral-500 mt-4 italic">
-                  * Horquillas orientativas. La indemnización concreta depende de las circunstancias de cada caso.
-                </p>
               </div>
             </div>
           </div>
         </section>
 
         {/* ═══════════════════════════════════════
-            PROCESO DE TRABAJO
+            WORKING PROCESS
         ═══════════════════════════════════════ */}
         <section className="py-16 md:py-24 bg-white">
           <div className="container-custom max-w-6xl">
@@ -350,20 +378,20 @@ export default async function AccidentesTraficoPage() {
               <div className="flex items-center gap-3 justify-center mb-4">
                 <span className="w-9 h-0.5 bg-brand-brown" />
                 <span className="text-[0.6rem] font-semibold text-brand-brown tracking-[0.2em] uppercase">
-                  Paso a paso
+                  Step by step
                 </span>
                 <span className="w-9 h-0.5 bg-brand-brown" />
               </div>
-              <h2 className="section-title mb-4">Cómo trabajamos su caso</h2>
+              <h2 className="section-title mb-4">How we handle your family case</h2>
               <p className="text-sm text-neutral-400 max-w-xl mx-auto">
-                Un proceso claro, transparente y orientado a obtener el mejor resultado posible.
+                A clear, human process designed to protect what matters most: your family.
               </p>
             </div>
 
             <div className="relative">
               <div className="hidden lg:block absolute top-0 bottom-0 left-[42px] w-px bg-brand-brown/20" />
               <div className="space-y-0">
-                {PROCESO.map((item, i) => (
+                {PROCESS.map((item, i) => (
                   <div key={i} className="reveal relative flex gap-6 lg:gap-10 group">
                     <div className="hidden lg:flex flex-col items-center shrink-0">
                       <div className="w-[85px] h-[85px] bg-neutral-50 border-2 border-brand-brown/20 rounded-2xl flex items-center justify-center group-hover:bg-brand-brown group-hover:border-brand-brown transition-all z-10">
@@ -387,76 +415,56 @@ export default async function AccidentesTraficoPage() {
         </section>
 
         {/* ═══════════════════════════════════════
-            QUÉ HACER TRAS UN ACCIDENTE
+            BANNER — Uncontested vs. Contested
         ═══════════════════════════════════════ */}
-        <section className="py-16 md:py-24 bg-neutral-50">
+        <section className="py-16 md:py-20 bg-neutral-50">
           <div className="container-custom max-w-6xl">
-            <div className="reveal grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16">
-              <div>
-                <div className="flex items-center gap-3 mb-4">
-                  <span className="w-9 h-0.5 bg-brand-brown" />
-                  <span className="text-[0.6rem] font-semibold text-brand-brown tracking-[0.2em] uppercase">
-                    Guía práctica
-                  </span>
+            <div className="reveal grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <div className="bg-white p-8 md:p-10 rounded-2xl border border-neutral-100 hover:shadow-lg transition-all">
+                <div className="w-14 h-14 bg-brand-brown/10 rounded-xl flex items-center justify-center mb-6">
+                  <Handshake size={28} className="text-brand-brown" />
                 </div>
-                <h2 className="section-title mb-6">¿Qué hacer inmediatamente después de un accidente?</h2>
-                <p className="text-sm text-neutral-400 leading-relaxed mb-8">
-                  Los primeros pasos tras un siniestro son decisivos para su reclamación posterior. Siga estas pautas para proteger sus derechos:
-                </p>
-                <div className="space-y-4">
+                <h3 className="font-serif text-xl font-semibold text-brand-dark mb-3">Uncontested divorce</h3>
+                <ul className="space-y-3 text-sm text-neutral-500">
                   {[
-                    'Llame al 112 si hay heridos. La asistencia sanitaria es prioritaria.',
-                    'No mueva los vehículos hasta que llegue la Policía (salvo peligro).',
-                    'Rellene el parte amistoso o solicite atestado policial.',
-                    'Fotografíe la escena: posición de los vehículos, daños, señalización.',
-                    'Acuda a urgencias aunque crea que no tiene lesiones graves.',
-                    'No firme ningún documento de la aseguradora contraria sin asesoramiento.',
-                    'Contacte con un abogado especialista antes de aceptar ninguna oferta.',
-                  ].map((step, i) => (
-                    <div key={i} className="flex gap-3 items-start">
-                      <div className="w-7 h-7 bg-brand-brown rounded-lg flex items-center justify-center shrink-0 mt-0.5">
-                        <CheckCircle2 size={14} className="text-white" />
-                      </div>
-                      <p className="text-sm text-neutral-500 leading-relaxed">{step}</p>
-                    </div>
+                    'Estimated duration: 2–3 months',
+                    'Lower financial and emotional cost',
+                    'Regulatory agreement negotiated by both parties',
+                    'A single lawyer can represent both spouses',
+                    'Ideal when there is willingness to agree',
+                  ].map((item, i) => (
+                    <li key={i} className="flex items-start gap-2">
+                      <CheckCircle2 size={14} className="text-brand-brown shrink-0 mt-0.5" />
+                      <span>{item}</span>
+                    </li>
                   ))}
-                </div>
+                </ul>
               </div>
 
-              <div>
-                <div className="bg-brand-brown-hover text-white p-8 md:p-10 rounded-2xl h-full flex flex-col justify-between">
-                  <div>
-                    <div className="w-14 h-14 bg-white/10 rounded-xl flex items-center justify-center mb-6">
-                      <Phone size={24} className="text-brand-brown" />
-                    </div>
-                    <h3 className="font-serif text-xl md:text-2xl font-semibold mb-4">
-                      ¿Acaba de tener un accidente?
-                    </h3>
-                    <p className="text-sm text-white/80 leading-relaxed mb-6">
-                      Llámenos ahora. Le indicaremos exactamente qué pasos dar para proteger su derecho a una indemnización justa.
-                      La primera consulta es sin compromiso.
-                    </p>
-                    <ul className="space-y-3 mb-8">
-                      {[
-                        'Evaluación inmediata de su caso',
-                        'Asesoramiento sobre los primeros pasos',
-                        'Sin coste ni compromiso',
-                      ].map((item, i) => (
-                        <li key={i} className="flex items-center gap-2 text-sm text-white/90">
-                          <ChevronRight size={14} className="text-brand-brown shrink-0" />
-                          {item}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                  <div className="flex flex-col gap-3">
-                    <a href="tel:+34968241025" className="inline-flex items-center justify-center gap-2 bg-brand-brown text-white text-sm font-semibold px-6 py-4 rounded-xl transition-all hover:bg-brand-brown/80 hover:shadow-xl">
-                      <Phone size={18} /> 968 241 025
-                    </a>
-                    <Link href="/es/contacto" className="inline-flex items-center justify-center gap-2 bg-white/10 text-white text-sm font-medium px-6 py-3 rounded-xl border border-white/20 transition-all hover:bg-white/20">
-                      Escribir por formulario →
-                    </Link>
-                  </div>
+              <div className="bg-brand-brown-hover text-white p-8 md:p-10 rounded-2xl">
+                <div className="w-14 h-14 bg-white/10 rounded-xl flex items-center justify-center mb-6">
+                  <Scale size={28} className="text-brand-brown" />
+                </div>
+                <h3 className="font-serif text-xl font-semibold mb-3">Contested divorce</h3>
+                <ul className="space-y-3 text-sm text-white/80">
+                  {[
+                    'When agreement is not possible',
+                    'Estimated duration: 8–14 months',
+                    'Each party with their own lawyer',
+                    'The judge decides on custody, support and assets',
+                    'We defend your position with determination',
+                  ].map((item, i) => (
+                    <li key={i} className="flex items-start gap-2">
+                      <ChevronRight size={14} className="text-brand-brown shrink-0 mt-0.5" />
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
+                <div className="mt-6 pt-6 border-t border-white/15">
+                  <p className="text-[0.8rem] text-white/70">
+                    Our goal is always to explore the amicable route first. If that is not possible,
+                    you will have an experienced team by your side.
+                  </p>
                 </div>
               </div>
             </div>
@@ -464,7 +472,7 @@ export default async function AccidentesTraficoPage() {
         </section>
 
         {/* ═══════════════════════════════════════
-            POR QUÉ ELEGIRNOS
+            WHY CHOOSE US
         ═══════════════════════════════════════ */}
         <section className="py-16 md:py-24 bg-white">
           <div className="container-custom max-w-6xl">
@@ -472,20 +480,20 @@ export default async function AccidentesTraficoPage() {
               <div className="bg-gradient-to-br from-brand-brown to-brand-brown/95 p-10 md:p-14 rounded-2xl">
                 <div className="text-center mb-10">
                   <h2 className="font-serif text-2xl md:text-3xl font-semibold text-brand-dark mb-3">
-                    ¿Por qué elegir García-Valcárcel & Cáceres?
+                    Why trust García-Valcárcel & Cáceres?
                   </h2>
                   <p className="text-sm text-brand-dark/70 max-w-xl mx-auto">
-                    Más de siete décadas resolviendo los casos más complejos de responsabilidad civil en España.
+                    Over seven decades supporting families through the most sensitive moments.
                   </p>
                 </div>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-5 max-w-4xl mx-auto">
                   {[
-                    { title: '55+', desc: 'Años de experiencia' },
-                    { title: '1970', desc: 'Fundación del bufete' },
-                    { title: '5', desc: 'Profesionales especializados' },
-                    { title: 'Toda España', desc: 'Sede en Murcia, actuación nacional' },
-                    { title: 'Trato directo', desc: 'Con el abogado titular' },
-                    { title: 'Sin compromiso', desc: 'Primera consulta' },
+                    { title: '55+', desc: 'Years of experience' },
+                    { title: '1970', desc: 'Year the firm was founded' },
+                    { title: '5', desc: 'Specialist professionals' },
+                    { title: 'All of Spain', desc: 'Based in Murcia, nationwide service' },
+                    { title: 'Direct contact', desc: 'With the lead lawyer' },
+                    { title: 'Discretion', desc: 'Maximum confidentiality' },
                   ].map((item, i) => (
                     <div key={i} className="bg-white/90 p-5 md:p-6 rounded-xl hover:bg-white hover:scale-[1.03] transition-all text-center">
                       <div className="font-display text-xl md:text-2xl font-bold text-brand-brown-hover mb-1">{item.title}</div>
@@ -499,7 +507,7 @@ export default async function AccidentesTraficoPage() {
         </section>
 
         {/* ═══════════════════════════════════════
-            CIUDADES
+            CITIES
         ═══════════════════════════════════════ */}
         {cities.length > 0 && (
           <section className="py-16 md:py-20 bg-neutral-50">
@@ -508,20 +516,20 @@ export default async function AccidentesTraficoPage() {
                 <div className="flex items-center gap-3 justify-center mb-4">
                   <span className="w-9 h-0.5 bg-brand-brown" />
                   <span className="text-[0.6rem] font-semibold text-brand-brown tracking-[0.2em] uppercase">
-                    Cobertura nacional
+                    Nationwide coverage
                   </span>
                   <span className="w-9 h-0.5 bg-brand-brown" />
                 </div>
-                <h2 className="section-title mb-4">Abogados de accidentes de tráfico en su ciudad</h2>
+                <h2 className="section-title mb-4">Family lawyers in your city</h2>
                 <p className="text-sm text-neutral-400 max-w-xl mx-auto">
-                  Con sede en Murcia, ofrecemos asesoramiento presencial y por videoconferencia en las principales ciudades de España.
+                  Based in Murcia, we offer in-person and video conference consultations in the main cities across Spain.
                 </p>
               </div>
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
                 {cities.map((city) => (
                   <Link
                     key={city.slug}
-                    href={`/es/servicios/${FOLDER_SLUG}/${city.slug}`}
+                    href={`/en/services/${FOLDER_SLUG_EN}/${city.slug}`}
                     className="reveal group flex items-center gap-2 bg-white border border-neutral-200 px-4 py-3.5 rounded-xl hover:border-brand-brown hover:shadow-md hover:-translate-y-0.5 transition-all"
                   >
                     <MapPin size={14} className="text-brand-brown/50 group-hover:text-brand-brown transition-colors shrink-0" />
@@ -543,10 +551,10 @@ export default async function AccidentesTraficoPage() {
             <div className="reveal text-center mb-12">
               <div className="flex items-center gap-3 justify-center mb-4">
                 <span className="w-9 h-0.5 bg-brand-brown" />
-                <span className="text-[0.6rem] font-semibold text-brand-brown tracking-[0.2em] uppercase">Resolvemos sus dudas</span>
+                <span className="text-[0.6rem] font-semibold text-brand-brown tracking-[0.2em] uppercase">We answer your questions</span>
                 <span className="w-9 h-0.5 bg-brand-brown" />
               </div>
-              <h2 className="section-title mb-4">Preguntas frecuentes sobre accidentes de tráfico</h2>
+              <h2 className="section-title mb-4">Frequently asked questions about family law</h2>
             </div>
             <div className="reveal space-y-4">
               {FAQS.map((faq, i) => (
@@ -570,7 +578,7 @@ export default async function AccidentesTraficoPage() {
         </section>
 
         {/* ═══════════════════════════════════════
-            CTA FINAL
+            FINAL CTA
         ═══════════════════════════════════════ */}
         <section className="py-16 md:py-24 bg-brand-dark relative overflow-hidden">
           <div
@@ -584,22 +592,22 @@ export default async function AccidentesTraficoPage() {
               <div className="w-20 h-20 bg-brand-brown rounded-2xl flex items-center justify-center mx-auto mb-8 relative">
                 <Image
                   src="/images/logo/gvcabogados_murcia_logo_leon_blanco.webp"
-                  alt="GVC Abogados"
+                  alt="GVC Lawyers"
                   fill
                   className="object-contain p-4"
                   sizes="80px"
                 />
               </div>
               <h2 className="section-title-white mb-6">
-                No deje que la aseguradora decida cuánto vale su caso
+                Let us protect what matters most to you
               </h2>
               <p className="text-base md:text-lg text-neutral-300 leading-relaxed mb-10 max-w-2xl mx-auto">
-                Primera consulta sin compromiso. Le diremos con honestidad qué indemnización puede esperar
-                y cómo vamos a luchar para conseguirla.
+                No-obligation initial consultation. We listen to you, analyse your situation and clearly explain
+                your options and what you can expect.
               </p>
               <div className="flex gap-3 md:gap-4 items-center flex-wrap justify-center">
-                <Link href="/es/contacto" className="inline-flex items-center gap-2 bg-brand-brown text-white text-xs font-semibold px-8 py-4 tracking-wide transition-all duration-300 hover:bg-brand-brown/80 hover:-translate-y-0.5 hover:shadow-xl">
-                  Consultar sin compromiso →
+                <Link href="/en/contact" className="inline-flex items-center gap-2 bg-brand-brown text-white text-xs font-semibold px-8 py-4 tracking-wide transition-all duration-300 hover:bg-brand-brown/80 hover:-translate-y-0.5 hover:shadow-xl">
+                  Get in touch — no obligation →
                 </Link>
                 <a href="tel:+34968241025" className="btn-outline">
                   ☎ 968 241 025
@@ -610,7 +618,7 @@ export default async function AccidentesTraficoPage() {
         </section>
       </main>
 
-      <Footer locale="es" />
+      <Footer locale="en" />
       <ScrollReveal />
     </>
   );

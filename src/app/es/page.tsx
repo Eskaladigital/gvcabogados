@@ -13,16 +13,16 @@ import StrategicCTAs from '@/components/home/StrategicCTAs';
 import { LocalBusinessSchema } from '@/components/seo/SchemaOrg';
 
 export const metadata: Metadata = {
-  title: 'Abogados en Murcia — García-Valcárcel & Cáceres | Bufete desde 1946',
+  title: 'Abogados en Murcia — García-Valcárcel & Cáceres | Bufete desde 1970',
   description:
-    'Abogados en Murcia con más de 75 años de experiencia. Especialistas en responsabilidad civil: accidentes de tráfico, negligencias médicas, accidentes laborales y responsabilidad frente a la Administración. ☎ 968 241 025.',
+    'Abogados en Murcia con más de 55 años de experiencia. Especialistas en responsabilidad civil: accidentes de tráfico, negligencias médicas, accidentes laborales y responsabilidad frente a la Administración. ☎ 968 241 025.',
   alternates: {
     canonical: 'https://www.gvcabogados.com/es',
     languages: { en: '/en' },
   },
   openGraph: {
     title: 'Abogados en Murcia — García-Valcárcel & Cáceres',
-    description: 'Bufete de abogados en Murcia fundado en 1946. Especialistas en responsabilidad civil con más de 75 años de experiencia.',
+    description: 'Bufete de abogados en Murcia fundado en 1970. Especialistas en responsabilidad civil con más de 55 años de experiencia.',
     url: 'https://www.gvcabogados.com/es',
     siteName: 'García-Valcárcel & Cáceres Abogados',
     locale: 'es_ES',

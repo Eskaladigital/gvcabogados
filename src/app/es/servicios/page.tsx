@@ -15,14 +15,14 @@ import { getServicesByLocale } from '@/data/services';
 export const metadata: Metadata = {
   title: 'Áreas de Práctica — Abogados Especialistas | GVC Abogados',
   description:
-    'Servicios jurídicos especializados. Especialistas en responsabilidad civil: accidentes de tráfico, negligencias médicas, accidentes laborales y responsabilidad frente a la Administración. Más de 75 años de experiencia. Sede central en Murcia, actuación en toda España.',
+    'Servicios jurídicos especializados. Especialistas en responsabilidad civil: accidentes de tráfico, negligencias médicas, accidentes laborales y responsabilidad frente a la Administración. Más de 55 años de experiencia. Sede central en Murcia, actuación en toda España.',
   alternates: {
     canonical: 'https://www.gvcabogados.com/es/servicios',
     languages: { en: '/en/services' },
   },
   openGraph: {
     title: 'Áreas de Práctica — Abogados Especialistas',
-    description: 'Servicios jurídicos especializados. Especialistas en responsabilidad civil. Más de 75 años de experiencia.',
+    description: 'Servicios jurídicos especializados. Especialistas en responsabilidad civil. Más de 55 años de experiencia.',
     locale: 'es_ES',
   },
 };
@@ -79,7 +79,7 @@ export default function ServiciosPage() {
             </h1>
             <p className="text-neutral-300 text-base mt-4 max-w-[560px]">
               Nuestro equipo multidisciplinar cubre todas las áreas del derecho privado y público,
-              ofreciendo soluciones integrales con más de 75 años de experiencia.
+              ofreciendo soluciones integrales con más de 55 años de experiencia.
             </p>
           </div>
         </section>

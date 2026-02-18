@@ -11,9 +11,12 @@ import ScrollReveal from '@/components/ui/ScrollReveal';
 import { getServicesByLocale } from '@/data/services';
 
 export const metadata: Metadata = {
-  title: 'Practice Areas — Legal Services in Murcia | GVC Lawyers',
-  description: 'Specialized legal services in Murcia: traffic accidents, divorce, banking law, criminal law, real estate, inheritance and more.',
-  alternates: { canonical: 'https://www.gvcabogados.com/en/services' },
+  title: 'Practice Areas — Specialist Legal Services | GVC Lawyers',
+  description: 'Specialist legal services: traffic accidents, family law, medical malpractice, immigration, civil liability and government liability. Over 55 years of experience.',
+  alternates: {
+    canonical: 'https://www.gvcabogados.com/en/services',
+    languages: { es: '/es/servicios' },
+  },
 };
 
 export default function ServicesPageEn() {
@@ -64,7 +67,7 @@ export default function ServicesPageEn() {
           <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'linear-gradient(rgba(255,255,255,.5) 1px,transparent 1px), linear-gradient(90deg,rgba(255,255,255,.5) 1px,transparent 1px)', backgroundSize: '80px 80px' }} />
           <div className="container-custom relative z-10">
             <div className="section-tag">Practice Areas</div>
-            <h1 className="font-display text-3xl md:text-5xl font-bold text-white leading-tight max-w-[700px]">Specialized <em className="italic text-brand-gold font-normal">legal services</em> in Murcia</h1>
+            <h1 className="font-display text-3xl md:text-5xl font-bold text-white leading-tight max-w-[700px]">Specialist <em className="italic text-brand-gold font-normal">legal services</em></h1>
             <p className="text-neutral-300 text-base mt-4 max-w-[560px]">Our multidisciplinary team covers all areas of private and public law, offering comprehensive solutions.</p>
           </div>
         </section>

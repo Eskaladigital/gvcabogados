@@ -18,14 +18,14 @@ const GENERIC_SLUG_EN = 'civil-liability';
 
 export const metadata: Metadata = {
   title: `${SERVICE_NAME} — Abogados Especialistas | GVC Abogados`,
-  description: `Abogados especialistas en ${SERVICE_NAME.toLowerCase()}. Más de 75 años de experiencia. Sede en Murcia, actuación en toda España.`,
+  description: `Abogados especialistas en ${SERVICE_NAME.toLowerCase()}. Más de 55 años de experiencia. Sede en Murcia, actuación en toda España.`,
   alternates: {
     canonical: `https://www.gvcabogados.com/es/servicios/${FOLDER_SLUG}`,
     languages: { en: `/en/services/${GENERIC_SLUG_EN}` },
   },
   openGraph: {
     title: `${SERVICE_NAME} — Abogados Especialistas | GVC Abogados`,
-    description: `Abogados especialistas en ${SERVICE_NAME.toLowerCase()}. Más de 75 años de experiencia. Sede en Murcia, actuación en toda España.`,
+    description: `Abogados especialistas en ${SERVICE_NAME.toLowerCase()}. Más de 55 años de experiencia. Sede en Murcia, actuación en toda España.`,
     url: `https://www.gvcabogados.com/es/servicios/${FOLDER_SLUG}`,
     siteName: 'García-Valcárcel & Cáceres Abogados',
     locale: 'es_ES',
@@ -111,7 +111,7 @@ export default async function ResponsabilidadCivilPage() {
                 Abogados especialistas en {SERVICE_NAME.toLowerCase()}
               </h1>
               <p className="text-sm md:text-base text-neutral-300 leading-relaxed mb-8 md:mb-10 max-w-[600px]">
-                {svc.descriptionEs}. Despacho multidisciplinar con sede central en Murcia y actuación en toda España. Más de 75 años de experiencia.
+                {svc.descriptionEs}. Despacho multidisciplinar con sede central en Murcia y actuación en toda España. Más de 55 años de experiencia.
               </p>
               <div className="flex gap-3 items-center flex-wrap max-w-[600px]">
                 <Link href="/es/contacto" className="btn-primary">
@@ -298,9 +298,9 @@ export default async function ResponsabilidadCivilPage() {
                   </h3>
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
                     {[
-                      { title: '75+ años', desc: 'de experiencia' },
+                      { title: '55+ años', desc: 'de experiencia' },
                       { title: '14', desc: 'áreas de práctica' },
-                      { title: '1946', desc: 'año de fundación' },
+                      { title: '1970', desc: 'año de fundación' },
                       { title: '5 profesionales', desc: 'especializados' },
                       { title: 'Trato', desc: 'personalizado' },
                       { title: 'Toda España', desc: 'sede en Murcia' },
@@ -370,7 +370,7 @@ export default async function ResponsabilidadCivilPage() {
                 ¿Necesita asesoramiento especializado?
               </h2>
               <p className="text-base md:text-lg text-neutral-300 leading-relaxed mb-10 max-w-2xl mx-auto">
-                En García-Valcárcel & Cáceres contamos con más de 75 años de experiencia, especializados en responsabilidad civil. Nuestro equipo
+                En García-Valcárcel & Cáceres contamos con más de 55 años de experiencia, especializados en responsabilidad civil. Nuestro equipo
                 le proporcionará el asesoramiento jurídico que necesita con la máxima profesionalidad.
               </p>
               <div className="flex gap-3 md:gap-4 items-center flex-wrap justify-center">

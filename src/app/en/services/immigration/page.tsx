@@ -1,7 +1,7 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Landmark } from 'lucide-react';
+import { Clipboard } from 'lucide-react';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import ScrollReveal from '@/components/ui/ScrollReveal';
@@ -11,80 +11,95 @@ import { BreadcrumbSchema, ServiceSchema, FAQSchema } from '@/components/seo/Sch
 import { services } from '@/data/services';
 import { supabaseAdmin } from '@/lib/supabase';
 
-const SERVICE_KEY = 'derecho-administrativo';
-const SERVICE_NAME = 'Responsabilidad de la Administración';
-const FOLDER_SLUG = 'responsabilidad-administracion';
-const GENERIC_SLUG_EN = 'administrative-law';
+const SERVICE_KEY = 'extranjeria';
+const SERVICE_NAME = 'Immigration & Residence Permits';
+const FOLDER_SLUG_EN = 'immigration';
+const FOLDER_SLUG_ES = 'permisos-residencia';
 
 export const metadata: Metadata = {
-  title: `${SERVICE_NAME} — Abogados Especialistas | GVC Abogados`,
-  description: `Abogados especialistas en ${SERVICE_NAME.toLowerCase()}. Más de 55 años de experiencia. Sede en Murcia, actuación en toda España.`,
+  title: `${SERVICE_NAME} — Specialist Lawyers | GVC Lawyers`,
+  description: `Specialist ${SERVICE_NAME.toLowerCase()} lawyers. Over 55 years of experience. Based in Murcia, operating across Spain.`,
   alternates: {
-    canonical: `https://www.gvcabogados.com/es/servicios/${FOLDER_SLUG}`,
-    languages: { en: `/en/services/${GENERIC_SLUG_EN}` },
+    canonical: `https://www.gvcabogados.com/en/services/${FOLDER_SLUG_EN}`,
+    languages: { es: `/es/servicios/${FOLDER_SLUG_ES}` },
   },
   openGraph: {
-    title: `${SERVICE_NAME} — Abogados Especialistas | GVC Abogados`,
-    description: `Abogados especialistas en ${SERVICE_NAME.toLowerCase()}. Más de 55 años de experiencia. Sede en Murcia, actuación en toda España.`,
-    url: `https://www.gvcabogados.com/es/servicios/${FOLDER_SLUG}`,
-    siteName: 'García-Valcárcel & Cáceres Abogados',
-    locale: 'es_ES',
+    title: `${SERVICE_NAME} — Specialist Lawyers | GVC Lawyers`,
+    description: `Specialist ${SERVICE_NAME.toLowerCase()} lawyers. Over 55 years of experience. Based in Murcia, operating across Spain.`,
+    url: `https://www.gvcabogados.com/en/services/${FOLDER_SLUG_EN}`,
+    siteName: 'García-Valcárcel & Cáceres Lawyers',
+    locale: 'en_GB',
     type: 'website',
   },
 };
 
-export default async function ResponsabilidadAdministracionPage() {
-  const svc = services.find(s => s.id === SERVICE_KEY)!;
+function cleanMurciaRefs(text: string): string {
+  return text
+    .replace(/\bin Murcia\b/gi, 'across Spain')
+    .replace(/\bof Murcia\b/gi, '')
+    .replace(/\s{2,}/g, ' ')
+    .trim();
+}
 
+function cleanMurciaRefsNeutral(text: string): string {
+  return text
+    .replace(/\bin Murcia\b/gi, '')
+    .replace(/\bof Murcia\b/gi, '')
+    .replace(/\s{2,}/g, ' ')
+    .trim();
+}
+
+async function getCitiesForService(): Promise<{ name: string; slug: string }[]> {
   const { data } = await supabaseAdmin
     .from('service_content')
     .select('slug_es, localities!inner(name, slug), services!inner(service_key)')
     .eq('services.service_key', SERVICE_KEY)
     .order('localities.name');
 
-  const cities: { name: string; slug: string }[] = (data || []).map((row: any) => ({
+  if (!data || data.length === 0) return [];
+
+  return data.map((row: any) => ({
     name: row.localities.name,
     slug: row.localities.slug,
   }));
+}
 
-  const cleanMurciaRefs = (text: string) =>
-    text
-      .replace(/\ben Murcia\b/gi, '')
-      .replace(/\bde Murcia\b/gi, '')
-      .replace(/\bmurcianos?\b/gi, '')
-      .replace(/\s{2,}/g, ' ')
-      .trim();
-
-  const genericLongDescription = cleanMurciaRefs(svc.longDescriptionEs);
-
-  const genericSections = svc.sectionsEs.map(s => ({
-    title: cleanMurciaRefs(s.title),
-    content: cleanMurciaRefs(s.content),
-  }));
-
-  const genericFaqs = svc.faqsEs.map(f => ({
-    question: cleanMurciaRefs(f.question),
-    answer: cleanMurciaRefs(f.answer),
-  }));
+export default async function ImmigrationPage() {
+  const svc = services.find(s => s.id === SERVICE_KEY)!;
+  const cities = await getCitiesForService();
+  const locale = 'en';
 
   const breadcrumbs = [
-    { name: 'Inicio', href: '/es' },
-    { name: 'Áreas de Práctica', href: '/es/servicios' },
-    { name: SERVICE_NAME, href: `/es/servicios/${FOLDER_SLUG}` },
+    { name: 'Home', href: '/en' },
+    { name: 'Practice Areas', href: '/en/services' },
+    { name: svc.nameEn, href: `/en/services/${FOLDER_SLUG_EN}` },
   ];
+
+  const genericDescription = svc.descriptionEn;
+  const genericLongDescription = cleanMurciaRefs(svc.longDescriptionEn);
+
+  const genericSections = svc.sectionsEn.map(s => ({
+    title: cleanMurciaRefsNeutral(s.title),
+    content: cleanMurciaRefsNeutral(s.content),
+  }));
+
+  const genericFaqs = svc.faqsEn.map(f => ({
+    question: cleanMurciaRefsNeutral(f.question),
+    answer: cleanMurciaRefsNeutral(f.answer),
+  }));
 
   return (
     <>
       <BreadcrumbSchema items={breadcrumbs} />
       <ServiceSchema
-        name={`Abogados de ${SERVICE_NAME} — García-Valcárcel & Cáceres`}
-        description={svc.descriptionEs}
-        slug={FOLDER_SLUG}
-        locale="es"
+        name={`${svc.nameEn} Lawyers — García-Valcárcel & Cáceres`}
+        description={genericDescription}
+        slug={FOLDER_SLUG_EN}
+        locale="en"
       />
       {genericFaqs.length > 0 && <FAQSchema faqs={genericFaqs} />}
 
-      <Navbar locale="es" alternateUrl={`/en/services/${GENERIC_SLUG_EN}`} />
+      <Navbar locale="en" alternateUrl={`/es/servicios/${FOLDER_SLUG_ES}`} />
       <main>
         {/* Hero */}
         <section className="relative min-h-[500px] md:min-h-[550px] flex items-center py-16">
@@ -103,19 +118,19 @@ export default async function ResponsabilidadAdministracionPage() {
             <div className="mt-8 max-w-4xl">
               <div className="flex items-center gap-4 mb-6">
                 <div className="w-16 h-16 bg-brand-brown rounded-2xl flex items-center justify-center shrink-0">
-                  <Landmark size={32} className="text-white" />
+                  <Clipboard size={32} className="text-white" />
                 </div>
                 <div className="w-16 h-0.5 bg-brand-gold/40" />
               </div>
               <h1 className="font-display text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white leading-[1.2] mb-5 md:mb-6 max-w-[95%]">
-                Abogados especialistas en {SERVICE_NAME.toLowerCase()}
+                Expert {SERVICE_NAME.toLowerCase()} lawyers
               </h1>
               <p className="text-sm md:text-base text-neutral-300 leading-relaxed mb-8 md:mb-10 max-w-[600px]">
-                {svc.descriptionEs}. Despacho multidisciplinar con sede central en Murcia y actuación en toda España. Más de 55 años de experiencia.
+                {genericDescription}. Multidisciplinary firm based in Murcia operating across Spain. Over 55 years of experience.
               </p>
               <div className="flex gap-3 items-center flex-wrap max-w-[600px]">
-                <Link href="/es/contacto" className="btn-primary">
-                  Contactar →
+                <Link href="/en/contact" className="btn-primary">
+                  Contact us →
                 </Link>
                 <a href="tel:+34968241025" className="btn-outline">
                   ☎ 968 241 025
@@ -132,11 +147,11 @@ export default async function ResponsabilidadAdministracionPage() {
               <div className="flex items-center gap-3 mb-4">
                 <span className="w-9 h-0.5 bg-brand-brown" />
                 <span className="text-[0.6rem] font-semibold text-brand-brown tracking-[0.2em] uppercase">
-                  Especialistas en {SERVICE_NAME.toLowerCase()}
+                  Specialists in {SERVICE_NAME.toLowerCase()}
                 </span>
               </div>
               <h2 className="section-title mb-8">
-                Abogados expertos en {SERVICE_NAME.toLowerCase()}
+                Expert {SERVICE_NAME.toLowerCase()} lawyers
               </h2>
 
               <div className="relative">
@@ -153,7 +168,7 @@ export default async function ResponsabilidadAdministracionPage() {
                     />
                     <div className="absolute bottom-4 left-4 bg-brand-brown rounded-xl p-3 shadow-lg z-20">
                       <div className="w-8 h-8 flex items-center justify-center">
-                        <Landmark size={32} className="text-white" />
+                        <Clipboard size={32} className="text-white" />
                       </div>
                     </div>
                   </div>
@@ -161,13 +176,14 @@ export default async function ResponsabilidadAdministracionPage() {
 
                 <div className="text-content">
                   <RichTextContent content={genericLongDescription} className="mb-6" />
+
                   <div className="clear-both pt-4">
                     <div className="flex gap-3 flex-wrap">
-                      <Link href="/es/contacto" className="btn-primary">
-                        Contactar →
+                      <Link href="/en/contact" className="btn-primary">
+                        Contact us →
                       </Link>
                       <a href="tel:+34968241025" className="btn-outline-dark">
-                        ☎ Llamar
+                        ☎ Call
                       </a>
                     </div>
                   </div>
@@ -177,13 +193,13 @@ export default async function ResponsabilidadAdministracionPage() {
           </div>
         </section>
 
-        {/* Secciones de contenido */}
+        {/* Content sections */}
         {genericSections.length > 0 && (
           <section className="py-16 md:py-20 bg-neutral-50">
             <div className="container-custom max-w-6xl">
               <div className="reveal text-center mb-12">
                 <h2 className="section-title mb-4">
-                  Lo que debe saber sobre {SERVICE_NAME.toLowerCase()}
+                  What you should know about {SERVICE_NAME.toLowerCase()}
                 </h2>
                 <div className="w-20 h-1 bg-brand-brown mx-auto" />
               </div>
@@ -204,14 +220,15 @@ export default async function ResponsabilidadAdministracionPage() {
                   </div>
                 ))}
               </div>
+
               <div className="reveal mt-12 text-center">
                 <div className="bg-white border-2 border-brand-brown/20 p-8 rounded-2xl max-w-3xl mx-auto">
                   <p className="text-base text-brand-dark mb-6">
-                    ¿Necesita asesoramiento sobre su caso? Contacte con nuestros especialistas
+                    Need advice on your case? Contact our specialists
                   </p>
                   <div className="flex gap-3 justify-center flex-wrap">
-                    <Link href="/es/contacto" className="btn-primary">
-                      Solicitar información →
+                    <Link href="/en/contact" className="btn-primary">
+                      Request information →
                     </Link>
                     <a href="tel:+34968241025" className="btn-outline-dark">
                       ☎ 968 241 025
@@ -223,7 +240,7 @@ export default async function ResponsabilidadAdministracionPage() {
           </section>
         )}
 
-        {/* Ciudades */}
+        {/* Cities */}
         {cities.length > 0 && (
           <section className="py-16 md:py-20 bg-white">
             <div className="container-custom max-w-6xl">
@@ -231,22 +248,22 @@ export default async function ResponsabilidadAdministracionPage() {
                 <div className="flex items-center gap-3 justify-center mb-4">
                   <span className="w-9 h-0.5 bg-brand-brown" />
                   <span className="text-[0.6rem] font-semibold text-brand-brown tracking-[0.2em] uppercase">
-                    Actuamos en toda España
+                    We operate across Spain
                   </span>
                   <span className="w-9 h-0.5 bg-brand-brown" />
                 </div>
                 <h2 className="section-title mb-4">
-                  {SERVICE_NAME}: asesoramiento local en su ciudad
+                  {SERVICE_NAME}: local advice in your city
                 </h2>
                 <p className="text-sm text-neutral-500 max-w-2xl mx-auto">
-                  Con sede central en Murcia, ofrecemos asesoramiento especializado presencial y por videoconferencia en las principales ciudades de España.
+                  Based in Murcia, we offer specialist advice in person and by video conference across Spain&apos;s main cities.
                 </p>
               </div>
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
                 {cities.map((city) => (
                   <Link
                     key={city.slug}
-                    href={`/es/servicios/${FOLDER_SLUG}/${city.slug}`}
+                    href={`/en/services/${FOLDER_SLUG_EN}/${city.slug}`}
                     className="reveal group bg-neutral-50 border border-neutral-200 p-4 rounded-xl text-center hover:border-brand-brown hover:shadow-md hover:-translate-y-0.5 transition-all"
                   >
                     <span className="text-sm font-medium text-brand-dark group-hover:text-brand-brown transition-colors">
@@ -259,8 +276,8 @@ export default async function ResponsabilidadAdministracionPage() {
           </section>
         )}
 
-        {/* Proceso */}
-        {svc.processEs.length > 0 && (
+        {/* Work process */}
+        {svc.processEn.length > 0 && (
           <section className="py-16 md:py-20 bg-neutral-50 pb-8 md:pb-10">
             <div className="container-custom max-w-6xl">
               <div className="reveal mb-16">
@@ -268,18 +285,18 @@ export default async function ResponsabilidadAdministracionPage() {
                   <div className="flex items-center gap-3 justify-center mb-4">
                     <span className="w-9 h-0.5 bg-brand-brown" />
                     <span className="text-[0.6rem] font-semibold text-brand-brown tracking-[0.2em] uppercase">
-                      Nuestro proceso
+                      Our process
                     </span>
                     <span className="w-9 h-0.5 bg-brand-brown" />
                   </div>
                   <h2 className="section-title">
-                    Cómo trabajamos su caso
+                    How we handle your case
                   </h2>
                 </div>
                 <div className="relative">
                   <div className="hidden lg:block absolute top-1/2 left-0 right-0 h-0.5 bg-brand-brown/20 -translate-y-1/2" />
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 relative z-10">
-                    {svc.processEs.map((step, i) => (
+                    {svc.processEn.map((step, i) => (
                       <div key={i} className="bg-white p-6 rounded-xl hover:bg-brand-brown/5 hover:shadow-md transition-all group border border-transparent hover:border-brand-brown/20">
                         <div className="w-12 h-12 bg-brand-brown rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform shadow-sm">
                           <span className="text-lg font-bold text-white">{i + 1}</span>
@@ -291,19 +308,20 @@ export default async function ResponsabilidadAdministracionPage() {
                 </div>
               </div>
 
+              {/* Why choose us */}
               <div className="reveal">
                 <div className="bg-gradient-to-br from-brand-brown to-brand-brown/95 p-10 md:p-12 rounded-2xl text-center">
                   <h3 className="font-serif text-2xl md:text-3xl font-semibold text-brand-dark mb-8">
-                    ¿Por qué confiar en García-Valcárcel & Cáceres?
+                    Why choose García-Valcárcel &amp; Cáceres?
                   </h3>
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
                     {[
-                      { title: '55+ años', desc: 'de experiencia' },
-                      { title: '14', desc: 'áreas de práctica' },
-                      { title: '1970', desc: 'año de fundación' },
-                      { title: '5 profesionales', desc: 'especializados' },
-                      { title: 'Trato', desc: 'personalizado' },
-                      { title: 'Toda España', desc: 'sede en Murcia' },
+                      { title: '55+ years', desc: 'of experience' },
+                      { title: '6', desc: 'practice areas' },
+                      { title: '1970', desc: 'year founded' },
+                      { title: '5 professionals', desc: 'specialized' },
+                      { title: 'Personal', desc: 'personalized' },
+                      { title: 'All Spain', desc: 'based in Murcia' },
                     ].map((item, i) => (
                       <div key={i} className="bg-white/90 p-5 rounded-xl hover:bg-white hover:scale-105 transition-all">
                         <div className="font-display text-2xl md:text-3xl font-bold text-brand-brown-hover mb-1">
@@ -327,7 +345,7 @@ export default async function ResponsabilidadAdministracionPage() {
             <div className="container-custom max-w-4xl">
               <div className="reveal text-center mb-12">
                 <h2 className="section-title mb-4">
-                  Preguntas frecuentes
+                  Frequently asked questions
                 </h2>
                 <div className="w-20 h-1 bg-brand-brown mx-auto" />
               </div>
@@ -353,7 +371,7 @@ export default async function ResponsabilidadAdministracionPage() {
           </section>
         )}
 
-        {/* CTA final */}
+        {/* Final CTA */}
         <section className="py-16 md:py-24 bg-gradient-to-br from-brand-brown-hover to-brand-brown-hover/90 text-white relative overflow-hidden">
           <div className="container-custom max-w-4xl relative z-10">
             <div className="reveal text-center">
@@ -367,15 +385,15 @@ export default async function ResponsabilidadAdministracionPage() {
                 />
               </div>
               <h2 className="section-title-white mb-6">
-                ¿Necesita asesoramiento especializado?
+                Need specialist advice?
               </h2>
               <p className="text-base md:text-lg text-neutral-300 leading-relaxed mb-10 max-w-2xl mx-auto">
-                En García-Valcárcel & Cáceres contamos con más de 55 años de experiencia. Nuestro equipo
-                le proporcionará el asesoramiento jurídico que necesita con la máxima profesionalidad.
+                At García-Valcárcel &amp; Cáceres we have over 55 years of experience, specializing in {SERVICE_NAME.toLowerCase()}. Our team
+                will provide you with the legal advice you need with the highest professionalism.
               </p>
               <div className="flex gap-3 md:gap-4 items-center flex-wrap justify-center">
-                <Link href="/es/contacto" className="inline-flex items-center gap-2 bg-brand-brown text-white text-xs font-semibold px-6 py-3 tracking-wide transition-all duration-300 hover:bg-brand-brown/90 hover:-translate-y-0.5 hover:shadow-xl">
-                  Contactar ahora →
+                <Link href="/en/contact" className="inline-flex items-center gap-2 bg-brand-brown text-white text-xs font-semibold px-6 py-3 tracking-wide transition-all duration-300 hover:bg-brand-brown/90 hover:-translate-y-0.5 hover:shadow-xl">
+                  Contact now →
                 </Link>
                 <a href="tel:+34968241025" className="btn-outline">
                   ☎ 968 241 025
@@ -385,7 +403,7 @@ export default async function ResponsabilidadAdministracionPage() {
           </div>
         </section>
       </main>
-      <Footer locale="es" />
+      <Footer locale="en" />
       <ScrollReveal />
     </>
   );

@@ -20,7 +20,7 @@ const GENERIC_SLUG_EN = 'family-law';
 export const metadata: Metadata = {
   title: 'Abogados de Derecho de Familia — Divorcios, Custodia, Pensiones | GVC Abogados',
   description:
-    'Abogados especialistas en derecho de familia: divorcios, custodia de hijos, pensión de alimentos, régimen de visitas, liquidación de gananciales. Más de 75 años de experiencia. ☎ 968 241 025.',
+    'Abogados especialistas en derecho de familia: divorcios, custodia de hijos, pensión de alimentos, régimen de visitas, liquidación de gananciales. Más de 55 años de experiencia. ☎ 968 241 025.',
   alternates: {
     canonical: `https://www.gvcabogados.com/es/servicios/${FOLDER_SLUG}`,
     languages: { en: `/en/services/${GENERIC_SLUG_EN}` },
@@ -28,7 +28,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Abogados de Derecho de Familia — GVC Abogados',
     description:
-      'Especialistas en derecho de familia: divorcios, custodia, pensiones, régimen de visitas y liquidación de bienes. Más de 75 años de experiencia.',
+      'Especialistas en derecho de familia: divorcios, custodia, pensiones, régimen de visitas y liquidación de bienes. Más de 55 años de experiencia.',
     url: `https://www.gvcabogados.com/es/servicios/${FOLDER_SLUG}`,
     siteName: 'García-Valcárcel & Cáceres Abogados',
     locale: 'es_ES',
@@ -198,9 +198,9 @@ export default async function DerechoFamiliaPage() {
             <div className="container-custom">
               <div className="grid grid-cols-2 md:grid-cols-4 gap-0">
                 {[
-                  { value: '75+', label: 'Años de experiencia' },
+                  { value: '55+', label: 'Años de experiencia' },
                   { value: '70%', label: 'Resueltos por acuerdo' },
-                  { value: 'Desde 1946', label: 'Bufete familiar' },
+                  { value: 'Desde 1970', label: 'Bufete familiar' },
                   { value: 'Sin compromiso', label: 'Primera consulta' },
                 ].map((stat, i) => (
                   <div
@@ -243,7 +243,7 @@ export default async function DerechoFamiliaPage() {
                     con un enfoque que combina <strong className="text-brand-dark">firmeza legal</strong> y <strong className="text-brand-dark">sensibilidad personal</strong>.
                   </p>
                   <p>
-                    Desde 1946, García-Valcárcel & Cáceres ha acompañado a cientos de familias en procesos
+                    Desde 1970, García-Valcárcel & Cáceres ha acompañado a cientos de familias en procesos
                     de divorcio, custodia y pensiones. Nuestra experiencia nos permite anticipar escenarios,
                     proponer soluciones realistas y, sobre todo, proteger lo que más le importa.
                   </p>
@@ -274,7 +274,7 @@ export default async function DerechoFamiliaPage() {
                   </div>
                   <div className="absolute -bottom-6 -left-6 bg-brand-brown-hover text-white p-6 rounded-2xl shadow-xl max-w-[220px]">
                     <Heart size={20} className="text-brand-brown mb-2" />
-                    <div className="font-display text-3xl font-bold mb-1">Desde 1946</div>
+                    <div className="font-display text-3xl font-bold mb-1">Desde 1970</div>
                     <div className="text-[0.65rem] text-white/80 uppercase tracking-wider">Protegiendo familias</div>
                   </div>
                 </div>
@@ -488,8 +488,8 @@ export default async function DerechoFamiliaPage() {
                 </div>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-5 max-w-4xl mx-auto">
                   {[
-                    { title: '75+', desc: 'Años de experiencia' },
-                    { title: '1946', desc: 'Fundación del bufete' },
+                    { title: '55+', desc: 'Años de experiencia' },
+                    { title: '1970', desc: 'Fundación del bufete' },
                     { title: '5', desc: 'Profesionales especializados' },
                     { title: 'Toda España', desc: 'Sede en Murcia, actuación nacional' },
                     { title: 'Trato directo', desc: 'Con el abogado titular' },

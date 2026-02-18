@@ -9,16 +9,16 @@ import { BreadcrumbSchema, LocalBusinessSchema } from '@/components/seo/SchemaOr
 import { getTranslations } from '@/data/translations';
 
 export const metadata: Metadata = {
-  title: 'Sobre Nosotros — Bufete de Abogados en Murcia desde 1946 | García-Valcárcel & Cáceres',
+  title: 'Sobre Nosotros — Bufete de Abogados en Murcia desde 1970 | García-Valcárcel & Cáceres',
   description:
-    'Conozca la historia de García-Valcárcel & Cáceres, bufete de abogados en Murcia fundado en 1946 por D. Blas García-Valcárcel. Más de 75 años de experiencia y 5 profesionales especializados en responsabilidad civil.',
+    'Conozca la historia de García-Valcárcel & Cáceres, bufete de abogados en Murcia fundado en 1970 con raíces desde 1946. Más de 55 años de experiencia y 5 profesionales especializados en responsabilidad civil.',
   alternates: {
     canonical: 'https://www.gvcabogados.com/es/sobre-nosotros',
     languages: { en: '/en/about' },
   },
   openGraph: {
-    title: 'Sobre Nosotros — Bufete de Abogados en Murcia desde 1946',
-    description: 'Bufete de abogados en Murcia fundado en 1946 por D. Blas García-Valcárcel. Especialistas en responsabilidad civil con más de 75 años de experiencia.',
+    title: 'Sobre Nosotros — Bufete de Abogados en Murcia desde 1970',
+    description: 'Bufete de abogados en Murcia fundado en 1970, con raíces desde 1946. Especialistas en responsabilidad civil con más de 55 años de experiencia.',
     locale: 'es_ES',
   },
 };
@@ -33,12 +33,12 @@ export default function SobreNosotrosPage() {
   ];
 
   const timeline = [
-    { year: '1946', event: 'D. Blas García-Valcárcel inicia el ejercicio de la abogacía en Murcia el 6 de noviembre, fundando el despacho.' },
-    { year: '1970s', event: 'D. Pedro-Alfonso García-Valcárcel y Escribano se incorpora al bufete, ampliando las áreas de práctica al derecho bancario y mercantil.' },
-    { year: '1990s', event: 'El despacho se consolida como referente en Murcia en accidentes de tráfico y derecho de familia.' },
-    { year: '2000s', event: 'Incorporación de nuevos profesionales y apertura de las áreas de extranjería, derecho administrativo y mediación civil y mercantil.' },
+    { year: '1946', event: 'D. Blas García-Valcárcel comienza a ejercer la abogacía en Murcia, sentando las bases de lo que después sería la firma.' },
+    { year: '1970', event: 'D. Pedro-Alfonso García-Valcárcel y Escribano se incorpora y funda formalmente el bufete García-Valcárcel & Cáceres, que rápidamente gana prestigio en accidentes de tráfico y responsabilidad civil.' },
+    { year: '1980s', event: 'El despacho se consolida como referente en Murcia en accidentes de tráfico, responsabilidad civil y derecho de familia.' },
+    { year: '2000s', event: 'Especialización en negligencias médicas. Incorporación de nuevos profesionales y apertura de las áreas de extranjería, derecho administrativo y mediación civil y mercantil.' },
     { year: '2010s', event: 'Inicio de la defensa de consumidores frente a abusos bancarios: cláusulas suelo, gastos hipotecarios y tarjetas revolving.' },
-    { year: 'Hoy', event: 'Con más de 75 años de experiencia acumulada, el equipo de 5 profesionales de García-Valcárcel & Cáceres es referente en responsabilidad civil en Murcia, ofreciendo un servicio integral y personalizado desde la Gran Vía.' },
+    { year: 'Hoy', event: 'Con más de 55 años de trayectoria como firma, el equipo de 5 profesionales de García-Valcárcel & Cáceres es referente en responsabilidad civil en Murcia, ofreciendo un servicio integral y personalizado desde la Gran Vía.' },
   ];
 
   return (
@@ -61,11 +61,11 @@ export default function SobreNosotrosPage() {
             <Breadcrumbs items={breadcrumbs} />
             <h1 className="font-display text-3xl md:text-5xl font-bold text-white leading-tight max-w-[700px] mt-4">
               Bufete de abogados en Murcia con{' '}
-              <em className="italic text-brand-gold font-normal">más de 75 años</em> de tradición
+              <em className="italic text-brand-gold font-normal">más de 55 años</em> de tradición
               jurídica
             </h1>
             <p className="text-neutral-300 text-base mt-4 max-w-[560px]">
-              Fundado en 1946, García-Valcárcel & Cáceres es uno de los despachos de abogados con más
+              Fundado en 1970 y con raíces que se remontan a 1946, García-Valcárcel & Cáceres es uno de los despachos de abogados con más
               historia de la Región de Murcia. Conozca quiénes somos y los valores que nos definen.
             </p>
           </div>
@@ -80,24 +80,21 @@ export default function SobreNosotrosPage() {
                   Nuestra <span className="text-brand-brown">Historia</span>
                 </h2>
                 <p className="text-sm text-brand-dark/80 leading-relaxed mb-4">
-                  Este bufete fue fundado por{' '}
-                  <strong className="text-brand-dark">D. Blas García-Valcárcel</strong>,
-                  quien inició el ejercicio de la abogacía en Murcia el 6 de noviembre de 1946.
-                  Posteriormente se incorporó su sobrino{' '}
+                  Los orígenes de este despacho se remontan a 1946, cuando{' '}
+                  <strong className="text-brand-dark">D. Blas García-Valcárcel</strong>{' '}
+                  comenzó a ejercer la abogacía en Murcia. En 1970, su sobrino{' '}
                   <strong className="text-brand-dark">
                     D. Pedro-Alfonso García-Valcárcel y Escribano
-                  </strong>, ampliando las áreas de práctica del despacho.
+                  </strong>{' '}
+                  se incorporó y fundó formalmente la firma García-Valcárcel & Cáceres, que rápidamente ganó prestigio en accidentes de tráfico y responsabilidad civil.
                 </p>
                 <p className="text-sm text-brand-dark/80 leading-relaxed mb-4">
-                  En García-Valcárcel & Cáceres somos especialistas en responsabilidad civil:
-                  accidentes de tráfico, negligencias médicas, accidentes laborales y responsabilidad
-                  frente a la Administración. También trabajamos en otras áreas del derecho privado y público, adaptando
-                  nuestro equipo de expertos a las necesidades de cada cliente. Nuestra filosofía se
-                  basa en entender cada caso como único y ofrecer un asesoramiento personalizado.
+                  A partir del año 2000, el despacho se especializó también en negligencias médicas, consolidándose como referente en responsabilidad civil en la Región de Murcia. Hoy somos especialistas en accidentes de tráfico, negligencias médicas, accidentes laborales y responsabilidad frente a la Administración. También trabajamos en otras áreas del derecho privado y público, adaptando
+                  nuestro equipo de expertos a las necesidades de cada cliente.
                 </p>
                 <p className="text-sm text-brand-dark/80 leading-relaxed mb-4">
                   Con sede en la Gran Vía de Murcia, nuestro despacho ha sido testigo de la evolución
-                  del derecho en España durante más de siete décadas, manteniendo siempre el compromiso
+                  del derecho en España durante más de cinco décadas como firma, manteniendo siempre el compromiso
                   con la excelencia y la defensa rigurosa de los intereses de nuestros clientes.
                 </p>
                 <p className="text-sm text-brand-dark/80 leading-relaxed">
@@ -129,7 +126,7 @@ export default function SobreNosotrosPage() {
         <section className="py-12 md:py-20 bg-brand-brown text-brand-dark">
           <div className="container-custom max-w-[700px]">
             <h2 className="font-serif text-2xl md:text-3xl font-semibold text-center mb-12">
-              Más de <span className="text-brand-brown-hover">75 años</span> de trayectoria
+              Más de <span className="text-brand-brown-hover">55 años</span> de trayectoria
             </h2>
             <div className="relative">
               <div className="absolute left-[18px] top-0 bottom-0 w-px bg-brand-dark/10" />
@@ -157,9 +154,9 @@ export default function SobreNosotrosPage() {
           <div className="container-custom">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-0 text-center">
               {[
-                { value: '75+', label: 'Años de experiencia' },
+                { value: '55+', label: 'Años de experiencia' },
                 { value: '14', label: 'Áreas de práctica' },
-                { value: '1946', label: 'Año de fundación' },
+                { value: '1970', label: 'Año de fundación' },
                 { value: '5', label: 'Profesionales' },
               ].map((stat, i) => (
                 <div
@@ -185,7 +182,7 @@ export default function SobreNosotrosPage() {
               Nuestros <span className="text-brand-brown">Valores</span>
             </h2>
             <p className="text-sm text-brand-dark/70 text-center max-w-[500px] mx-auto mb-10">
-              Los principios que guían nuestra actuación profesional desde 1946
+              Los principios que guían nuestra actuación profesional desde 1970
             </p>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
               {[
@@ -202,7 +199,7 @@ export default function SobreNosotrosPage() {
                 {
                   icon: <Clock size={28} strokeWidth={1.5} />,
                   title: 'Experiencia',
-                  desc: 'Más de 75 años de trayectoria nos permiten ofrecer un asesoramiento experto basado en una práctica contrastada.',
+                  desc: 'Más de 55 años de trayectoria como firma nos permiten ofrecer un asesoramiento experto basado en una práctica contrastada.',
                 },
                 {
                   icon: <Crown size={28} strokeWidth={1.5} />,
@@ -242,7 +239,7 @@ export default function SobreNosotrosPage() {
                   text: 'No somos un despacho masivo que trata los casos como números. Seleccionamos los asuntos que aceptamos para garantizar una dedicación total a cada cliente.',
                 },
                 {
-                  title: 'Presencia ininterrumpida en Murcia desde 1946',
+                  title: 'Presencia ininterrumpida en Murcia desde 1970',
                   text: 'Conocemos los tribunales, los juzgados y los profesionales del derecho en Murcia como pocos. Esa red de contactos y conocimiento local es una ventaja real para nuestros clientes.',
                 },
                 {

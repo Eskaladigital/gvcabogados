@@ -40,7 +40,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const cityName = content.localityName;
   const title = content.titleEs || `Abogados de Derecho de Familia en ${cityName} — GVC Abogados`;
   const description = content.metaDescriptionEs || content.shortDescriptionEs ||
-    `Abogados especialistas en derecho de familia en ${cityName}. Divorcios, custodia, pensiones, régimen de visitas. Más de 75 años de experiencia. ☎ 968 241 025.`;
+    `Abogados especialistas en derecho de familia en ${cityName}. Divorcios, custodia, pensiones, régimen de visitas. Más de 55 años de experiencia. ☎ 968 241 025.`;
 
   return {
     title,
@@ -54,7 +54,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 const DEFAULT_STATS = [
-  { value: '75+', label: 'Años de experiencia' },
+  { value: '55+', label: 'Años de experiencia' },
   { value: '70%', label: 'Resueltos por acuerdo' },
   { value: 'Sin compromiso', label: 'Primera consulta' },
 ];
@@ -449,8 +449,8 @@ export default async function DerechoFamiliaLocalPage({ params }: Props) {
                 </div>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-5 max-w-4xl mx-auto">
                   {[
-                    { title: '75+', desc: 'Años de experiencia' },
-                    { title: '1946', desc: 'Fundación del bufete' },
+                    { title: '55+', desc: 'Años de experiencia' },
+                    { title: '1970', desc: 'Fundación del bufete' },
                     { title: '5', desc: 'Profesionales especializados' },
                     { title: cityName, desc: 'Presencial y videoconferencia' },
                     { title: 'Trato directo', desc: 'Con el abogado titular' },

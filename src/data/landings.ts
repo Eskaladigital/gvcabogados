@@ -39,9 +39,9 @@ export const landingPages: LandingPage[] = [
     h1Es: 'Abogados de Accidentes de Tráfico en Alicante',
     h1En: 'Traffic Accident Lawyers in Alicante',
     introEs:
-      'Desde nuestro despacho en Murcia, García-Valcárcel & Cáceres ofrece asistencia legal especializada en accidentes de tráfico a clientes de Alicante y toda la provincia. Con más de 75 años de experiencia, luchamos por conseguir la máxima indemnización para las víctimas de accidentes de tráfico.',
+      'Desde nuestro despacho en Murcia, García-Valcárcel & Cáceres ofrece asistencia legal especializada en accidentes de tráfico a clientes de Alicante y toda la provincia. Con más de 55 años de experiencia, luchamos por conseguir la máxima indemnización para las víctimas de accidentes de tráfico.',
     introEn:
-      'From our office in Murcia, García-Valcárcel & Cáceres offers specialized legal assistance in traffic accidents to clients in Alicante and the entire province. With over 75 years of experience, we fight for maximum compensation for traffic accident victims.',
+      'From our office in Murcia, García-Valcárcel & Cáceres offers specialized legal assistance in traffic accidents to clients in Alicante and the entire province. With over 55 years of experience, we fight for maximum compensation for traffic accident victims.',
     cityContentEs:
       'Alicante es una de las provincias con mayor densidad de tráfico del Levante español, especialmente en la AP-7, la A-70 y la N-332, vías con alta siniestralidad. Si ha sufrido un accidente de tráfico en Alicante, Elche, Benidorm, Torrevieja o cualquier localidad de la provincia, nuestros abogados le asistirán tanto de forma presencial como por videoconferencia. Conocemos la casuística específica de los accidentes en la zona: colisiones en autovías de peaje, atropellos en zonas turísticas, accidentes de moto en carreteras costeras y siniestros en la N-340. Tramitamos su reclamación ante los juzgados de Alicante o de Murcia, según convenga a su caso.',
     cityContentEn:
@@ -81,16 +81,16 @@ export const landingPages: LandingPage[] = [
     introEn:
       'García-Valcárcel & Cáceres, a law firm based in Murcia city (only 30 minutes from Cartagena), provides specialized traffic accident services to clients in Cartagena, La Manga, Los Alcázares and the entire Cartagena area.',
     cityContentEs:
-      'Cartagena y su comarca presentan características viales particulares: la autovía A-30 entre Murcia y Cartagena, las carreteras de acceso a La Manga del Mar Menor (especialmente peligrosas en época estival), la variante de Los Belones y las rotondas del polígono industrial de Cartagena son puntos de frecuente siniestralidad. Nuestro equipo conoce en detalle los juzgados de Cartagena y trabaja habitualmente con peritos y médicos forenses de la zona. Al estar a solo 30 minutos en coche, ofrecemos la misma cercanía que un despacho local pero con la experiencia de más de 75 años.',
+      'Cartagena y su comarca presentan características viales particulares: la autovía A-30 entre Murcia y Cartagena, las carreteras de acceso a La Manga del Mar Menor (especialmente peligrosas en época estival), la variante de Los Belones y las rotondas del polígono industrial de Cartagena son puntos de frecuente siniestralidad. Nuestro equipo conoce en detalle los juzgados de Cartagena y trabaja habitualmente con peritos y médicos forenses de la zona. Al estar a solo 30 minutos en coche, ofrecemos la misma cercanía que un despacho local pero con la experiencia de más de 55 años.',
     cityContentEn:
-      'Cartagena and its district have particular road characteristics: the A-30 motorway between Murcia and Cartagena, the access roads to La Manga del Mar Menor (especially dangerous in summer), and the industrial areas are frequent accident spots. Being only 30 minutes away, we offer the same proximity as a local firm but with over 75 years of experience.',
+      'Cartagena and its district have particular road characteristics: the A-30 motorway between Murcia and Cartagena, the access roads to La Manga del Mar Menor (especially dangerous in summer), and the industrial areas are frequent accident spots. Being only 30 minutes away, we offer the same proximity as a local firm but with over 55 years of experience.',
     advantagesEs: [
       'A solo 30 minutos de Cartagena: misma cercanía que un despacho local',
       'Conocimiento de los juzgados de Cartagena y sus particularidades',
       'Experiencia en accidentes en A-30, carreteras de La Manga y zona portuaria',
       'Red de peritos médicos en Cartagena y comarca',
       'Primera consulta sin compromiso presencial o por videoconferencia',
-      'Más de 75 años de experiencia en la Región de Murcia',
+      'Más de 55 años de experiencia en la Región de Murcia',
     ],
     advantagesEn: [
       'Only 30 minutes from Cartagena: same proximity as a local firm',
@@ -98,7 +98,7 @@ export const landingPages: LandingPage[] = [
       'Experience with A-30 accidents, La Manga roads and port area',
       'Network of medical experts in Cartagena area',
       'Free initial consultation in person or by video conference',
-      'Over 75 years of experience in the Region of Murcia',
+      'Over 55 years of experience in the Region of Murcia',
     ],
   },
   {
@@ -119,9 +119,9 @@ export const landingPages: LandingPage[] = [
     introEn:
       'García-Valcárcel & Cáceres offers specialized legal advice on divorce for clients in Madrid. We handle amicable and contentious divorces, shared custody, child support and community property liquidation.',
     cityContentEs:
-      'Aunque nuestra sede está en Murcia, atendemos un número creciente de clientes madrileños que valoran nuestra experiencia de más de 75 años, nuestras tarifas competitivas frente a los precios habituales de los despachos de la capital, y la posibilidad de gestionar gran parte del proceso por videoconferencia. Para las actuaciones procesales que requieren presencia en Madrid, coordinamos con procuradores de los Juzgados de Familia de Madrid (Plaza de Castilla) para garantizar una representación eficaz. Muchos de nuestros clientes de Madrid nos contactaron inicialmente porque el divorcio incluye bienes inmuebles en la Región de Murcia o porque uno de los cónyuges reside en Murcia.',
+      'Aunque nuestra sede está en Murcia, atendemos un número creciente de clientes madrileños que valoran nuestra experiencia de más de 55 años, nuestras tarifas competitivas frente a los precios habituales de los despachos de la capital, y la posibilidad de gestionar gran parte del proceso por videoconferencia. Para las actuaciones procesales que requieren presencia en Madrid, coordinamos con procuradores de los Juzgados de Familia de Madrid (Plaza de Castilla) para garantizar una representación eficaz. Muchos de nuestros clientes de Madrid nos contactaron inicialmente porque el divorcio incluye bienes inmuebles en la Región de Murcia o porque uno de los cónyuges reside en Murcia.',
     cityContentEn:
-      'Although our headquarters are in Murcia, we serve a growing number of Madrid clients who value our 75+ years of experience, competitive fees compared to typical Madrid firm prices, and the ability to manage much of the process via video conference.',
+      'Although our headquarters are in Murcia, we serve a growing number of Madrid clients who value our 55+ years of experience, competitive fees compared to typical Madrid firm prices, and the ability to manage much of the process via video conference.',
     advantagesEs: [
       'Tarifas competitivas: hasta un 40% menos que despachos de Madrid centro',
       'Gestión por videoconferencia sin necesidad de desplazarse',
@@ -147,15 +147,15 @@ export const landingPages: LandingPage[] = [
     titleEs: 'Abogados Divorcios en Alicante — Custodia y Pensiones | GVC Abogados',
     titleEn: 'Divorce Lawyers in Alicante — Custody & Support | GVC Lawyers',
     metaDescriptionEs:
-      'Abogados de divorcios en Alicante. Mutuo acuerdo, contencioso, custodia compartida. 75+ años de experiencia. ☎ 968 241 025.',
+      'Abogados de divorcios en Alicante. Mutuo acuerdo, contencioso, custodia compartida. 55+ años de experiencia. ☎ 968 241 025.',
     metaDescriptionEn:
-      'Divorce lawyers in Alicante. Amicable, contentious, shared custody. 75+ years of experience. ☎ +34 968 241 025.',
+      'Divorce lawyers in Alicante. Amicable, contentious, shared custody. 55+ years of experience. ☎ +34 968 241 025.',
     h1Es: 'Abogados de Divorcios en Alicante',
     h1En: 'Divorce Lawyers in Alicante',
     introEs:
-      'Desde Murcia, nuestro equipo de abogados especializados en derecho de familia ofrece sus servicios a clientes de Alicante, Elche, Benidorm y toda la provincia. Más de 75 años de experiencia en divorcios, custodia de menores y pensiones alimenticias.',
+      'Desde Murcia, nuestro equipo de abogados especializados en derecho de familia ofrece sus servicios a clientes de Alicante, Elche, Benidorm y toda la provincia. Más de 55 años de experiencia en divorcios, custodia de menores y pensiones alimenticias.',
     introEn:
-      'From Murcia, our team of lawyers specialized in family law offers services to clients in Alicante, Elche, Benidorm and the entire province. Over 75 years of experience in divorce, child custody and support.',
+      'From Murcia, our team of lawyers specialized in family law offers services to clients in Alicante, Elche, Benidorm and the entire province. Over 55 years of experience in divorce, child custody and support.',
     cityContentEs:
       'La cercanía geográfica entre Murcia y Alicante (menos de 1 hora por autovía A-7) nos permite atender a clientes alicantinos con la misma agilidad que un despacho local. Los divorcios en Alicante presentan particularidades propias, como la frecuente existencia de bienes inmuebles en zonas turísticas (Costa Blanca, Torrevieja, Orihuela Costa) que requieren una valoración y reparto especializado. En los casos de custodia compartida, los juzgados de Alicante aplican criterios específicos que conocemos en detalle por nuestra práctica habitual en la zona.',
     cityContentEn:
@@ -191,9 +191,9 @@ export const landingPages: LandingPage[] = [
     h1Es: 'Abogados de Derecho Inmobiliario en Toledo',
     h1En: 'Real Estate Lawyers in Toledo',
     introEs:
-      'García-Valcárcel & Cáceres presta servicios de asesoramiento inmobiliario a clientes en Toledo y Castilla-La Mancha. Gestionamos compraventas, arrendamientos, desahucios y conflictos de propiedad horizontal con más de 75 años de experiencia.',
+      'García-Valcárcel & Cáceres presta servicios de asesoramiento inmobiliario a clientes en Toledo y Castilla-La Mancha. Gestionamos compraventas, arrendamientos, desahucios y conflictos de propiedad horizontal con más de 55 años de experiencia.',
     introEn:
-      'García-Valcárcel & Cáceres provides real estate advisory services to clients in Toledo and Castilla-La Mancha. We manage property sales, leases, evictions and condominium disputes with over 75 years of experience.',
+      'García-Valcárcel & Cáceres provides real estate advisory services to clients in Toledo and Castilla-La Mancha. We manage property sales, leases, evictions and condominium disputes with over 55 years of experience.',
     cityContentEs:
       'Toledo y su provincia están experimentando un auge inmobiliario impulsado por la cercanía a Madrid y los precios más competitivos de la vivienda. Esto genera una demanda creciente de asesoramiento jurídico en operaciones de compraventa, contratos de alquiler (tanto residenciales como turísticos, muy frecuentes en el casco histórico de Toledo) y conflictos con comunidades de propietarios. Nuestro despacho atiende a clientes toledanos por videoconferencia y coordina las actuaciones procesales con procuradores locales ante los juzgados de Toledo.',
     cityContentEn:
@@ -305,9 +305,9 @@ export const landingPages: LandingPage[] = [
     h1Es: 'Abogados de Herencias en Almería',
     h1En: 'Inheritance Lawyers in Almería',
     introEs:
-      'Nuestro bufete de abogados ofrece asesoramiento integral en herencias y sucesiones a clientes de Almería y toda la provincia. Tramitación completa de herencias, testamentos e impugnaciones con más de 75 años de experiencia.',
+      'Nuestro bufete de abogados ofrece asesoramiento integral en herencias y sucesiones a clientes de Almería y toda la provincia. Tramitación completa de herencias, testamentos e impugnaciones con más de 55 años de experiencia.',
     introEn:
-      'Our law firm offers comprehensive advice on inheritance and succession to clients in Almería and the entire province. Complete processing of inheritances, wills and contestations with over 75 years of experience.',
+      'Our law firm offers comprehensive advice on inheritance and succession to clients in Almería and the entire province. Complete processing of inheritances, wills and contestations with over 55 years of experience.',
     cityContentEs:
       'Almería presenta particularidades en materia sucesoria que requieren un conocimiento especializado: la importante presencia de comunidad extranjera (especialmente británica, alemana y nórdica) en la zona de Mojácar, Vera, Garrucha y la costa almeriense genera herencias internacionales que deben tramitarse conforme al Reglamento Europeo de Sucesiones. Además, las fincas rústicas agrícolas del Poniente almeriense (invernaderos, terrenos de cultivo) plantean valoraciones complejas en las particiones hereditarias. Nuestro equipo tiene experiencia en herencias transfronterizas y en la fiscalidad sucesoria de Andalucía, que presenta diferencias significativas respecto a la de Murcia.',
     cityContentEn:
