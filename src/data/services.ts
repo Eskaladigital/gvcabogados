@@ -969,6 +969,16 @@ const FOLDER_SLUG_MAP: Record<string, string> = {
   'responsabilidad-civil': 'responsabilidad-civil',
 };
 
+const DISPLAY_NAME_ES: Record<string, string> = {
+  'extranjeria': 'Permisos de Residencia e Inmigración',
+  'derecho-administrativo': 'Responsabilidad de la Administración',
+};
+
+const DISPLAY_NAME_EN: Record<string, string> = {
+  'extranjeria': 'Immigration & Residence Permits',
+  'derecho-administrativo': 'Government Liability',
+};
+
 export function getActiveServices() {
   return services.filter((s) => ACTIVE_SERVICE_IDS.includes(s.id));
 }
@@ -984,7 +994,9 @@ export function getServicesByLocale(locale: 'es' | 'en') {
       id: s.id,
       slug: getFolderSlug(s.id),
       localSlug: locale === 'es' ? s.slugEs : s.slugEn,
-      name: locale === 'es' ? s.nameEs : s.nameEn,
+      name: locale === 'es'
+        ? (DISPLAY_NAME_ES[s.id] || s.nameEs)
+        : (DISPLAY_NAME_EN[s.id] || s.nameEn),
       description: locale === 'es' ? s.descriptionEs : s.descriptionEn,
       longDescription: locale === 'es' ? s.longDescriptionEs : s.longDescriptionEn,
       icon: s.icon,
