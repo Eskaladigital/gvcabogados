@@ -188,14 +188,16 @@ export function validateBasePayload(p: BasePayload) {
 }
 
 export function validateEntityAgainstEvidence(entity: LocalEntity, evidence: EvidenceItem[]): boolean {
+  if (!entity?.name) return false;
   const name = entity.name.toLowerCase();
   return evidence.some(
-    (e) => e.title.toLowerCase().includes(name) || e.snippet.toLowerCase().includes(name)
+    (e) => (e.title || '').toLowerCase().includes(name) || (e.snippet || '').toLowerCase().includes(name)
   );
 }
 
 export function filterUnverifiedEntities(entities: LocalEntity[], evidence: EvidenceItem[], verbose: boolean): LocalEntity[] {
-  const verified = entities.filter((e) => validateEntityAgainstEvidence(e, evidence));
+  const valid = (entities || []).filter((e) => e && typeof e.name === 'string' && e.name.length > 0);
+  const verified = valid.filter((e) => validateEntityAgainstEvidence(e, evidence));
   const removed = entities.length - verified.length;
   if (removed > 0 && verbose) {
     console.log(`  Filtradas ${removed} entidades no verificadas en evidencia SERP`);

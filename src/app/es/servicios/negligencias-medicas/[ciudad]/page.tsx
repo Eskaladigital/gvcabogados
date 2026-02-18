@@ -13,6 +13,8 @@ interface Props {
   params: { ciudad: string };
 }
 
+export const dynamicParams = false;
+
 export async function generateStaticParams() {
   const { data } = await supabaseAdmin
     .from('service_content')

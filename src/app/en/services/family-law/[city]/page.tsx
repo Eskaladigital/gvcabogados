@@ -24,6 +24,8 @@ interface Props {
   params: { city: string };
 }
 
+export const dynamicParams = false;
+
 export async function generateStaticParams() {
   const { data } = await supabaseAdmin
     .from('service_content')

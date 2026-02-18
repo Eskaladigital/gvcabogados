@@ -14,6 +14,8 @@ interface Props {
   params: { 'servicio-ciudad': string };
 }
 
+export const dynamicParams = false;
+
 export async function generateStaticParams() {
   const slugs = await getAllServiceContentSlugs();
   return slugs.map((s) => ({ 'servicio-ciudad': s.slug }));
