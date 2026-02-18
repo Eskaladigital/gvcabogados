@@ -10,14 +10,14 @@ import { getTranslations } from '@/data/translations';
 export const metadata: Metadata = {
   title: 'Sobre Nosotros — Bufete de Abogados en Murcia desde 1946 | García-Valcárcel & Cáceres',
   description:
-    'Conozca la historia de García-Valcárcel & Cáceres, bufete de abogados en Murcia fundado en 1946. Más de 75 años de excelencia jurídica, 3.000+ casos resueltos y 5 profesionales especializados.',
+    'Conozca la historia de García-Valcárcel & Cáceres, bufete de abogados en Murcia fundado en 1946 por D. Blas García-Valcárcel. Más de 75 años de experiencia, 3.000+ casos resueltos y 5 profesionales especializados en responsabilidad civil.',
   alternates: {
     canonical: 'https://www.gvcabogados.com/es/sobre-nosotros',
     languages: { en: '/en/about' },
   },
   openGraph: {
     title: 'Sobre Nosotros — Bufete de Abogados en Murcia desde 1946',
-    description: 'Bufete de abogados en Murcia fundado en 1946. Más de 75 años de excelencia jurídica.',
+    description: 'Bufete de abogados en Murcia fundado en 1946 por D. Blas García-Valcárcel. Especialistas en responsabilidad civil con más de 75 años de experiencia.',
     locale: 'es_ES',
   },
 };
@@ -37,7 +37,7 @@ export default function SobreNosotrosPage() {
     { year: '1990s', event: 'El despacho se consolida como referente en Murcia en accidentes de tráfico y derecho de familia, superando los 1.000 casos gestionados.' },
     { year: '2000s', event: 'Incorporación de nuevos profesionales y apertura de las áreas de extranjería, derecho administrativo y mediación civil y mercantil.' },
     { year: '2010s', event: 'El bufete alcanza los 2.500 casos resueltos. Inicio de la defensa masiva de consumidores frente a abusos bancarios: cláusulas suelo, gastos hipotecarios y tarjetas revolving.' },
-    { year: 'Hoy', event: 'Con más de 75 años de tradición jurídica, el equipo de 5 profesionales de García-Valcárcel & Cáceres continúa ofreciendo un servicio integral, personalizado y de máxima calidad desde la Gran Vía de Murcia.' },
+    { year: 'Hoy', event: 'Con más de 75 años de experiencia acumulada, el equipo de 5 profesionales de García-Valcárcel & Cáceres es referente en responsabilidad civil en Murcia, ofreciendo un servicio integral y personalizado desde la Gran Vía.' },
   ];
 
   return (
@@ -81,19 +81,19 @@ export default function SobreNosotrosPage() {
                 </h2>
                 <p className="text-sm text-brand-dark/80 leading-relaxed mb-4">
                   Este bufete fue fundado por{' '}
+                  <strong className="text-brand-dark">D. Blas García-Valcárcel</strong>,
+                  quien inició el ejercicio de la abogacía en Murcia el 6 de noviembre de 1946.
+                  Posteriormente se incorporó su sobrino{' '}
                   <strong className="text-brand-dark">
                     D. Pedro-Alfonso García-Valcárcel y Escribano
-                  </strong>{' '}
-                  y su tío{' '}
-                  <strong className="text-brand-dark">D. Blas García-Valcárcel</strong>, ya
-                  fallecido, el cual ejercía ya como abogado desde el 6 de noviembre de 1946.
+                  </strong>, ampliando las áreas de práctica del despacho.
                 </p>
                 <p className="text-sm text-brand-dark/80 leading-relaxed mb-4">
-                  En García-Valcárcel & Cáceres somos expertos en distintas áreas de actuación.
-                  Trabajamos en el ámbito del derecho privado y en el de derecho público, adaptando
-                  nuestros conocimientos y nuestro equipo de expertos a las necesidades de nuestros
-                  clientes. Nuestra filosofía se basa en entender cada caso como único y ofrecer un
-                  asesoramiento personalizado que va más allá del mero trámite legal.
+                  En García-Valcárcel & Cáceres somos especialistas en responsabilidad civil:
+                  accidentes de tráfico, negligencias médicas, accidentes laborales y reclamaciones
+                  de daños. También trabajamos en otras áreas del derecho privado y público, adaptando
+                  nuestro equipo de expertos a las necesidades de cada cliente. Nuestra filosofía se
+                  basa en entender cada caso como único y ofrecer un asesoramiento personalizado.
                 </p>
                 <p className="text-sm text-brand-dark/80 leading-relaxed mb-4">
                   Con sede en la Gran Vía de Murcia, nuestro despacho ha sido testigo de la evolución

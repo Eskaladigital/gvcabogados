@@ -17,9 +17,9 @@ export const team: TeamMember[] = [
     roleEs: 'Socio Fundador',
     roleEn: 'Founding Partner',
     bioEs:
-      'Fundador del bufete. Amplia trayectoria en derecho privado y público en la Región de Murcia. Con décadas de experiencia ejerciendo la abogacía con excelencia.',
+      'Sobrino de D. Blas García-Valcárcel, fundador del bufete en 1946. Amplia trayectoria en derecho privado y público en la Región de Murcia. Especialista en responsabilidad civil con décadas de experiencia.',
     bioEn:
-      'Firm founder. Extensive career in private and public law in the Region of Murcia. With decades of experience practicing law with excellence.',
+      'Nephew of D. Blas García-Valcárcel, who founded the firm in 1946. Extensive career in private and public law in the Region of Murcia. Specialist in civil liability with decades of experience.',
     image: '/images/team/garcia_valcarcel_caceres_abogados_equipo_pedro.webp',
     isFounder: true,
     isLawyer: true,

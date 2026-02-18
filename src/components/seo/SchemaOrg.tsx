@@ -20,8 +20,8 @@ export function LocalBusinessSchema({ locale }: SchemaProps) {
     logo: `${SITE_URL}/images/logo/gvcabogados_murcia_logo_favicon_marron_sinfondo.webp`,
     image: `${SITE_URL}/images/slides/garcia_valcarcel_caceres_abogados_slide_home_v2.webp`,
     description: locale === 'es'
-      ? 'Bufete de abogados en Murcia fundado en 1946. Más de 75 años de experiencia en derecho privado y público. Especialistas en accidentes de tráfico, divorcios, derecho bancario, penal, inmobiliario y sucesorio.'
-      : 'Law firm in Murcia, Spain founded in 1946. Over 75 years of experience in private and public law.',
+      ? 'Bufete de abogados en Murcia fundado en 1946 por D. Blas García-Valcárcel. Más de 75 años de experiencia. Especialistas en responsabilidad civil: accidentes de tráfico, negligencias médicas y accidentes laborales.'
+      : 'Law firm in Murcia, Spain founded in 1946 by D. Blas García-Valcárcel. Over 75 years of experience. Specialists in civil liability: traffic accidents, medical malpractice and workplace accidents.',
     foundingDate: '1946-11-06',
     telephone: '+34968241025',
     email: 'contacto@gvcabogados.com',

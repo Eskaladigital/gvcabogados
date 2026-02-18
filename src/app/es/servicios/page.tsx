@@ -16,14 +16,14 @@ import { getServicesByLocale } from '@/data/services';
 export const metadata: Metadata = {
   title: 'Áreas de Práctica — Abogados Especializados en Murcia | GVC Abogados',
   description:
-    'Servicios jurídicos especializados en Murcia: accidentes de tráfico, divorcios, derecho bancario, penal, inmobiliario, sucesorio, mercantil, extranjería y más. Más de 75 años de experiencia.',
+    'Servicios jurídicos especializados en Murcia. Especialistas en responsabilidad civil: accidentes de tráfico, negligencias médicas y accidentes laborales. Más de 75 años de experiencia.',
   alternates: {
     canonical: 'https://www.gvcabogados.com/es/servicios',
     languages: { en: '/en/services' },
   },
   openGraph: {
     title: 'Áreas de Práctica — Abogados Especializados en Murcia',
-    description: 'Servicios jurídicos especializados en Murcia. 13 áreas de práctica. Más de 75 años de experiencia.',
+    description: 'Servicios jurídicos especializados en Murcia. Especialistas en responsabilidad civil. Más de 75 años de experiencia.',
     locale: 'es_ES',
   },
 };

@@ -29,7 +29,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!content) return {};
 
   const title = content.titleEs || `${content.serviceNameEs} en ${content.localityName} — Abogados Especialistas | GVC Abogados`;
-  const description = content.metaDescriptionEs || content.shortDescriptionEs || `Abogados especializados en ${content.serviceNameEs.toLowerCase()} en ${content.localityName}. Más de 75 años de experiencia. ☎ 968 241 025.`;
+  const description = content.metaDescriptionEs || content.shortDescriptionEs || `Abogados especializados en ${content.serviceNameEs.toLowerCase()} en ${content.localityName}. Especialistas en responsabilidad civil con más de 75 años de experiencia. ☎ 968 241 025.`;
 
   return {
     title,
@@ -390,7 +390,7 @@ export default async function ServiceDetailPage({ params }: Props) {
                 ¿Necesita asesoramiento especializado?
               </h2>
               <p className="text-base md:text-lg text-neutral-300 leading-relaxed mb-10 max-w-2xl mx-auto">
-                En García-Valcárcel & Cáceres contamos con más de 75 años de experiencia. Nuestro equipo 
+                En García-Valcárcel & Cáceres contamos con más de 75 años de experiencia, especializados en responsabilidad civil. Nuestro equipo 
                 le proporcionará el asesoramiento jurídico que necesita con la máxima profesionalidad.
               </p>
               <div className="flex gap-3 md:gap-4 items-center flex-wrap justify-center">

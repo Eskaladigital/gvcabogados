@@ -15,10 +15,10 @@ export const translations = {
     },
     hero: {
       tag: 'Excelencia Jurídica desde 1946',
-      title: 'Abogados en Murcia especializados en derecho privado y público.',
+      title: 'Abogados en Murcia especialistas en responsabilidad civil.',
       titleHighlight: 'Desde 1946 a su servicio',
       description:
-        'García-Valcárcel & Cáceres es un bufete de abogados en Murcia fundado en 1946 por D. Pedro-Alfonso García-Valcárcel y Escribano. Con más de 75 años de experiencia, somos especialistas en accidentes de tráfico, divorcios, derecho bancario, penal, inmobiliario y herencias.',
+        'García-Valcárcel & Cáceres es un bufete de abogados en Murcia fundado en 1946 por D. Blas García-Valcárcel. Con más de 75 años de experiencia acumulada, somos especialistas en responsabilidad civil: accidentes de tráfico, negligencias médicas, accidentes laborales y reclamaciones de daños.',
       ctaPrimary: 'Solicitar consulta',
       ctaSecondary: 'Explorar áreas de práctica',
       stats: {
@@ -32,7 +32,7 @@ export const translations = {
       title: 'Un despacho líder en',
       titleHighlight: 'calidad, servicio',
       titleEnd: 'y compromiso',
-      text: 'Fundado por D. Pedro-Alfonso García-Valcárcel y Escribano y su tío D. Blas García-Valcárcel, nuestro bufete ejerce la abogacía en Murcia desde 1946. Con más de 75 años de tradición jurídica, somos expertos en derecho privado y público, adaptando nuestro equipo de 5 profesionales a las necesidades de cada cliente.',
+      text: 'Fundado por D. Blas García-Valcárcel en 1946, nuestro bufete ejerce la abogacía en Murcia desde entonces. Con más de 75 años de experiencia acumulada, somos especialistas en responsabilidad civil —accidentes de tráfico, negligencias médicas y accidentes laborales—, adaptando nuestro equipo de 5 profesionales a las necesidades de cada cliente.',
       link: 'Quiénes somos',
       founderQuote:
         'El símbolo de este bufete es el león, que tradicionalmente encarna la idea de NOBLEZA. Ser noble significa ser preclaro, ilustre, generoso, honroso, y estimable. Tal es el ideal que preside la actuación de este bufete.',
@@ -97,7 +97,7 @@ export const translations = {
     },
     footer: {
       description:
-        'Bufete de abogados con más de 75 años de tradición jurídica en Murcia. Asesoramiento integral con la máxima exigencia y compromiso.',
+        'Bufete de abogados con más de 75 años de experiencia en Murcia. Especialistas en responsabilidad civil, accidentes de tráfico y negligencias médicas.',
       areas: 'Áreas',
       firm: 'Despacho',
       aboutUs: 'Sobre nosotros',
@@ -111,12 +111,12 @@ export const translations = {
       home: {
         title: 'García-Valcárcel & Cáceres — Bufete de Abogados en Murcia',
         description:
-          'Despacho de abogados en Murcia con más de 75 años de experiencia. Especialistas en accidentes de tráfico, divorcios, derecho bancario, penal, inmobiliario y sucesorio.',
+          'Despacho de abogados en Murcia con más de 75 años de experiencia. Especialistas en responsabilidad civil: accidentes de tráfico, negligencias médicas y accidentes laborales.',
       },
       about: {
         title: 'Sobre Nosotros — Abogados en Murcia | García-Valcárcel & Cáceres',
         description:
-          'Conozca la historia y valores de nuestro bufete de abogados en Murcia. Fundado en 1946, con más de 75 años de excelencia jurídica.',
+          'Conozca la historia y valores de nuestro bufete de abogados en Murcia. Fundado en 1946 por D. Blas García-Valcárcel, con más de 75 años de experiencia.',
       },
       services: {
         title: 'Áreas de Práctica — Servicios Jurídicos en Murcia | GVC Abogados',
@@ -156,10 +156,10 @@ export const translations = {
     },
     hero: {
       tag: 'Legal Excellence since 1946',
-      title: 'Lawyers in Murcia specializing in private and public law.',
+      title: 'Lawyers in Murcia specializing in civil liability.',
       titleHighlight: 'Serving you since 1946',
       description:
-        'García-Valcárcel & Cáceres is a law firm in Murcia founded in 1946. With over 75 years of experience, we specialize in traffic accidents, divorce, banking law, criminal law, real estate and inheritance law.',
+        'García-Valcárcel & Cáceres is a law firm in Murcia founded in 1946 by D. Blas García-Valcárcel. With over 75 years of accumulated experience, we specialize in civil liability: traffic accidents, medical malpractice, workplace accidents and damage claims.',
       ctaPrimary: 'Request consultation',
       ctaSecondary: 'Explore practice areas',
       stats: {
@@ -173,7 +173,7 @@ export const translations = {
       title: 'A leading firm in',
       titleHighlight: 'quality, service',
       titleEnd: 'and commitment',
-      text: 'Founded by Pedro-Alfonso García-Valcárcel y Escribano and his uncle Blas García-Valcárcel, our firm has practiced law in Murcia since 1946. With over 75 years of legal tradition, we are experts in private and public law, adapting our team of 5 professionals to the needs of each client.',
+      text: 'Founded by D. Blas García-Valcárcel in 1946, our firm has practiced law in Murcia ever since. With over 75 years of accumulated experience, we specialize in civil liability —traffic accidents, medical malpractice and workplace accidents—, adapting our team of 5 professionals to the needs of each client.',
       link: 'About us',
       founderQuote:
         'The symbol of this firm is the lion, which traditionally embodies the idea of NOBILITY. To be noble means to be distinguished, illustrious, generous, honorable, and esteemed. Such is the ideal that presides over the work of this firm.',
@@ -238,7 +238,7 @@ export const translations = {
     },
     footer: {
       description:
-        'Law firm with over 75 years of legal tradition in Murcia, Spain. Comprehensive legal counsel with the highest standards and commitment.',
+        'Law firm with over 75 years of experience in Murcia, Spain. Specialists in civil liability, traffic accidents and medical malpractice.',
       areas: 'Areas',
       firm: 'The Firm',
       aboutUs: 'About us',
@@ -252,12 +252,12 @@ export const translations = {
       home: {
         title: 'García-Valcárcel & Cáceres — Law Firm in Murcia, Spain',
         description:
-          'Law firm in Murcia, Spain with over 75 years of experience. Specialists in traffic accidents, divorce, banking law, criminal law, real estate and inheritance law.',
+          'Law firm in Murcia, Spain with over 75 years of experience. Specialists in civil liability: traffic accidents, medical malpractice and workplace accidents.',
       },
       about: {
         title: 'About Us — Lawyers in Murcia | García-Valcárcel & Cáceres',
         description:
-          'Learn about the history and values of our law firm in Murcia. Founded in 1946, with over 75 years of legal excellence.',
+          'Learn about the history and values of our law firm in Murcia. Founded in 1946 by D. Blas García-Valcárcel, with over 75 years of experience.',
       },
       services: {
         title: 'Practice Areas — Legal Services in Murcia | GVC Lawyers',

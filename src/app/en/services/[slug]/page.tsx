@@ -22,7 +22,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!service) return {};
 
   const title = `${service.nameEn} in Murcia — Specialist Lawyers | GVC Lawyers`;
-  const description = `Specialist ${service.nameEn.toLowerCase()} lawyers in Murcia, Spain. ${service.descriptionEn}. Free initial consultation. Over 75 years of experience. ☎ +34 968 241 025.`;
+  const description = `Specialist ${service.nameEn.toLowerCase()} lawyers in Murcia, Spain. ${service.descriptionEn}. Free initial consultation. Specialists in civil liability with over 75 years of experience. ☎ +34 968 241 025.`;
 
   return {
     title,

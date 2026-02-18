@@ -6,7 +6,7 @@ import { getTranslations } from '@/data/translations';
 
 export const metadata: Metadata = {
   title: 'About Us — Lawyers in Murcia | García-Valcárcel & Cáceres',
-  description: 'Learn about the history and values of our law firm in Murcia. Founded in 1946, with over 75 years of legal excellence.',
+  description: 'Learn about the history and values of our law firm in Murcia. Founded in 1946 by D. Blas García-Valcárcel. Specialists in civil liability with over 75 years of experience.',
   alternates: { canonical: 'https://www.gvcabogados.com/en/about' },
 };
 
@@ -29,8 +29,8 @@ export default function AboutPage() {
             <div className="reveal grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
               <div>
                 <h2 className="section-title mb-6">Our <span className="text-brand-brown">History</span></h2>
-                <p className="text-sm text-neutral-500 leading-relaxed mb-4">This firm was founded by <strong className="text-brand-dark">Pedro-Alfonso García-Valcárcel y Escribano</strong> and his uncle <strong className="text-brand-dark">Blas García-Valcárcel</strong>, who was already practicing law since November 6, 1946.</p>
-                <p className="text-sm text-neutral-500 leading-relaxed mb-4">At García-Valcárcel & Cáceres we are experts in various areas of practice. We work in both private and public law, adapting our knowledge and team of experts to the needs of our clients.</p>
+                <p className="text-sm text-neutral-500 leading-relaxed mb-4">This firm was founded by <strong className="text-brand-dark">D. Blas García-Valcárcel</strong>, who began practicing law in Murcia on November 6, 1946. His nephew <strong className="text-brand-dark">D. Pedro-Alfonso García-Valcárcel y Escribano</strong> later joined the firm, expanding its practice areas.</p>
+                <p className="text-sm text-neutral-500 leading-relaxed mb-4">At García-Valcárcel & Cáceres we specialize in civil liability: traffic accidents, medical malpractice, workplace accidents and damage claims. We also practice other areas of private and public law, adapting our team to the needs of each client.</p>
                 <p className="text-sm text-neutral-500 leading-relaxed">Based in Gran Vía, Murcia, our firm has witnessed the evolution of Spanish law for over seven decades, always maintaining our commitment to excellence.</p>
               </div>
               <div className="bg-neutral-50 border border-neutral-200 p-8">
