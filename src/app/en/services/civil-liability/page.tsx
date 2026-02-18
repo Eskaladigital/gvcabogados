@@ -16,6 +16,8 @@ const SERVICE_NAME = 'Civil Liability & Insurance';
 const FOLDER_SLUG_EN = 'civil-liability';
 const FOLDER_SLUG_ES = 'responsabilidad-civil';
 
+export const revalidate = 60;
+
 export const metadata: Metadata = {
   title: `${SERVICE_NAME} — Specialist Lawyers | GVC Lawyers`,
   description: `Specialist ${SERVICE_NAME.toLowerCase()} lawyers. Over 55 years of experience. Based in Murcia, operating across Spain.`,

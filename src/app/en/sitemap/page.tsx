@@ -6,6 +6,8 @@ import { supabaseAdmin } from '@/lib/supabase';
 import { getActiveServices, getFolderSlug } from '@/data/services';
 import { Home, Scale, Globe, BookOpen, FileText } from 'lucide-react';
 
+export const revalidate = 60;
+
 export const metadata: Metadata = {
   title: 'Sitemap | GVC Abogados',
   description: 'Navigate through all pages and legal services of García-Valcárcel & Cáceres Abogados in Murcia.',

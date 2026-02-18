@@ -6,6 +6,8 @@ import { supabaseAdmin } from '@/lib/supabase';
 import { getActiveServices, getFolderSlug } from '@/data/services';
 import { Home, Scale, Globe, BookOpen, FileText } from 'lucide-react';
 
+export const revalidate = 60;
+
 export const metadata: Metadata = {
   title: 'Mapa del Sitio | GVC Abogados',
   description: 'Navegue por todas las páginas y servicios de García-Valcárcel & Cáceres Abogados en Murcia.',

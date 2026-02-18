@@ -16,6 +16,8 @@ const SERVICE_NAME = 'Permisos de Residencia e Inmigración';
 const FOLDER_SLUG = 'permisos-residencia';
 const GENERIC_SLUG_EN = 'immigration';
 
+export const revalidate = 60;
+
 export const metadata: Metadata = {
   title: `${SERVICE_NAME} — Abogados Especialistas | GVC Abogados`,
   description: `Abogados especialistas en ${SERVICE_NAME.toLowerCase()}. Más de 55 años de experiencia. Sede en Murcia, actuación en toda España.`,

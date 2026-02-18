@@ -16,6 +16,8 @@ const SERVICE_NAME = 'Medical Malpractice';
 const FOLDER_SLUG_EN = 'medical-malpractice';
 const FOLDER_SLUG_ES = 'negligencias-medicas';
 
+export const revalidate = 60;
+
 export const metadata: Metadata = {
   title: `${SERVICE_NAME} — Specialist Lawyers | GVC Lawyers`,
   description: `Specialist ${SERVICE_NAME.toLowerCase()} lawyers. Over 55 years of experience. Based in Murcia, operating across Spain.`,

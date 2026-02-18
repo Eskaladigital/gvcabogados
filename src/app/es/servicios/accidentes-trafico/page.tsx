@@ -18,6 +18,8 @@ const SERVICE_KEY = 'accidentes-trafico';
 const FOLDER_SLUG = 'accidentes-trafico';
 const GENERIC_SLUG_EN = 'traffic-accidents';
 
+export const revalidate = 60;
+
 export const metadata: Metadata = {
   title: 'Abogados de Accidentes de Tráfico — Especialistas en Indemnizaciones | GVC Abogados',
   description:

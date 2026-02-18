@@ -17,6 +17,8 @@ const SERVICE_KEY = 'derecho-familia';
 const FOLDER_SLUG_EN = 'family-law';
 const FOLDER_SLUG_ES = 'derecho-familia';
 
+export const revalidate = 60;
+
 export const metadata: Metadata = {
   title: 'Family Law Lawyers — Divorce, Custody, Child Support | GVC Lawyers',
   description:

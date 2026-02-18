@@ -18,6 +18,8 @@ const SERVICE_KEY = 'accidentes-trafico';
 const FOLDER_SLUG_EN = 'traffic-accidents';
 const FOLDER_SLUG_ES = 'accidentes-trafico';
 
+export const revalidate = 60;
+
 export const metadata: Metadata = {
   title: 'Traffic Accident Lawyers — Compensation Specialists | GVC Lawyers',
   description:

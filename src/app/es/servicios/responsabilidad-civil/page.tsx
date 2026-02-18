@@ -16,6 +16,8 @@ const SERVICE_NAME = 'Responsabilidad Civil y Seguros';
 const FOLDER_SLUG = 'responsabilidad-civil';
 const GENERIC_SLUG_EN = 'civil-liability';
 
+export const revalidate = 60;
+
 export const metadata: Metadata = {
   title: `${SERVICE_NAME} — Abogados Especialistas | GVC Abogados`,
   description: `Abogados especialistas en ${SERVICE_NAME.toLowerCase()}. Más de 55 años de experiencia. Sede en Murcia, actuación en toda España.`,

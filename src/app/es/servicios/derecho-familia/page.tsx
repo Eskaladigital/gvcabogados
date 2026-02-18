@@ -17,6 +17,8 @@ const SERVICE_KEY = 'derecho-familia';
 const FOLDER_SLUG = 'derecho-familia';
 const GENERIC_SLUG_EN = 'family-law';
 
+export const revalidate = 60;
+
 export const metadata: Metadata = {
   title: 'Abogados de Derecho de Familia — Divorcios, Custodia, Pensiones | GVC Abogados',
   description:

@@ -15,6 +15,7 @@ interface Props {
 }
 
 export const dynamicParams = false;
+export const revalidate = 60;
 
 export async function generateStaticParams() {
   const slugs = await getAllServiceContentSlugs();
