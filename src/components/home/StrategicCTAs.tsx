@@ -1,21 +1,21 @@
 import Link from 'next/link';
 import { Locale } from '@/data/translations';
 import { Car, Users, Clipboard } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
 
-const iconMap = {
-  car: Car,
-  users: Users,
-  clipboard: Clipboard,
-} as const;
-
-interface StrategicCTAsProps {
-  locale: Locale;
+interface CTAItem {
+  icon: LucideIcon;
+  title: string;
+  description: string;
+  cta: string;
+  href: string;
+  phone: boolean;
 }
 
-const ctas = {
+const ctas: Record<string, CTAItem[]> = {
   es: [
     {
-      iconId: 'car' as const,
+      icon: Car,
       title: '¿Ha tenido un accidente?',
       description: 'Gestionamos su reclamación y luchamos por la máxima indemnización. Sin cobrar si no ganamos.',
       cta: 'Llámenos ahora',
@@ -23,7 +23,7 @@ const ctas = {
       phone: true,
     },
     {
-      iconId: 'users' as const,
+      icon: Users,
       title: 'Divorcios y custodia',
       description: 'Divorcio de mutuo acuerdo desde 4 semanas. Custodia, pensiones y mediación familiar.',
       cta: 'Consulta gratuita',
@@ -31,7 +31,7 @@ const ctas = {
       phone: false,
     },
     {
-      iconId: 'clipboard' as const,
+      icon: Clipboard,
       title: 'Extranjería e inmigración',
       description: 'Arraigo, residencia, nacionalidad y recursos. Trámites llave en mano con atención personalizada.',
       cta: 'Solicitar cita',
@@ -41,7 +41,7 @@ const ctas = {
   ],
   en: [
     {
-      iconId: 'car' as const,
+      icon: Car,
       title: 'Had an accident?',
       description: 'We handle your claim and fight for maximum compensation. No win, no fee.',
       cta: 'Call us now',
@@ -49,7 +49,7 @@ const ctas = {
       phone: true,
     },
     {
-      iconId: 'users' as const,
+      icon: Users,
       title: 'Divorce & custody',
       description: 'Amicable divorce from 4 weeks. Custody, support and family mediation.',
       cta: 'Free consultation',
@@ -57,7 +57,7 @@ const ctas = {
       phone: false,
     },
     {
-      iconId: 'clipboard' as const,
+      icon: Clipboard,
       title: 'Immigration law',
       description: 'Residence permits, nationality, visas and appeals. Turnkey process with personalized support.',
       cta: 'Book appointment',
@@ -67,45 +67,50 @@ const ctas = {
   ],
 };
 
-export default function StrategicCTAs({ locale }: StrategicCTAsProps) {
+export default function StrategicCTAs({ locale }: { locale: Locale }) {
   const items = ctas[locale];
 
   return (
-    <section className="py-10 md:py-14 bg-brand-dark">
+    <section className="py-10 md:py-14 bg-white border-y border-neutral-200">
       <div className="container-custom">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-          {items.map((item, i) => (
-            <div
-              key={i}
-              className="reveal group bg-brand-dark2 border border-brand-dark3 rounded-2xl p-6 md:p-7 flex flex-col hover:border-brand-brown/40 transition-colors"
-            >
-              <span className="mb-3 block">{(() => { const Icon = iconMap[item.iconId]; return <Icon size={28} className="text-white" />; })()}</span>
-              <h3 className="text-lg font-semibold text-white mb-2">{item.title}</h3>
-              <p className="text-[0.78rem] text-neutral-400 leading-relaxed mb-5 flex-1">
-                {item.description}
-              </p>
-              <div className="flex flex-wrap gap-2">
-                {item.phone && (
-                  <a
-                    href="tel:+34968241025"
-                    className="inline-flex items-center gap-1.5 bg-brand-brown text-brand-dark text-[0.75rem] font-semibold px-4 py-2.5 rounded-lg hover:bg-brand-gold transition-colors"
+          {items.map((item, i) => {
+            const Icon = item.icon;
+            return (
+              <div
+                key={i}
+                className="reveal group bg-neutral-50 border border-neutral-200 p-6 md:p-7 flex flex-col hover:border-brand-brown transition-colors"
+              >
+                <div className="mb-3">
+                  <Icon size={28} className="text-brand-dark" />
+                </div>
+                <h3 className="font-serif text-lg font-semibold text-brand-dark mb-2">{item.title}</h3>
+                <p className="text-xs text-neutral-500 leading-relaxed mb-5 flex-1">
+                  {item.description}
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  {item.phone && (
+                    <a
+                      href="tel:+34968241025"
+                      className="inline-flex items-center gap-1.5 bg-brand-brown-hover text-white text-[0.75rem] font-semibold px-4 py-2.5 hover:bg-brand-dark transition-colors"
+                    >
+                      ☎ 968 241 025
+                    </a>
+                  )}
+                  <Link
+                    href={item.href}
+                    className={`inline-flex items-center gap-1.5 text-[0.75rem] font-semibold px-4 py-2.5 transition-colors ${
+                      item.phone
+                        ? 'border border-neutral-300 text-brand-dark hover:border-brand-brown hover:text-brand-brown'
+                        : 'bg-brand-brown-hover text-white hover:bg-brand-dark'
+                    }`}
                   >
-                    ☎ 968 241 025
-                  </a>
-                )}
-                <Link
-                  href={item.href}
-                  className={`inline-flex items-center gap-1.5 text-[0.75rem] font-semibold px-4 py-2.5 rounded-lg transition-colors ${
-                    item.phone
-                      ? 'border border-white/20 text-white hover:bg-white/10'
-                      : 'bg-brand-brown text-brand-dark hover:bg-brand-gold'
-                  }`}
-                >
-                  {item.cta} →
-                </Link>
+                    {item.cta} →
+                  </Link>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </section>

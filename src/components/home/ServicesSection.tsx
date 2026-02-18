@@ -9,8 +9,8 @@ import {
   Shield, Clipboard, Handshake, Landmark, Stethoscope,
 } from 'lucide-react';
 
-const getServiceIcon = (serviceId: string, size = 28, className = 'text-white') => {
-  const iconProps = { size, className: `${className} flex-shrink-0` };
+const getServiceIcon = (serviceId: string) => {
+  const iconProps = { size: 28, className: 'text-brand-dark flex-shrink-0' };
   switch (serviceId) {
     case 'accidentes-trafico': return <Car {...iconProps} />;
     case 'derecho-familia': return <Users {...iconProps} />;
@@ -45,7 +45,7 @@ export default function ServicesSection({ locale }: ServicesSectionProps) {
   const [showAll, setShowAll] = useState(false);
 
   return (
-    <section className="py-12 md:py-20 bg-brand-brown text-brand-dark">
+    <section className="py-12 md:py-20 bg-neutral-50">
       <div className="container-custom">
         <div className="reveal mb-10 md:mb-12">
           <div className="section-tag">{t.services.tag}</div>
@@ -56,57 +56,55 @@ export default function ServicesSection({ locale }: ServicesSectionProps) {
           </h2>
         </div>
 
-        {/* Top 5 servicios destacados */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        {/* Servicios destacados */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-6">
           {topServices.map((service) => (
             <Link
               key={service.id}
               href={`${prefix}/${servicesPath}/${service.slug}`}
-              className="reveal group relative bg-brand-dark rounded-2xl p-6 overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
+              className="reveal group relative bg-white border border-neutral-200 p-6 hover:border-brand-brown hover:shadow-md hover:-translate-y-1 transition-all duration-300"
             >
               <div className="absolute top-3 right-3">
-                <span className="inline-block bg-brand-gold/20 text-brand-gold text-[0.55rem] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full">
+                <span className="inline-block bg-brand-brown/10 text-brand-brown text-[0.55rem] font-bold uppercase tracking-wider px-2 py-0.5">
                   {locale === 'es' ? 'Más solicitado' : 'Most requested'}
                 </span>
               </div>
-              <div className="mb-4">{getServiceIcon(service.id, 28, 'text-white')}</div>
-              <h3 className="text-base font-semibold text-white mb-2 group-hover:text-brand-gold transition-colors">
+              <div className="mb-3">{getServiceIcon(service.id)}</div>
+              <h3 className="font-serif text-base font-semibold text-brand-dark mb-2 group-hover:text-brand-brown transition-colors">
                 {service.name}
               </h3>
-              <p className="text-[0.72rem] text-neutral-400 leading-relaxed mb-4">
+              <p className="text-xs text-neutral-400 leading-relaxed mb-4">
                 {service.description}
               </p>
-              <span className="text-[0.7rem] font-semibold text-brand-gold group-hover:gap-2 inline-flex items-center gap-1 transition-all">
-                {locale === 'es' ? 'Consultar' : 'Learn more'} →
+              <span className="text-[0.7rem] font-semibold text-brand-brown opacity-0 group-hover:opacity-100 transition-opacity">
+                {locale === 'es' ? 'Ver más' : 'Learn more'} →
               </span>
             </Link>
           ))}
         </div>
 
-        {/* Resto de servicios */}
+        {/* Resto de servicios (colapsable) */}
         <div
           className={`overflow-hidden transition-all duration-500 ${
             showAll ? 'max-h-[2000px] opacity-100' : 'max-h-0 opacity-0'
           }`}
         >
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-0 border-t border-brand-dark/10">
-            {otherServices.map((service, index) => (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            {otherServices.map((service) => (
               <Link
                 key={service.id}
                 href={`${prefix}/${servicesPath}/${service.slug}`}
-                className="reveal border-b border-brand-dark/10 py-5 md:py-6 flex items-center justify-between pr-8 group hover:pl-4 hover:bg-brand-dark/5 transition-all duration-300"
+                className="reveal group bg-white border border-neutral-200 p-6 hover:border-brand-brown hover:shadow-md hover:-translate-y-1 transition-all duration-300"
               >
-                <div className="flex items-center gap-4">
-                  <span>{getServiceIcon(service.id, 20, 'text-brand-dark')}</span>
-                  <div>
-                    <h3 className="text-sm font-medium text-brand-dark group-hover:text-brand-brown-hover transition-colors">
-                      {service.name}
-                    </h3>
-                    <p className="text-[0.72rem] text-brand-dark/80 mt-0.5">{service.description}</p>
-                  </div>
-                </div>
-                <span className="text-sm text-brand-dark/60 group-hover:text-brand-brown-hover group-hover:translate-x-1 transition-all">
-                  →
+                <div className="mb-3">{getServiceIcon(service.id)}</div>
+                <h3 className="font-serif text-sm font-semibold text-brand-dark mb-1 group-hover:text-brand-brown transition-colors">
+                  {service.name}
+                </h3>
+                <p className="text-xs text-neutral-400 leading-relaxed mb-3">
+                  {service.description}
+                </p>
+                <span className="text-[0.7rem] font-semibold text-brand-brown opacity-0 group-hover:opacity-100 transition-opacity">
+                  {locale === 'es' ? 'Ver más' : 'Learn more'} →
                 </span>
               </Link>
             ))}
@@ -117,7 +115,7 @@ export default function ServicesSection({ locale }: ServicesSectionProps) {
         <div className="text-center mt-6">
           <button
             onClick={() => setShowAll(!showAll)}
-            className="inline-flex items-center gap-2 text-[0.75rem] font-semibold text-brand-dark/80 hover:text-brand-dark transition-colors py-2 px-4 border border-brand-dark/20 rounded-full hover:border-brand-dark/40"
+            className="inline-flex items-center gap-2 text-[0.75rem] font-semibold text-brand-dark/70 hover:text-brand-dark transition-colors py-2 px-4 border border-neutral-300 hover:border-brand-brown"
           >
             {showAll
               ? (locale === 'es' ? 'Ver menos' : 'Show less')

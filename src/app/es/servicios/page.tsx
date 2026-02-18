@@ -38,8 +38,8 @@ export default function ServiciosPage() {
     { name: 'Áreas de Práctica', href: '/es/servicios' },
   ];
 
-  const getServiceIcon = (serviceId: string, light = false) => {
-    const iconProps = { size: 28, className: `${light ? 'text-white' : 'text-brand-dark'} flex-shrink-0` };
+  const getServiceIcon = (serviceId: string) => {
+    const iconProps = { size: 28, className: 'text-brand-dark flex-shrink-0' };
     switch (serviceId) {
       case 'accidentes-trafico':
         return <Car {...iconProps} />;
@@ -113,21 +113,21 @@ export default function ServiciosPage() {
                 <Link
                   key={service.id}
                   href={`/es/servicios/${service.slug}`}
-                  className="reveal group relative bg-brand-dark p-6 hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
+                  className="reveal group relative bg-white border border-neutral-200 p-6 hover:border-brand-brown hover:shadow-md hover:-translate-y-1 transition-all duration-300"
                 >
                   <div className="absolute top-3 right-3">
-                    <span className="inline-block bg-brand-gold/20 text-brand-gold text-[0.55rem] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full">
+                    <span className="inline-block bg-brand-brown/10 text-brand-brown text-[0.55rem] font-bold uppercase tracking-wider px-2 py-0.5">
                       Más solicitado
                     </span>
                   </div>
-                  <div className="mb-3">{getServiceIcon(service.id, true)}</div>
-                  <h3 className="font-serif text-base font-semibold text-white mb-2 group-hover:text-brand-gold transition-colors">
+                  <div className="mb-3">{getServiceIcon(service.id)}</div>
+                  <h3 className="font-serif text-base font-semibold text-brand-dark mb-2 group-hover:text-brand-brown transition-colors">
                     {service.name}
                   </h3>
                   <p className="text-[0.72rem] text-neutral-400 leading-relaxed mb-4">
                     {service.description}
                   </p>
-                  <span className="text-[0.7rem] font-semibold text-brand-gold inline-flex items-center gap-1 group-hover:gap-2 transition-all">
+                  <span className="text-[0.7rem] font-semibold text-brand-brown opacity-0 group-hover:opacity-100 transition-opacity">
                     Ver más →
                   </span>
                 </Link>
