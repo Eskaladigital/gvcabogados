@@ -1,8 +1,7 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
 import { 
-  Car, Users, Building2, Scale, Home, FileText, 
-  Briefcase, Shield, Clipboard, Handshake, 
+  Car, Users, Scale, Shield, Clipboard, 
   Landmark, Stethoscope 
 } from 'lucide-react';
 import Navbar from '@/components/layout/Navbar';
@@ -45,32 +44,16 @@ export default function ServiciosPage() {
         return <Car {...iconProps} />;
       case 'derecho-familia':
         return <Users {...iconProps} />;
-      case 'derecho-bancario':
-        return <Building2 {...iconProps} />;
-      case 'derecho-penal':
-        return <Scale {...iconProps} />;
-      case 'derecho-inmobiliario':
-        return <Home {...iconProps} />;
-      case 'derecho-sucesorio':
-        return <FileText {...iconProps} />;
-      case 'derecho-mercantil':
-        return <Briefcase {...iconProps} />;
       case 'responsabilidad-civil':
         return <Shield {...iconProps} />;
       case 'extranjeria':
         return <Clipboard {...iconProps} />;
-      case 'mediacion':
-        return <Handshake {...iconProps} />;
-      case 'obligaciones-contratos':
-        return <FileText {...iconProps} />;
       case 'derecho-administrativo':
         return <Landmark {...iconProps} />;
-      case 'defensa-fondos-buitre':
-        return <Shield {...iconProps} />;
       case 'negligencias-medicas':
         return <Stethoscope {...iconProps} />;
       default:
-        return null;
+        return <Scale {...iconProps} />;
     }
   };
 

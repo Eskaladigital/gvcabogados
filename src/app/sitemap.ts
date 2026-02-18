@@ -1,14 +1,14 @@
 import { MetadataRoute } from 'next';
 import { supabaseAdmin } from '@/lib/supabase';
 import { SITE_URL } from '@/lib/site-config';
-import { services } from '@/data/services';
+import { getActiveServices, getFolderSlug } from '@/data/services';
 
 export const revalidate = 3600;
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date();
+  const activeServices = getActiveServices();
 
-  // --- Páginas estáticas ---
   const staticPagesEs = [
     '', '/sobre-nosotros', '/servicios', '/equipo', '/blog', '/contacto',
     '/politica-cookies', '/politica-privacidad', '/aviso-legal', '/sitemap',
@@ -28,45 +28,42 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: path === '' ? 0.9 : 0.7,
   }));
 
-  // --- Páginas genéricas de servicio (14 servicios, sin ciudad) ---
-  const genericServicesEs = services.map((s) => ({
-    url: `${SITE_URL}/es/servicios/${s.genericSlugEs}`,
+  const genericServicesEs = activeServices.map((s) => ({
+    url: `${SITE_URL}/es/servicios/${getFolderSlug(s.id)}`,
     lastModified: now,
     changeFrequency: 'monthly' as const,
     priority: 0.9,
   }));
 
-  const genericServicesEn = services.map((s) => ({
+  const genericServicesEn = activeServices.map((s) => ({
     url: `${SITE_URL}/en/services/${s.genericSlugEn}`,
     lastModified: now,
     changeFrequency: 'monthly' as const,
     priority: 0.8,
   }));
 
-  // --- Landings locales servicio+ciudad (nueva estructura /servicios/{servicio}/{ciudad}) ---
   const { data: servicePages } = await supabaseAdmin
     .from('service_content')
     .select('slug_es, slug_en, updated_at, services!inner(service_key), localities!inner(slug)')
     .order('slug_es');
 
-  const localPagesEs = (servicePages || []).map((sc: any) => {
-    const svc = services.find(s => s.id === sc.services.service_key);
-    const genericSlug = svc?.genericSlugEs || sc.services.service_key;
-    return {
-      url: `${SITE_URL}/es/servicios/${genericSlug}/${sc.localities.slug}`,
+  const activeIds = new Set(activeServices.map(s => s.id));
+
+  const localPagesEs = (servicePages || [])
+    .filter((sc: any) => activeIds.has(sc.services.service_key))
+    .map((sc: any) => ({
+      url: `${SITE_URL}/es/servicios/${getFolderSlug(sc.services.service_key)}/${sc.localities.slug}`,
       lastModified: new Date(sc.updated_at || now),
       changeFrequency: 'monthly' as const,
       priority: 0.7,
-    };
-  });
+    }));
 
   const localPagesEn = (servicePages || [])
-    .filter((sc: any) => sc.slug_en)
+    .filter((sc: any) => sc.slug_en && activeIds.has(sc.services.service_key))
     .map((sc: any) => {
-      const svc = services.find(s => s.id === sc.services.service_key);
-      const genericSlug = svc?.genericSlugEn || sc.services.service_key;
+      const svc = activeServices.find(s => s.id === sc.services.service_key);
       return {
-        url: `${SITE_URL}/en/services/${genericSlug}/${sc.localities.slug}`,
+        url: `${SITE_URL}/en/services/${svc?.genericSlugEn || sc.services.service_key}/${sc.localities.slug}`,
         lastModified: new Date(sc.updated_at || now),
         changeFrequency: 'monthly' as const,
         priority: 0.6,
@@ -107,7 +104,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...blogPagesEn,
   ];
 
-  console.log(`[Sitemap] Generado con ${allUrls.length} URLs (${servicePages?.length ?? 0} servicios locales, 14 genéricos, ${blogPosts?.length ?? 0} posts)`);
+  console.log(`[Sitemap] Generado con ${allUrls.length} URLs (${localPagesEs.length} servicios locales, ${activeServices.length} genéricos, ${blogPosts?.length ?? 0} posts)`);
 
   return allUrls;
 }

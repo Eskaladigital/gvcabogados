@@ -1,0 +1,56 @@
+import { Metadata } from 'next';
+import { notFound } from 'next/navigation';
+import { Clipboard } from 'lucide-react';
+import CityServicePage from '@/components/content/CityServicePage';
+import { getServiceContentByServiceAndCity } from '@/lib/service-content';
+import { supabaseAdmin } from '@/lib/supabase';
+
+const SERVICE_KEY = 'extranjeria';
+const SERVICE_NAME = 'Permisos de Residencia e Inmigración';
+const FOLDER_SLUG = 'permisos-residencia';
+
+interface Props {
+  params: { ciudad: string };
+}
+
+export async function generateStaticParams() {
+  const { data } = await supabaseAdmin
+    .from('service_content')
+    .select('localities!inner(slug), services!inner(service_key)')
+    .eq('services.service_key', SERVICE_KEY);
+
+  if (!data || data.length === 0) return [{ ciudad: 'murcia' }];
+  return data.map((row: any) => ({ ciudad: row.localities.slug }));
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const content = await getServiceContentByServiceAndCity(SERVICE_KEY, params.ciudad);
+  if (!content) return {};
+
+  const title = content.titleEs || `${SERVICE_NAME} en ${content.localityName} — GVC Abogados`;
+  const description = content.metaDescriptionEs || content.shortDescriptionEs || '';
+
+  return {
+    title,
+    description,
+    alternates: {
+      canonical: `https://www.gvcabogados.com/es/servicios/${FOLDER_SLUG}/${params.ciudad}`,
+      languages: { en: `/en/services/immigration/${params.ciudad}` },
+    },
+    openGraph: { title, description, locale: 'es_ES', type: 'website' },
+  };
+}
+
+export default async function Page({ params }: Props) {
+  const content = await getServiceContentByServiceAndCity(SERVICE_KEY, params.ciudad);
+  if (!content) notFound();
+
+  return (
+    <CityServicePage
+      content={content}
+      serviceNameEs={SERVICE_NAME}
+      folderSlug={FOLDER_SLUG}
+      icon={<Clipboard size={32} className="text-white flex-shrink-0" />}
+    />
+  );
+}

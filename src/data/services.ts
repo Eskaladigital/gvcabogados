@@ -951,12 +951,38 @@ export const services: Service[] = [
   },
 ];
 
+const ACTIVE_SERVICE_IDS = [
+  'accidentes-trafico',
+  'derecho-familia',
+  'negligencias-medicas',
+  'extranjeria',
+  'derecho-administrativo',
+  'responsabilidad-civil',
+];
+
+const FOLDER_SLUG_MAP: Record<string, string> = {
+  'accidentes-trafico': 'accidentes-trafico',
+  'derecho-familia': 'derecho-familia',
+  'negligencias-medicas': 'negligencias-medicas',
+  'extranjeria': 'permisos-residencia',
+  'derecho-administrativo': 'responsabilidad-administracion',
+  'responsabilidad-civil': 'responsabilidad-civil',
+};
+
+export function getActiveServices() {
+  return services.filter((s) => ACTIVE_SERVICE_IDS.includes(s.id));
+}
+
+export function getFolderSlug(serviceId: string): string {
+  return FOLDER_SLUG_MAP[serviceId] || serviceId;
+}
+
 export function getServicesByLocale(locale: 'es' | 'en') {
-  return services
+  return getActiveServices()
     .sort((a, b) => a.priority - b.priority)
     .map((s) => ({
       id: s.id,
-      slug: locale === 'es' ? s.genericSlugEs : s.genericSlugEn,
+      slug: getFolderSlug(s.id),
       localSlug: locale === 'es' ? s.slugEs : s.slugEn,
       name: locale === 'es' ? s.nameEs : s.nameEn,
       description: locale === 'es' ? s.descriptionEs : s.descriptionEn,

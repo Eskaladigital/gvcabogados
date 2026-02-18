@@ -5,9 +5,8 @@ import Image from 'next/image';
 import { useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 import { 
-  Menu, X, Search, Phone, Mail, ChevronDown, 
-  Car, Users, Building2, Scale, Home, FileText, 
-  Briefcase, Shield, Clipboard, Handshake, Globe, 
+  Menu, X, Phone, Mail, ChevronDown, 
+  Car, Users, Scale, Shield, Clipboard, 
   Landmark, Stethoscope 
 } from 'lucide-react';
 import { getTranslations, Locale } from '@/data/translations';
@@ -67,32 +66,16 @@ export default function Navbar({ locale, alternateUrl }: NavbarProps) {
         return <Car {...iconProps} />;
       case 'derecho-familia':
         return <Users {...iconProps} />;
-      case 'derecho-bancario':
-        return <Building2 {...iconProps} />;
-      case 'derecho-penal':
-        return <Scale {...iconProps} />;
-      case 'derecho-inmobiliario':
-        return <Home {...iconProps} />;
-      case 'derecho-sucesorio':
-        return <FileText {...iconProps} />;
-      case 'derecho-mercantil':
-        return <Briefcase {...iconProps} />;
       case 'responsabilidad-civil':
         return <Shield {...iconProps} />;
       case 'extranjeria':
         return <Clipboard {...iconProps} />;
-      case 'mediacion':
-        return <Handshake {...iconProps} />;
-      case 'obligaciones-contratos':
-        return <FileText {...iconProps} />;
       case 'derecho-administrativo':
         return <Landmark {...iconProps} />;
-      case 'defensa-fondos-buitre':
-        return <Shield {...iconProps} />;
       case 'negligencias-medicas':
         return <Stethoscope {...iconProps} />;
       default:
-        return null;
+        return <Scale {...iconProps} />;
     }
   };
 
