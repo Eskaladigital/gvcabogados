@@ -1,5 +1,12 @@
 import Link from 'next/link';
 import { Locale } from '@/data/translations';
+import { Car, Users, Clipboard } from 'lucide-react';
+
+const iconMap = {
+  car: Car,
+  users: Users,
+  clipboard: Clipboard,
+} as const;
 
 interface StrategicCTAsProps {
   locale: Locale;
@@ -8,7 +15,7 @@ interface StrategicCTAsProps {
 const ctas = {
   es: [
     {
-      icon: '🚗',
+      iconId: 'car' as const,
       title: '¿Ha tenido un accidente?',
       description: 'Gestionamos su reclamación y luchamos por la máxima indemnización. Sin cobrar si no ganamos.',
       cta: 'Llámenos ahora',
@@ -16,7 +23,7 @@ const ctas = {
       phone: true,
     },
     {
-      icon: '👨‍👩‍👧',
+      iconId: 'users' as const,
       title: 'Divorcios y custodia',
       description: 'Divorcio de mutuo acuerdo desde 4 semanas. Custodia, pensiones y mediación familiar.',
       cta: 'Consulta gratuita',
@@ -24,7 +31,7 @@ const ctas = {
       phone: false,
     },
     {
-      icon: '🌍',
+      iconId: 'clipboard' as const,
       title: 'Extranjería e inmigración',
       description: 'Arraigo, residencia, nacionalidad y recursos. Trámites llave en mano con atención personalizada.',
       cta: 'Solicitar cita',
@@ -34,7 +41,7 @@ const ctas = {
   ],
   en: [
     {
-      icon: '🚗',
+      iconId: 'car' as const,
       title: 'Had an accident?',
       description: 'We handle your claim and fight for maximum compensation. No win, no fee.',
       cta: 'Call us now',
@@ -42,7 +49,7 @@ const ctas = {
       phone: true,
     },
     {
-      icon: '👨‍👩‍👧',
+      iconId: 'users' as const,
       title: 'Divorce & custody',
       description: 'Amicable divorce from 4 weeks. Custody, support and family mediation.',
       cta: 'Free consultation',
@@ -50,7 +57,7 @@ const ctas = {
       phone: false,
     },
     {
-      icon: '🌍',
+      iconId: 'clipboard' as const,
       title: 'Immigration law',
       description: 'Residence permits, nationality, visas and appeals. Turnkey process with personalized support.',
       cta: 'Book appointment',
@@ -72,7 +79,7 @@ export default function StrategicCTAs({ locale }: StrategicCTAsProps) {
               key={i}
               className="reveal group bg-brand-dark2 border border-brand-dark3 rounded-2xl p-6 md:p-7 flex flex-col hover:border-brand-brown/40 transition-colors"
             >
-              <span className="text-3xl mb-3">{item.icon}</span>
+              <span className="mb-3 block">{(() => { const Icon = iconMap[item.iconId]; return <Icon size={28} className="text-white" />; })()}</span>
               <h3 className="text-lg font-semibold text-white mb-2">{item.title}</h3>
               <p className="text-[0.78rem] text-neutral-400 leading-relaxed mb-5 flex-1">
                 {item.description}

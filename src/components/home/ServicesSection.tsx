@@ -4,6 +4,31 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { getTranslations, Locale } from '@/data/translations';
 import { getServicesByLocale } from '@/data/services';
+import {
+  Car, Users, Building2, Scale, Home, FileText, Briefcase,
+  Shield, Clipboard, Handshake, Landmark, Stethoscope,
+} from 'lucide-react';
+
+const getServiceIcon = (serviceId: string, size = 28, className = 'text-white') => {
+  const iconProps = { size, className: `${className} flex-shrink-0` };
+  switch (serviceId) {
+    case 'accidentes-trafico': return <Car {...iconProps} />;
+    case 'derecho-familia': return <Users {...iconProps} />;
+    case 'derecho-bancario': return <Building2 {...iconProps} />;
+    case 'derecho-penal': return <Scale {...iconProps} />;
+    case 'derecho-inmobiliario': return <Home {...iconProps} />;
+    case 'derecho-sucesorio': return <FileText {...iconProps} />;
+    case 'derecho-mercantil': return <Briefcase {...iconProps} />;
+    case 'responsabilidad-civil': return <Shield {...iconProps} />;
+    case 'extranjeria': return <Clipboard {...iconProps} />;
+    case 'mediacion': return <Handshake {...iconProps} />;
+    case 'obligaciones-contratos': return <FileText {...iconProps} />;
+    case 'derecho-administrativo': return <Landmark {...iconProps} />;
+    case 'defensa-fondos-buitre': return <Shield {...iconProps} />;
+    case 'negligencias-medicas': return <Stethoscope {...iconProps} />;
+    default: return null;
+  }
+};
 
 interface ServicesSectionProps {
   locale: Locale;
@@ -44,7 +69,7 @@ export default function ServicesSection({ locale }: ServicesSectionProps) {
                   {locale === 'es' ? 'Más solicitado' : 'Most requested'}
                 </span>
               </div>
-              <div className="text-3xl mb-4">{service.icon}</div>
+              <div className="mb-4">{getServiceIcon(service.id, 28, 'text-white')}</div>
               <h3 className="text-base font-semibold text-white mb-2 group-hover:text-brand-gold transition-colors">
                 {service.name}
               </h3>
@@ -72,7 +97,7 @@ export default function ServicesSection({ locale }: ServicesSectionProps) {
                 className="reveal border-b border-brand-dark/10 py-5 md:py-6 flex items-center justify-between pr-8 group hover:pl-4 hover:bg-brand-dark/5 transition-all duration-300"
               >
                 <div className="flex items-center gap-4">
-                  <span className="text-xl">{service.icon}</span>
+                  <span>{getServiceIcon(service.id, 20, 'text-brand-dark')}</span>
                   <div>
                     <h3 className="text-sm font-medium text-brand-dark group-hover:text-brand-brown-hover transition-colors">
                       {service.name}
