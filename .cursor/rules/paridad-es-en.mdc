@@ -1,0 +1,46 @@
+---
+description: Regla de paridad ES/EN — toda modificación en una página /es/ debe replicarse en /en/ y viceversa
+globs: src/app/es/**/*.tsx, src/app/en/**/*.tsx
+alwaysApply: true
+---
+
+# Regla de Paridad Bilingüe ES/EN
+
+## OBLIGATORIO
+
+Cada vez que se modifique cualquier página de servicio en `/es/` o `/en/`, se DEBE replicar el mismo cambio (traducido) en su equivalente del otro idioma.
+
+Las páginas ES y EN son un espejo exacto: mismo diseño, mismas secciones, mismo layout. Solo cambia el idioma del texto.
+
+## Correspondencia de carpetas
+
+| Carpeta ES | Carpeta EN |
+|---|---|
+| `es/servicios/accidentes-trafico/` | `en/services/traffic-accidents/` |
+| `es/servicios/derecho-familia/` | `en/services/family-law/` |
+| `es/servicios/negligencias-medicas/` | `en/services/medical-malpractice/` |
+| `es/servicios/permisos-residencia/` | `en/services/immigration/` |
+| `es/servicios/responsabilidad-administracion/` | `en/services/administrative-law/` |
+| `es/servicios/responsabilidad-civil/` | `en/services/civil-liability/` |
+
+Cada carpeta contiene `page.tsx` (genérica) y `[ciudad]/page.tsx` o `[city]/page.tsx` (local).
+
+## Reglas al editar
+
+1. Si modificas una página en `/es/servicios/{carpeta}/page.tsx`, modifica también `/en/services/{carpeta-en}/page.tsx`
+2. Si modificas `[ciudad]/page.tsx`, modifica también `[city]/page.tsx`
+3. Si añades una sección nueva, añádela en ambos idiomas
+4. Verifica que el `hreflang` (`alternates.languages`) sigue correcto
+5. Las páginas locales estándar usan `CityServicePage` con `locale='es'` o `locale='en'`
+6. Las páginas premium (accidentes-trafico / traffic-accidents, derecho-familia / family-law) tienen diseño propio inline
+
+## Texto obligatorio
+
+- ES: "Primera consulta sin compromiso" (NUNCA "Consulta gratuita")
+- EN: "No-obligation initial consultation" (NUNCA "Free consultation")
+
+## Archivos clave
+
+- `src/data/services.ts` — Mapeos `FOLDER_SLUG_MAP` (ES) y `FOLDER_SLUG_MAP_EN`
+- `src/components/content/CityServicePage.tsx` — Componente bilingüe compartido
+- `next.config.js` — Redirects 301 para ambos idiomas
