@@ -1,6 +1,6 @@
 /**
- * Componente para renderizar contenido de texto enriquecido generado por IA
- * Convierte marcadores de formato (H1:, H2:, ##, etc.) en HTML real
+ * Renderiza contenido generado por IA.
+ * Soporta HTML semántico directo (preferido) y texto plano con marcadores (legacy).
  */
 
 interface RichTextContentProps {
@@ -8,129 +8,105 @@ interface RichTextContentProps {
   className?: string;
 }
 
+const ALLOWED_TAGS = new Set([
+  'h1', 'h2', 'h3', 'h4', 'p', 'strong', 'em', 'b', 'i',
+  'ul', 'ol', 'li', 'blockquote', 'br',
+]);
+
+function sanitizeHtml(html: string): string {
+  return html
+    .replace(/<\/?([a-zA-Z][a-zA-Z0-9]*)\b[^>]*>/g, (match, tag) => {
+      const lower = tag.toLowerCase();
+      if (!ALLOWED_TAGS.has(lower)) return '';
+      const isClosing = match.startsWith('</');
+      return isClosing ? `</${lower}>` : `<${lower}>`;
+    })
+    .replace(/\s(class|style|id|on\w+|data-\w+)="[^"]*"/gi, '');
+}
+
+function isHtmlContent(text: string): boolean {
+  return /<(h[1-4]|p|ul|ol|blockquote|strong|em)\b/i.test(text);
+}
+
+function plainTextToHtml(text: string): string {
+  const lines = text.split('\n');
+  const parts: string[] = [];
+  let paragraph: string[] = [];
+
+  const flush = () => {
+    if (paragraph.length > 0) {
+      const joined = paragraph.join(' ').trim();
+      if (joined) parts.push(`<p>${joined}</p>`);
+      paragraph = [];
+    }
+  };
+
+  for (const line of lines) {
+    const t = line.trim();
+
+    if (!t) { flush(); continue; }
+
+    if (/^H1:\s*/i.test(t) || /^#\s+/.test(t)) {
+      flush();
+      parts.push(`<h2>${t.replace(/^H1:\s*/i, '').replace(/^#\s+/, '').trim()}</h2>`);
+      continue;
+    }
+    if (/^H2:\s*/i.test(t) || /^##\s+/.test(t)) {
+      flush();
+      parts.push(`<h2>${t.replace(/^H2:\s*/i, '').replace(/^##\s+/, '').trim()}</h2>`);
+      continue;
+    }
+    if (/^H3:\s*/i.test(t) || /^###\s+/.test(t)) {
+      flush();
+      parts.push(`<h3>${t.replace(/^H3:\s*/i, '').replace(/^###\s+/, '').trim()}</h3>`);
+      continue;
+    }
+    if (
+      t.length < 80 &&
+      !/[.?!:]$/.test(t) &&
+      /^[A-ZÁÉÍÓÚÑ]/.test(t) &&
+      !/^[-*•\d]/.test(t)
+    ) {
+      flush();
+      parts.push(`<h2>${t}</h2>`);
+      continue;
+    }
+    if (/^[-*•]\s+/.test(t)) {
+      flush();
+      parts.push(`<ul><li>${t.replace(/^[-*•]\s+/, '').trim()}</li></ul>`);
+      continue;
+    }
+    if (/^\d+\.\s+/.test(t)) {
+      flush();
+      parts.push(`<ol><li>${t.replace(/^\d+\.\s+/, '').trim()}</li></ol>`);
+      continue;
+    }
+
+    paragraph.push(t);
+  }
+  flush();
+
+  return parts.join('');
+}
+
 export default function RichTextContent({ content, className = '' }: RichTextContentProps) {
   if (!content) return null;
 
-  // Parsear el contenido y convertirlo en bloques HTML
-  const parseContent = (text: string) => {
-    const lines = text.split('\n');
-    const elements: JSX.Element[] = [];
-    let currentParagraph: string[] = [];
-    let key = 0;
-
-    const flushParagraph = () => {
-      if (currentParagraph.length > 0) {
-        const paragraphText = currentParagraph.join(' ').trim();
-        if (paragraphText) {
-          elements.push(
-            <p key={`p-${key++}`} className="text-base text-neutral-600 leading-relaxed mb-4">
-              {paragraphText}
-            </p>
-          );
-        }
-        currentParagraph = [];
-      }
-    };
-
-    for (const line of lines) {
-      const trimmedLine = line.trim();
-      
-      if (!trimmedLine) {
-        flushParagraph();
-        continue;
-      }
-
-      // H1: Título principal (H1:, # )
-      if (/^H1:\s*/i.test(trimmedLine) || /^#\s+/.test(trimmedLine)) {
-        flushParagraph();
-        const text = trimmedLine.replace(/^H1:\s*/i, '').replace(/^#\s+/, '').trim();
-        elements.push(
-          <h1 key={`h1-${key++}`} className="font-serif text-3xl md:text-4xl font-bold text-brand-dark mb-6 mt-8">
-            {text}
-          </h1>
-        );
-        continue;
-      }
-
-      // H2: Subtítulo (H2:, ##, o líneas que terminan sin punto y son cortas)
-      if (/^H2:\s*/i.test(trimmedLine) || /^##\s+/.test(trimmedLine)) {
-        flushParagraph();
-        const text = trimmedLine.replace(/^H2:\s*/i, '').replace(/^##\s+/, '').trim();
-        elements.push(
-          <h2 key={`h2-${key++}`} className="font-serif text-2xl md:text-3xl font-semibold text-brand-dark mb-4 mt-8">
-            {text}
-          </h2>
-        );
-        continue;
-      }
-
-      // H3: Subtítulo menor (H3:, ###)
-      if (/^H3:\s*/i.test(trimmedLine) || /^###\s+/.test(trimmedLine)) {
-        flushParagraph();
-        const text = trimmedLine.replace(/^H3:\s*/i, '').replace(/^###\s+/, '').trim();
-        elements.push(
-          <h3 key={`h3-${key++}`} className="font-serif text-xl md:text-2xl font-semibold text-brand-dark mb-3 mt-6">
-            {text}
-          </h3>
-        );
-        continue;
-      }
-
-      // Detectar títulos sin marcadores: líneas cortas (<80 chars) que no terminan en punto
-      // y que probablemente sean títulos (empiezan con mayúscula)
-      if (
-        trimmedLine.length < 80 &&
-        !trimmedLine.match(/[.?!:]$/) &&
-        /^[A-ZÁÉÍÓÚÑ]/.test(trimmedLine) &&
-        !trimmedLine.match(/^[-*•\d]/)
-      ) {
-        // Si la siguiente línea es vacía o es texto normal, probablemente sea un título
-        flushParagraph();
-        elements.push(
-          <h2 key={`h2-auto-${key++}`} className="font-serif text-2xl md:text-3xl font-semibold text-brand-dark mb-4 mt-8">
-            {trimmedLine}
-          </h2>
-        );
-        continue;
-      }
-
-      // Listas con viñetas (-, *, •)
-      if (/^[-*•]\s+/.test(trimmedLine)) {
-        flushParagraph();
-        const text = trimmedLine.replace(/^[-*•]\s+/, '').trim();
-        elements.push(
-          <li key={`li-${key++}`} className="text-base text-neutral-600 leading-relaxed mb-2 ml-6 list-disc">
-            {text}
-          </li>
-        );
-        continue;
-      }
-
-      // Listas numeradas (1., 2., etc.)
-      if (/^\d+\.\s+/.test(trimmedLine)) {
-        flushParagraph();
-        const text = trimmedLine.replace(/^\d+\.\s+/, '').trim();
-        elements.push(
-          <li key={`li-${key++}`} className="text-base text-neutral-600 leading-relaxed mb-2 ml-6 list-decimal">
-            {text}
-          </li>
-        );
-        continue;
-      }
-
-      // Acumular en el párrafo actual
-      currentParagraph.push(trimmedLine);
-    }
-
-    // Flush final paragraph
-    flushParagraph();
-
-    return elements;
-  };
+  const html = isHtmlContent(content) ? sanitizeHtml(content) : plainTextToHtml(content);
 
   return (
-    <div className={`rich-text-content ${className}`}>
-      {parseContent(content)}
-    </div>
+    <div
+      className={`rich-text-content prose prose-neutral max-w-none
+        prose-headings:font-serif prose-headings:text-brand-dark
+        prose-h2:text-2xl prose-h2:md:text-3xl prose-h2:font-semibold prose-h2:mb-4 prose-h2:mt-8
+        prose-h3:text-xl prose-h3:md:text-2xl prose-h3:font-semibold prose-h3:mb-3 prose-h3:mt-6
+        prose-p:text-base prose-p:text-neutral-600 prose-p:leading-relaxed prose-p:mb-4
+        prose-strong:text-brand-dark prose-strong:font-semibold
+        prose-em:text-neutral-500
+        prose-li:text-base prose-li:text-neutral-600 prose-li:leading-relaxed
+        prose-blockquote:border-l-brand-brown prose-blockquote:bg-neutral-50 prose-blockquote:py-3 prose-blockquote:px-6 prose-blockquote:rounded-r-lg prose-blockquote:not-italic
+        ${className}`}
+      dangerouslySetInnerHTML={{ __html: html }}
+    />
   );
 }

@@ -13,7 +13,7 @@ module.exports = {
           dark2: '#5A4228',
           dark3: '#6B5238',
           dark4: '#7D6548',
-          brown: '#ccb27f',
+          brown: '#d4be92',
           'brown-hover': '#714c20',
           gold: '#8B7D3C',
           'gold-light': '#9E8E4A',

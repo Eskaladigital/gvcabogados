@@ -42,7 +42,7 @@ const SERP_API_KEY = process.env.SERP_API_KEY;
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 const DEFAULT_OPENAI_MODEL = process.env.OPENAI_MODEL || 'gpt-4.1';
 const DEFAULT_MAX_TOKENS = Number.parseInt(process.env.OPENAI_MAX_TOKENS || '3500', 10) || 3500;
-const DEFAULT_TEMPERATURE = Number.parseFloat(process.env.OPENAI_TEMPERATURE || '0.5') || 0.5;
+const DEFAULT_TEMPERATURE = Number.parseFloat(process.env.OPENAI_TEMPERATURE || '0.65') || 0.65;
 
 if (!SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY) {
   throw new Error('Faltan variables de Supabase. Revisa NEXT_PUBLIC_SUPABASE_URL y SUPABASE_SERVICE_ROLE_KEY en .env.local');
@@ -387,40 +387,89 @@ REGLAS ABSOLUTAS (inquebrantables):
 
 1. PROHIBIDO: "consulta gratuita", "gratuita", "gratis", "free consultation" y cualquier variación. Jamás.
 
-2. NO INVENTAR DATOS: No puedes inventar nombres de juzgados, hospitales, comisarías, registros, direcciones, teléfonos ni ninguna institución.
-   - SOLO puedes mencionar entidades que aparezcan EXPLÍCITAMENTE en la evidencia SERP proporcionada.
-   - Si la evidencia dice "Juzgados de Murcia" genéricamente, NO extrapoles un nombre específico como "Juzgado de Primera Instancia nº3 de Murcia" salvo que aparezca literalmente.
-   - Si no tienes evidencia suficiente sobre una institución concreta, NO LA MENCIONES. Es preferible ser genérico ("los juzgados competentes de la localidad") que inventar un nombre.
-   - Las DIRECCIONES son especialmente sensibles: NO incluyas ninguna dirección (calle, avenida, plaza) que no esté textualmente en la evidencia. Una dirección inventada destruye la credibilidad.
+2. PRINCIPIO DE PRUDENCIA (el más importante):
+   Tu prioridad número 1 es NO COMETER ERRORES FACTUALES. Es infinitamente mejor ser genérico que inventar un dato.
 
-3. VERIFICACIÓN DE ENTIDADES: Antes de incluir cualquier entidad local, pregúntate:
-   - ¿Aparece este nombre EXACTO en algún resultado SERP?
-   - ¿La dirección/teléfono aparece LITERALMENTE en la evidencia?
-   - Si la respuesta a cualquiera es NO → no lo incluyas.
+   NIVEL DE CERTEZA requerido para incluir datos específicos:
+   - Nombre de institución (juzgado, hospital, comisaría...): SOLO si aparece TEXTUALMENTE en la evidencia SERP. No deduzcas, no extrapoles, no completes nombres parciales.
+   - Dirección (calle, avenida, plaza, número...): SOLO si aparece LETRA POR LETRA en la evidencia. Las direcciones inventadas son el error más grave posible — destruyen toda la credibilidad del despacho.
+   - Teléfono: SOLO si aparece dígito a dígito en la evidencia.
+   - Datos numéricos (plazos, cuantías, estadísticas): SOLO si son de conocimiento jurídico general (ej: "plazo de prescripción de 1 año") o aparecen en evidencia. NUNCA inventes estadísticas locales.
+   - Nombres de leyes/artículos: SOLO si estás 100% seguro de que existen. En caso de duda, refiere al marco legal de forma genérica.
+
+   CUANDO NO TENGAS EVIDENCIA para un dato concreto:
+   - NO lo incluyas y punto. No compenses con datos inventados.
+   - Usa formulaciones naturales y genéricas: "los órganos judiciales competentes", "ante la jurisdicción correspondiente", "los servicios de atención al ciudadano de la localidad".
+   - Un texto con 3 datos reales es MUCHO mejor que uno con 10 datos de los cuales 4 son inventados.
+
+3. VERIFICACIÓN DE ENTIDADES — Triple comprobación:
+   Antes de incluir CUALQUIER entidad local en el contenido o en local_entities:
+   a) ¿Aparece este nombre EXACTO (no aproximado) en algún resultado SERP?
+   b) ¿La dirección/teléfono aparece LITERALMENTE en la evidencia?
+   c) ¿Tiene sentido que esa institución exista en esa localidad concreta?
+   Si la respuesta a (a) es NO → no lo incluyas. Si (a) es SÍ pero (b) es NO → incluye el nombre pero NO la dirección/teléfono.
 
 ═══════════════════════════════════════════
 ESTILO DE ESCRITURA (crítico):
 ═══════════════════════════════════════════
 
-EVITA ABSOLUTAMENTE estos patrones repetitivos que delatan contenido generado por IA:
+EVITA ABSOLUTAMENTE estos patrones repetitivos que delatan contenido IA:
 - "La tramitación requiere conocimiento de las instituciones locales" o variaciones.
 - "Conocimiento específico de [institución local]" como muletilla.
-- Repetir la dirección del despacho o de un juzgado más de UNA vez en todo el contenido.
-- Comenzar todos los párrafos o secciones con la misma estructura gramatical.
-- Frases genéricas que podrían aplicarse a CUALQUIER ciudad: "contar con un abogado especializado marca la diferencia", "la normativa vigente establece", etc. Si una frase funciona igual cambiando el nombre de la ciudad, es demasiado genérica.
+- Repetir la misma dirección o institución más de UNA vez en todo el contenido.
+- Comenzar todos los párrafos con la misma estructura gramatical.
+- Frases que funcionan igual cambiando la ciudad: "contar con un abogado especializado marca la diferencia", "la normativa vigente establece", etc.
 - Listas interminables de servicios sin profundizar en ninguno.
 
 EN SU LUGAR, escribe así:
-- Varía la estructura: a veces empieza con un dato, otras con una pregunta retórica, otras con un caso práctico (hipotético pero realista).
-- Sé CONCRETO cuando tengas datos: en lugar de "los juzgados de la localidad", di "el Juzgado de lo Social de Cartagena" (solo si aparece en evidencia).
-- Sé PRUDENTE cuando NO tengas datos: usa formulaciones genéricas naturales sin pretender conocimiento que no tienes.
-- Cada sección debe aportar información DISTINTA. No repitas la misma idea reformulada.
-- El tono es el de un profesional cercano: serio pero accesible, técnico pero comprensible.
-- Incluye matices locales REALES (si la evidencia los proporciona): particularidades del partido judicial, volumen de asuntos, peculiaridades de la zona.
-- La long_description debe leerse como un artículo editorial, no como un folleto publicitario.
+- Varía la estructura: datos, preguntas retóricas, escenarios prácticos (hipotéticos pero realistas).
+- Sé CONCRETO cuando tengas datos verificados. Sé PRUDENTE (genérico con naturalidad) cuando no los tengas.
+- Cada sección aporta información DISTINTA. No reformules la misma idea.
+- Tono de profesional cercano: serio pero accesible, técnico pero comprensible.
+- Incluye matices locales REALES solo si la evidencia los respalda.
+- La long_description debe leerse como un artículo editorial, no como un folleto.
 
 ═══════════════════════════════════════════
-FORMATO DE SALIDA:
+FORMATO HTML DEL CONTENIDO:
+═══════════════════════════════════════════
+
+IMPORTANTE: Los campos de texto largo (long_description_es, y el campo "content" dentro de sections_es y faqs_es.answer)
+deben entregarse en HTML semántico limpio, listo para insertar en una página web.
+
+Etiquetas HTML permitidas y su uso:
+- <h2>Subtítulo principal</h2> — para encabezados de sección dentro de long_description_es
+- <h3>Subtítulo secundario</h3> — para sub-apartados
+- <p>Texto de párrafo</p> — para cada párrafo de texto
+- <strong>texto en negrita</strong> — para enfatizar conceptos clave (úsalo con moderación, máximo 2-3 por sección)
+- <em>texto en cursiva</em> — para términos jurídicos o énfasis suave
+- <ul><li>Elemento</li></ul> — para listas con viñetas (solo cuando realmente aporte claridad, no por defecto)
+- <ol><li>Elemento</li></ol> — para listas numeradas
+- <blockquote><p>Cita o destacado</p></blockquote> — para destacar un dato o cita relevante (máximo 1 por long_description)
+
+PROHIBIDO en HTML:
+- Clases CSS, estilos inline, atributos id, data-*, onclick, etc.
+- Etiquetas <div>, <span>, <section>, <article>, <header>, <footer>
+- Etiquetas <img>, <a>, <script>, <style>, <iframe>
+- Atributos class="", style="", id=""
+- HTML vacío o etiquetas sin contenido
+- Anidar <p> dentro de <p>
+
+El HTML debe ser SEMÁNTICO PURO: solo estructura, sin presentación. La web aplicará sus propios estilos.
+
+Ejemplo de formato correcto para long_description_es:
+"<h2>El derecho de familia en Cartagena</h2><p>Los procesos de separación y divorcio en el partido judicial de Cartagena presentan particularidades...</p><p>Uno de los aspectos más relevantes es la determinación de la custodia...</p><h3>Régimen de visitas y pensión compensatoria</h3><p>Cuando existe desacuerdo entre las partes...</p>"
+
+Ejemplo de formato correcto para sections_es[].content:
+"<p>La mediación familiar ofrece una alternativa eficaz al procedimiento contencioso...</p><p>En la práctica, <strong>más del 60% de las mediaciones</strong> alcanzan un acuerdo satisfactorio para ambas partes.</p>"
+
+Campos que NO llevan HTML (texto plano):
+- title_es, meta_description_es, short_description_es — texto plano puro
+- process_es[] — cada paso es texto plano
+- faqs_es[].question — texto plano
+- local_entities — todos los campos en texto plano
+
+═══════════════════════════════════════════
+FORMATO DE SALIDA JSON:
 ═══════════════════════════════════════════
 Devuelve SOLO JSON válido (sin markdown, sin comentarios, sin texto fuera del JSON).
 Claves requeridas: title_es, meta_description_es, short_description_es, long_description_es, sections_es, process_es, faqs_es, local_entities, quality.
@@ -436,51 +485,89 @@ function userPrompt(params: {
 }) {
   const { locality, service, slug_es, evidence, existingSpanish } = params;
   const existingBlock = existingSpanish?.long_description_es
-    ? `CONTENIDO EXISTENTE (para mejorar/reescribir manteniendo lo valioso):\n${existingSpanish.long_description_es}\n`
-    : `CONTENIDO EXISTENTE: (no hay)\n`;
+    ? `CONTENIDO PREVIO (reescríbelo completamente con un enfoque fresco; NO copies estructuras ni frases):\n${existingSpanish.long_description_es}\n`
+    : '';
 
   const evidenceText = evidence
     .map((e, idx) => `#${idx + 1}\nquery: ${e.query}\ntitle: ${e.title}\nurl: ${e.link}\nsnippet: ${e.snippet}`.trim())
     .join('\n\n');
 
   return normalizeText(`
-DATOS:
-- Localidad: ${locality.name}
-- Provincia: ${locality.province || ''}
-- Servicio (clave): ${service.service_key}
-- Servicio (nombre): ${service.name_es}
-- Slug ES: ${slug_es}
+CONTEXTO:
+- Ciudad: ${locality.name}
+- Provincia: ${locality.province || '(misma)'}
+- Área legal: ${service.name_es} (clave: ${service.service_key})
+- Slug para la URL: ${slug_es}
 
 ${existingBlock}
 
-EVIDENCIA SERP (usa SOLO esto para extraer entidades locales y hechos verificables):
-${evidenceText || '(sin evidencia)'}
+═══ EVIDENCIA SERP ═══
+Usa EXCLUSIVAMENTE esta evidencia para extraer instituciones, direcciones, y datos locales.
+TODO lo que no esté aquí, NO EXISTE para ti. No extrapoles, no deduzcas, no inventes.
 
-TAREAS:
-1) Extrae "local_entities" como array. Cada elemento debe tener:
-   - entity_type: uno de court|hospital|police|registry|government|road|mediation_center|other
-   - name: nombre EXACTO como aparece en evidencia (o muy cercano)
-   - source_url: URL exacta de donde sale
-   - (opcional) address, phone, website, notes: SOLO si se puede respaldar con evidencia
-   Minimiza duplicados y prioriza entidades realmente útiles para el servicio.
+${evidenceText || '(sin evidencia disponible — sé completamente genérico en referencias locales)'}
 
-2) Genera el contenido SEO para "Abogados ${service.name_es} en ${locality.name}" con:
-   - title_es: máximo 65 caracteres aprox (sin contar espacios extra)
-   - meta_description_es: máximo 155-160 caracteres, sin emojis
-   - short_description_es: 2-3 frases, 260-320 caracteres aprox
-   - long_description_es: 900-1400 palabras, con subtítulos (H2/H3 en texto plano), enfoque local, y sin listas interminables
-   - sections_es: EXACTAMENTE 4 secciones [{title, content}] con enfoque práctico y local
-   - process_es: EXACTAMENTE 6 pasos claros y cortos (strings)
-   - faqs_es: EXACTAMENTE 6 FAQs (preguntas específicas y útiles; respuestas 60-120 palabras)
+═══ QUÉ NECESITO ═══
 
-3) Evalúa la calidad en quality:
-   - score: 0-100 (más alto si hay buen anclaje local verificable y contenido diferenciado)
-   - notes: 1-2 frases explicando el score
+A) LOCAL_ENTITIES (array):
+   Solo entidades que aparezcan con nombre EXACTO en la evidencia anterior.
+   Campos: entity_type (court|hospital|police|registry|government|road|mediation_center|other), name, source_url.
+   Opcionales SOLO si están en evidencia: address, phone, website, notes.
+   REGLA DE ORO: si dudas sobre si un dato es exacto → NO lo incluyas.
+   Mejor tener 2 entidades verificadas que 8 inventadas.
 
-RECORDATORIO CRÍTICO:
-- Prohibido "consulta gratuita"/"gratis"/"gratuita".
-- No inventes: si una entidad no está en evidencia, no la añadas.
-- Usa un estilo coherente con un bufete premium en España.
+B) CONTENIDO SEO — Piensa como un socio del bufete que escribe un artículo para el blog del despacho sobre su experiencia en ${service.name_es} en ${locality.name}:
+
+   title_es (máx 65 caracteres):
+   - Debe ser atractivo y específico, no un título genérico.
+
+   meta_description_es (máx 155 caracteres, sin emojis):
+   - Una propuesta de valor clara y concisa.
+
+   short_description_es (260-320 caracteres):
+   - 2-3 frases que enganchen. No repitas el título.
+
+   long_description_es (900-1400 palabras, EN HTML SEMÁNTICO):
+   - Escríbelo como un ARTÍCULO EDITORIAL, no como un catálogo de servicios.
+   - Formato: HTML limpio con <h2>, <h3>, <p>, <strong>, <em>, <ul>/<ol>/<li>, <blockquote>. SIN clases CSS, SIN atributos style/id/class, SIN <div>/<span>/<a>/<img>.
+   - PROHIBIDO: repetir direcciones, repetir instituciones más de una vez, muletillas como "la tramitación requiere conocimiento de las instituciones locales".
+   - Cada párrafo (<p>) debe aportar información NUEVA.
+   - Integra las referencias locales de forma NATURAL y DISTRIBUIDA, no acumuladas al principio.
+   - Incluye al menos un ejemplo práctico o escenario realista (sin dar asesoramiento personalizado).
+   - Varía las estructuras: no empieces 3 párrafos seguidos con la misma construcción gramatical.
+   - Usa <strong> con moderación (máximo 3-4 en toda la long_description) para resaltar conceptos clave.
+   - Usa máximo 1 <blockquote> para destacar un dato especialmente relevante.
+
+   sections_es (EXACTAMENTE 4 objetos {title, content}):
+   - title: texto plano (sin HTML).
+   - content: HTML semántico limpio (mismas reglas que long_description: <p>, <strong>, <em>, <ul>/<li>, etc. Sin clases ni atributos).
+   - Cada sección debe cubrir un ÁNGULO DIFERENTE del servicio en esa ciudad.
+   - NO repitas información de long_description_es; cada sección profundiza en un tema distinto.
+   - Títulos creativos y específicos, no genéricos (mal: "Nuestros servicios"; bien: "Custodia compartida en ${locality.name}: lo que dice la jurisprudencia local").
+   - Contenido sustancial: 150-250 palabras por sección.
+
+   process_es (EXACTAMENTE 6 strings):
+   - 6 pasos del proceso de trabajo, claros y concretos.
+   - Evita lenguaje corporativo vacío. Cada paso debe ser una acción real y entendible.
+
+   faqs_es (EXACTAMENTE 6 objetos {question, answer}):
+   - question: texto plano (sin HTML).
+   - answer: HTML semántico limpio (<p>, <strong>, <em>, <ul>/<li>). Para respuestas cortas, un solo <p> es suficiente.
+   - Preguntas que un cliente REAL haría, específicas de ${locality.name} cuando sea posible.
+   - Respuestas de 60-120 palabras, útiles y directas.
+   - NO preguntas genéricas que sirvan para cualquier ciudad española.
+
+C) QUALITY:
+   - score (0-100): Puntúa con honestidad. Si la evidencia era pobre y tuviste que ser genérico, baja la nota.
+   - notes: 1-2 frases justificando.
+
+═══ CHECKLIST FINAL (verifica antes de responder) ═══
+□ ¿Alguna dirección que mencionas NO aparece literalmente en la evidencia? → Elimínala.
+□ ¿Algún juzgado/institución que nombras NO está textualmente en la evidencia? → Elimínalo o hazlo genérico.
+□ ¿Hay frases que funcionarían igual cambiando "${locality.name}" por cualquier otra ciudad? → Reescríbelas con más especificidad o elimínalas.
+□ ¿Repites la misma idea en dos sitios diferentes? → Elimina una de las dos.
+□ ¿Has usado "consulta gratuita", "gratis" o "gratuita"? → Prohibido.
+□ ¿La long_description suena como un artículo de revista jurídica o como un folleto? → Debe sonar a artículo.
 `);
 }
 
@@ -525,7 +612,58 @@ function safeJsonParse<T>(raw: string): T {
   }
 }
 
-function validatePayload(p: GeneratedPayload) {
+const REPETITIVE_PATTERNS = [
+  /la tramitación requiere conocimiento/gi,
+  /conocimiento de las instituciones locales/gi,
+  /conocimientos? específicos? de/gi,
+  /contar con un abogado especializado marca la diferencia/gi,
+  /la normativa vigente establece/gi,
+  /nuestro equipo de profesionales/gi,
+  /profesionales altamente cualificados/gi,
+  /amplia experiencia en el sector/gi,
+];
+
+function detectRepetitivePatterns(text: string): string[] {
+  const warnings: string[] = [];
+  for (const re of REPETITIVE_PATTERNS) {
+    re.lastIndex = 0;
+    const matches = text.match(re);
+    if (matches && matches.length > 0) {
+      warnings.push(`Patrón repetitivo detectado (${matches.length}x): "${matches[0]}"`);
+    }
+  }
+  return warnings;
+}
+
+function countAddressRepetitions(text: string): number {
+  const addressPatterns = [
+    /(?:calle|c\/|avda\.?|avenida|plaza|paseo|ronda)\s+[A-ZÁÉÍÓÚÑ][a-záéíóúñ\s]+(?:\d+|s\/n)/gi,
+  ];
+  let totalMatches = 0;
+  for (const re of addressPatterns) {
+    const matches = text.match(re);
+    if (matches) {
+      const unique = new Set(matches.map(m => m.toLowerCase().trim()));
+      for (const addr of unique) {
+        const count = matches.filter(m => m.toLowerCase().trim() === addr).length;
+        if (count > 1) totalMatches += count - 1;
+      }
+    }
+  }
+  return totalMatches;
+}
+
+function validateEntityAgainstEvidence(
+  entity: GeneratedPayload['local_entities'][number],
+  evidence: Array<{ title: string; link: string; snippet: string }>
+): boolean {
+  const name = entity.name.toLowerCase();
+  return evidence.some(
+    (e) => e.title.toLowerCase().includes(name) || e.snippet.toLowerCase().includes(name) || e.link.toLowerCase().includes(name)
+  );
+}
+
+function validatePayload(p: GeneratedPayload, evidence?: Array<{ title: string; link: string; snippet: string }>) {
   if (!p.title_es || !p.meta_description_es || !p.short_description_es || !p.long_description_es) {
     throw new Error('Payload incompleto: faltan campos principales.');
   }
@@ -545,6 +683,35 @@ function validatePayload(p: GeneratedPayload) {
     throw new Error('Payload inválido: meta_description_es demasiado larga (>180).');
   }
   assertNoForbidden(p);
+
+  const fullText = [
+    p.long_description_es,
+    p.short_description_es,
+    ...p.sections_es.map((s) => `${s.title} ${s.content}`),
+    ...p.faqs_es.map((f) => `${f.question} ${f.answer}`),
+  ].join(' ');
+
+  const repetitiveWarnings = detectRepetitivePatterns(fullText);
+  if (repetitiveWarnings.length > 0) {
+    console.warn(`⚠️  Patrones repetitivos encontrados:\n${repetitiveWarnings.map(w => `   - ${w}`).join('\n')}`);
+  }
+
+  const addressRepeats = countAddressRepetitions(fullText);
+  if (addressRepeats > 0) {
+    console.warn(`⚠️  Direcciones repetidas ${addressRepeats} veces en el contenido. Considerar regenerar.`);
+  }
+
+  if (evidence && p.local_entities.length > 0) {
+    const unverified = p.local_entities.filter((e) => !validateEntityAgainstEvidence(e, evidence));
+    if (unverified.length > 0) {
+      console.warn(`⚠️  ${unverified.length} entidades NO verificadas en evidencia SERP:`);
+      for (const u of unverified) {
+        console.warn(`   - [${u.entity_type}] "${u.name}" (fuente: ${u.source_url})`);
+      }
+      p.local_entities = p.local_entities.filter((e) => validateEntityAgainstEvidence(e, evidence));
+      console.warn(`   → Entidades filtradas. Quedan ${p.local_entities.length} verificadas.`);
+    }
+  }
 }
 
 async function upsertLocalEntities(localityId: string, entities: GeneratedPayload['local_entities'], dryRun: boolean) {
@@ -752,7 +919,7 @@ async function main() {
         const raw = await generateWithOpenAI(input);
         console.log(`🧠 [${ts()}] OpenAI OK (${Date.now() - tGen}ms). Parsing/validando JSON...`);
         const payload = safeJsonParse<GeneratedPayload>(raw);
-        validatePayload(payload);
+        validatePayload(payload, evidence);
         console.log(
           `✅ [${ts()}] Validación OK: sections=${payload.sections_es.length} process=${payload.process_es.length} faqs=${payload.faqs_es.length} entities=${payload.local_entities.length}`
         );

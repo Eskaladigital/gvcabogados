@@ -136,9 +136,44 @@ export default async function LandingPageEs({ params }: Props) {
                       <h3 className="font-serif text-lg font-semibold text-brand-dark mb-2">
                         {section.title}
                       </h3>
-                      <p className="text-sm text-neutral-500 leading-relaxed">{section.content}</p>
+                      <RichTextContent content={section.content} className="text-sm [&_p]:text-sm [&_p]:text-neutral-500 [&_li]:text-sm [&_li]:text-neutral-500" />
                     </div>
                   ))}
+                </div>
+              </div>
+            )}
+
+            {/* Banner Baremo — solo accidentes de tráfico */}
+            {service.id === 'accidentes-trafico' && (
+              <div className="reveal mb-10 relative bg-brand-dark rounded-lg overflow-hidden">
+                <div
+                  className="absolute inset-0 opacity-[0.04]"
+                  style={{
+                    backgroundImage:
+                      'radial-gradient(circle at 20% 50%, rgba(204,178,127,0.4) 0%, transparent 50%), radial-gradient(circle at 80% 50%, rgba(204,178,127,0.3) 0%, transparent 50%)',
+                  }}
+                />
+                <div className="relative z-10 p-6 md:p-8">
+                  <div className="flex items-start gap-4 mb-3">
+                    <div className="w-12 h-12 bg-brand-brown rounded-xl flex items-center justify-center shrink-0">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-white"><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/></svg>
+                    </div>
+                    <div>
+                      <h3 className="font-serif text-lg font-semibold text-white mb-2">
+                        Expertos en el Baremo de Tráfico
+                      </h3>
+                      <p className="text-sm text-neutral-300 leading-relaxed">
+                        Dominamos el <strong className="text-white">Sistema de Valoración de Daños en Accidentes de Circulación</strong> (Ley 35/2015). 
+                        Calculamos con precisión las indemnizaciones por lesiones temporales, secuelas permanentes, perjuicio patrimonial y lucro cesante 
+                        para que reciba la máxima compensación posible.
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex justify-end mt-4">
+                    <Link href="/es/contacto" className="btn-primary text-xs">
+                      Valorar mi caso →
+                    </Link>
+                  </div>
                 </div>
               </div>
             )}
@@ -178,7 +213,7 @@ export default async function LandingPageEs({ params }: Props) {
                         </span>
                       </summary>
                       <div className="px-5 pb-5">
-                        <p className="text-sm text-neutral-500 leading-relaxed">{faq.answer}</p>
+                        <RichTextContent content={faq.answer} className="text-sm [&_p]:text-sm [&_p]:text-neutral-500 [&_li]:text-sm [&_li]:text-neutral-500" />
                       </div>
                     </details>
                   ))}

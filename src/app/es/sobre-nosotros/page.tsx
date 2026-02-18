@@ -1,5 +1,6 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
+import { Award, Handshake, Clock, Crown } from 'lucide-react';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import ScrollReveal from '@/components/ui/ScrollReveal';
@@ -189,22 +190,22 @@ export default function SobreNosotrosPage() {
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
               {[
                 {
-                  icon: '✦',
+                  icon: <Award size={28} strokeWidth={1.5} />,
                   title: 'Calidad',
                   desc: 'Exigencia máxima en el estudio y la resolución de cada caso. No aceptamos más asuntos de los que podemos atender con la dedicación que merecen.',
                 },
                 {
-                  icon: '◆',
+                  icon: <Handshake size={28} strokeWidth={1.5} />,
                   title: 'Confianza',
                   desc: 'Transparencia total con el cliente: informamos de las opciones reales, los costes, los plazos y las probabilidades de éxito sin crear falsas expectativas.',
                 },
                 {
-                  icon: '★',
+                  icon: <Clock size={28} strokeWidth={1.5} />,
                   title: 'Experiencia',
                   desc: 'Más de 75 años de trayectoria nos permiten ofrecer un asesoramiento experto basado en una práctica contrastada.',
                 },
                 {
-                  icon: '♦',
+                  icon: <Crown size={28} strokeWidth={1.5} />,
                   title: 'Nobleza',
                   desc: 'Integridad y honestidad profesional. Como refleja nuestro símbolo, el león, actuamos con nobleza, generosidad y honor en la defensa de nuestros clientes.',
                 },
@@ -213,7 +214,7 @@ export default function SobreNosotrosPage() {
                   key={i}
                   className="reveal text-center p-6 bg-white border border-neutral-200 hover:border-brand-brown transition-colors"
                 >
-                  <div className="text-2xl text-brand-brown mb-3">{v.icon}</div>
+                  <div className="flex justify-center text-brand-brown mb-4">{v.icon}</div>
                   <h3 className="font-serif text-lg font-semibold text-brand-dark mb-2">
                     {v.title}
                   </h3>

@@ -9,6 +9,13 @@
     scroll-behavior: smooth;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    font-size: 17px;
+  }
+
+  @media (min-width: 768px) {
+    html {
+      font-size: 18px;
+    }
   }
 
   body {

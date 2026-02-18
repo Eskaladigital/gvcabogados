@@ -248,9 +248,9 @@ export default async function ServiceDetailPage({ params }: Props) {
                         {section.title}
                       </h3>
                     </div>
-                    <p className="text-sm text-neutral-500 leading-relaxed pl-16">
-                      {section.content}
-                    </p>
+                    <div className="pl-16">
+                      <RichTextContent content={section.content} className="text-sm [&_p]:text-sm [&_p]:text-neutral-500 [&_li]:text-sm [&_li]:text-neutral-500" />
+                    </div>
                   </div>
                 ))}
               </div>
@@ -268,6 +268,43 @@ export default async function ServiceDetailPage({ params }: Props) {
                     <a href="tel:+34968241025" className="btn-outline-dark">
                       ☎ 968 241 025
                     </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* Banner Baremo — solo accidentes de tráfico */}
+        {service.id === 'accidentes-trafico' && (
+          <section className="py-0">
+            <div className="container-custom max-w-6xl">
+              <div className="reveal relative bg-brand-dark rounded-2xl overflow-hidden">
+                <div
+                  className="absolute inset-0 opacity-[0.04]"
+                  style={{
+                    backgroundImage:
+                      'radial-gradient(circle at 20% 50%, rgba(204,178,127,0.4) 0%, transparent 50%), radial-gradient(circle at 80% 50%, rgba(204,178,127,0.3) 0%, transparent 50%)',
+                  }}
+                />
+                <div className="relative z-10 flex flex-col md:flex-row items-center gap-6 md:gap-10 p-8 md:p-12">
+                  <div className="w-20 h-20 md:w-24 md:h-24 bg-brand-brown rounded-2xl flex items-center justify-center shrink-0">
+                    <Scale size={40} className="text-white" />
+                  </div>
+                  <div className="flex-1 text-center md:text-left">
+                    <h3 className="font-serif text-xl md:text-2xl font-semibold text-white mb-3">
+                      Expertos en el Baremo de Tráfico
+                    </h3>
+                    <p className="text-sm md:text-base text-neutral-300 leading-relaxed max-w-2xl">
+                      Nuestro equipo domina en profundidad el <strong className="text-white">Sistema de Valoración de Daños en Accidentes de Circulación</strong> (Ley 35/2015). 
+                      Calculamos con precisión las indemnizaciones que le corresponden —lesiones temporales, secuelas permanentes, perjuicio patrimonial y lucro cesante— 
+                      para que reciba la máxima compensación posible.
+                    </p>
+                  </div>
+                  <div className="shrink-0">
+                    <Link href="/es/contacto" className="btn-primary whitespace-nowrap">
+                      Valorar mi caso →
+                    </Link>
                   </div>
                 </div>
               </div>
@@ -364,7 +401,7 @@ export default async function ServiceDetailPage({ params }: Props) {
                       </div>
                     </summary>
                     <div className="px-6 pb-6 border-t border-neutral-200">
-                      <p className="text-sm text-neutral-500 leading-relaxed pt-4">{faq.answer}</p>
+                      <RichTextContent content={faq.answer} className="pt-4 text-sm [&_p]:text-sm [&_p]:text-neutral-500 [&_li]:text-sm [&_li]:text-neutral-500" />
                     </div>
                   </details>
                 ))}

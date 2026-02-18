@@ -63,14 +63,10 @@ export default function AboutStrip({ locale }: AboutStripProps) {
             </div>
           </div>
 
-          {/* Columna derecha: Imagen con fondo marrón */}
+          {/* Columna derecha: Imagen */}
           <div className="relative">
-            {/* Fondo marrón detrás */}
-            <div className="absolute -inset-4 md:-inset-6 bg-brand-brown rounded-2xl z-0" />
-            
-            {/* Contenedor de la imagen */}
-            <div className="relative z-10">
-              <div className="aspect-[3/4] relative overflow-hidden rounded-2xl bg-gradient-to-br from-brand-dark2 to-brand-dark3">
+            <div className="relative">
+              <div className="aspect-[3/4] relative overflow-hidden rounded-2xl bg-gradient-to-br from-brand-dark2 to-brand-dark3 shadow-xl shadow-neutral-300/50">
                 {/* Imagen */}
                 <div className="absolute inset-0">
                   <Image
