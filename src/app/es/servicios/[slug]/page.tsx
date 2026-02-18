@@ -136,7 +136,8 @@ export default async function ServiceDetailPage({ params }: Props) {
             fill
             className="object-cover"
             priority
-            unoptimized
+            sizes="100vw"
+            quality={60}
           />
           <div className="container-custom relative z-20 w-full">
             <Breadcrumbs items={breadcrumbs} />
@@ -190,7 +191,8 @@ export default async function ServiceDetailPage({ params }: Props) {
                       alt={service.nameEs}
                       fill
                       className="object-cover"
-                      unoptimized
+                      sizes="(max-width: 640px) 100vw, 420px"
+                      quality={60}
                     />
                     {/* Badge con icono del servicio */}
                     <div className="absolute bottom-4 left-4 bg-brand-brown rounded-xl p-3 shadow-lg z-20">
@@ -381,7 +383,7 @@ export default async function ServiceDetailPage({ params }: Props) {
                   alt="León GVC"
                   fill
                   className="object-contain p-4"
-                  unoptimized
+                  sizes="80px"
                 />
               </div>
               <h2 className="section-title-white mb-6">

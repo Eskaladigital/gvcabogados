@@ -1,6 +1,6 @@
 import '@/styles/globals.css';
 import type { Metadata } from 'next';
-import { GoogleAnalytics } from '@/components/seo/GoogleAnalytics';
+import { GoogleAnalytics } from '@next/third-parties/google';
 import BackToTopButton from '@/components/layout/WhatsAppButton';
 
 export const metadata: Metadata = {
@@ -18,7 +18,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="es" className="scroll-smooth">
       <body>
-        <GoogleAnalytics />
+        <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || ''} />
         {children}
         <BackToTopButton />
       </body>

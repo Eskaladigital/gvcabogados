@@ -98,7 +98,8 @@ export default async function BlogPageEn() {
             fill
             className="object-cover"
             priority
-            unoptimized
+            sizes="100vw"
+            quality={60}
           />
           <div className="container-custom relative z-20 w-full">
             <Breadcrumbs items={breadcrumbs} />

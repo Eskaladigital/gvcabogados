@@ -137,7 +137,7 @@ export default function Navbar({ locale, alternateUrl }: NavbarProps) {
                 alt="GV&C Logo"
                 fill
                 className="object-contain"
-                unoptimized
+                sizes="50px"
               />
             </div>
             <div className="text-brand-dark text-sm md:text-[1.15rem] font-bold leading-tight tracking-tight">

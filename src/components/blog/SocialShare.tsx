@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { SITE_URL } from '@/lib/site-config';
 
 interface Props {
@@ -10,6 +10,11 @@ interface Props {
 
 export default function SocialShare({ url, title }: Props) {
   const [copied, setCopied] = useState(false);
+  const [canShare, setCanShare] = useState(false);
+
+  useEffect(() => {
+    setCanShare(typeof navigator !== 'undefined' && !!navigator.share);
+  }, []);
 
   const shareUrl = `${SITE_URL}${url}`;
   const encodedUrl = encodeURIComponent(shareUrl);
@@ -22,6 +27,21 @@ export default function SocialShare({ url, title }: Props) {
       setTimeout(() => setCopied(false), 2000);
     } catch (err) {
       console.error('Error al copiar:', err);
+    }
+  };
+
+  const handleNativeShare = async () => {
+    if (typeof navigator !== 'undefined' && navigator.share) {
+      try {
+        await navigator.share({
+          title,
+          text: title,
+          url: shareUrl,
+        });
+      } catch (err) {
+        // El usuario canceló o hubo error, no hacemos nada crítico
+        console.log('Compartir cancelado o fallido', err);
+      }
     }
   };
 
@@ -52,6 +72,20 @@ export default function SocialShare({ url, title }: Props) {
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
+          {/* Compartir Nativo (Móvil) */}
+          {canShare && (
+            <button
+              onClick={handleNativeShare}
+              className="md:hidden p-2.5 rounded-sm bg-brand-dark text-white hover:bg-brand-dark2 transition-colors"
+              aria-label="Compartir"
+              title="Compartir"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+              </svg>
+            </button>
+          )}
+
           {/* Facebook */}
           <button
             onClick={() => handleShare('facebook')}

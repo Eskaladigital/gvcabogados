@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import { getTranslations, Locale } from '@/data/translations';
 
 interface HeroProps {
@@ -12,10 +13,17 @@ export default function Hero({ locale }: HeroProps) {
   return (
     <section className="bg-[#1a1a1a] relative overflow-hidden min-h-[85vh] flex flex-col">
       {/* Background image */}
-      <div
-        className="absolute inset-0 bg-center bg-cover bg-no-repeat opacity-30 z-0"
-        style={{ backgroundImage: "url('/images/slides/garcia_valcarcel_caceres_abogados_slide_home_v2.webp')" }}
-      />
+      <div className="absolute inset-0 opacity-30 z-0">
+        <Image
+          src="/images/slides/garcia_valcarcel_caceres_abogados_slide_home_v2.webp"
+          alt=""
+          fill
+          className="object-cover"
+          priority
+          sizes="100vw"
+          quality={60}
+        />
+      </div>
       {/* Gradient overlay */}
       <div className="absolute inset-0 bg-gradient-to-br from-[rgba(26,26,26,0.6)] via-[rgba(30,30,30,0.3)] to-[rgba(26,26,26,0.5)] z-[1]" />
       {/* Grid pattern */}

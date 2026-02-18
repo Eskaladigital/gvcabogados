@@ -25,7 +25,7 @@ export default function Footer({ locale }: FooterProps) {
                   alt="GV&C Logo"
                   fill
                   className="object-contain"
-                  unoptimized
+                  sizes="64px"
                 />
               </div>
               <span className="text-brand-dark text-base font-semibold">García-Valcárcel & Cáceres</span>

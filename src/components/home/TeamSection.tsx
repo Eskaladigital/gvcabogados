@@ -46,7 +46,7 @@ export default function TeamSection({ locale }: TeamSectionProps) {
                     alt={member.name}
                     fill
                     className="object-cover"
-                    unoptimized
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                   />
                 </div>
                 <div className="absolute bottom-0 left-0 right-0 h-1/2 bg-gradient-to-t from-brand-dark/70 to-transparent z-[2]" />
@@ -58,7 +58,7 @@ export default function TeamSection({ locale }: TeamSectionProps) {
                       alt="León"
                       fill
                       className="object-contain"
-                      unoptimized
+                      sizes="24px"
                     />
                   </div>
                 </div>

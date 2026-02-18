@@ -79,7 +79,8 @@ export default function AboutStrip({ locale }: AboutStripProps) {
                     fill
                     className="object-cover"
                     priority
-                    unoptimized
+                    sizes="(max-width: 1024px) 100vw, 50vw"
+                    quality={75}
                   />
                 </div>
                 
@@ -91,7 +92,7 @@ export default function AboutStrip({ locale }: AboutStripProps) {
                       alt="León - Símbolo de Nobleza"
                       fill
                       className="object-contain opacity-90"
-                      unoptimized
+                      sizes="48px"
                     />
                   </div>
                 </div>
