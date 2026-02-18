@@ -9,6 +9,7 @@ import ServicesSection from '@/components/home/ServicesSection';
 import TeamSection from '@/components/home/TeamSection';
 import TestimonialsSection from '@/components/home/TestimonialsSection';
 import ContactSection from '@/components/home/ContactSection';
+import StrategicCTAs from '@/components/home/StrategicCTAs';
 import { LocalBusinessSchema } from '@/components/seo/SchemaOrg';
 
 export const metadata: Metadata = {
@@ -40,6 +41,7 @@ export default function HomePageEs() {
         <Hero locale={locale} />
         <AboutStrip locale={locale} />
         <ServicesSection locale={locale} />
+        <StrategicCTAs locale={locale} />
         <TeamSection locale={locale} />
         <TestimonialsSection locale={locale} />
         <ContactSection locale={locale} />

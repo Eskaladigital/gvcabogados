@@ -198,7 +198,7 @@ export const services: Service[] = [
     longDescriptionEn:
       'We are experts in banking law in Murcia. We claim for floor clauses, abusive mortgage expenses, revolving credit cards with usurious interest rates, complex financial products (preferred shares, swaps), and any type of banking abuse. We defend consumer rights against financial institutions with a high success rate.',
     icon: '🏦',
-    priority: 2,
+    priority: 4,
     category: 'privado',
     sectionsEs: [
       {
@@ -532,7 +532,7 @@ export const services: Service[] = [
     longDescriptionEn:
       'Experts in civil liability and insurance law in Murcia. We handle claims for damages, contractual and non-contractual liability, insurance claims, workplace accidents, and falls on public roads. We fight for our clients to receive fair compensation.',
     icon: '🛡️',
-    priority: 3,
+    priority: 1,
     category: 'privado',
     sectionsEs: [
       { title: 'Reclamaciones por daños y perjuicios en Murcia', content: 'Tramitamos reclamaciones por todo tipo de daños ante los Juzgados de Primera Instancia de Murcia: patrimoniales (daño emergente y lucro cesante) y extrapatrimoniales (daño moral). Valoramos cada caso para reclamar la máxima indemnización posible según la jurisprudencia de los tribunales de Murcia. Conocemos los criterios de valoración que aplican los jueces murcianos en estos casos.' },
@@ -582,7 +582,7 @@ export const services: Service[] = [
     longDescriptionEn:
       'Legal advice on obligations and contracts in Murcia. We draft, review and negotiate all types of civil and commercial contracts. We act in cases of breach of contract, contract termination, debt collection and compensation for damages arising from non-compliance.',
     icon: '📋',
-    priority: 4,
+    priority: 2,
     category: 'privado',
     sectionsEs: [
       { title: 'Redacción y revisión de contratos en Murcia', content: 'Redactamos contratos a medida que protejan sus intereses: contratos de prestación de servicios, compraventa, préstamo, distribución, franquicia, confidencialidad y cualquier otra modalidad. También revisamos contratos antes de su firma para detectar cláusulas perjudiciales. Si surge un conflicto, actuamos ante los Juzgados de Primera Instancia de Murcia ubicados en la Ciudad de la Justicia (Avda. Ciudad de la Justicia, s/n, 30011 Murcia), donde conocemos los procedimientos y plazos específicos.' },
@@ -678,7 +678,7 @@ export const services: Service[] = [
     longDescriptionEn:
       'Immigration lawyers in Murcia. We process residence and work permits, family reunification, Spanish nationality applications, visas, appeals against denials, and regularization of irregular administrative situations. Personalized attention in several languages.',
     icon: '🌍',
-    priority: 3,
+    priority: 1,
     category: 'publico',
     sectionsEs: [
       { title: 'Permisos de residencia y trabajo en Murcia', content: 'Tramitamos todas las modalidades de autorización de residencia ante la Oficina de Extranjería de la Delegación del Gobierno en Murcia (Calle Francisco Alfonso Hidalgo Martínez, Km.388, N-301. Cabezo Cortado-Espinardo, 38, 30100 Murcia, teléfono 968 989 600): residencia no lucrativa, arraigo social, laboral y familiar, residencia por inversión (Golden Visa), autorizaciones de trabajo por cuenta ajena y propia. Le guiamos en cada paso del proceso administrativo y gestionamos la solicitud de cita previa (citaprevia.murcia@correo.gob.es).' },
@@ -778,7 +778,7 @@ export const services: Service[] = [
     longDescriptionEn:
       'Lawyers specialized in defending tenants against vulture funds in Murcia. Vulture funds are investment entities that buy properties at reduced prices and pressure tenants through real estate harassment, refusal to renew contracts or abusive evictions. We help you defend your rights as a tenant, protect your home and combat real estate harassment practices.',
     icon: '🛡️',
-    priority: 2,
+    priority: 4,
     category: 'privado',
     sectionsEs: [
       {
