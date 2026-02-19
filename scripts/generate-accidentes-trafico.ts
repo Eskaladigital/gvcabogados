@@ -71,46 +71,83 @@ Genera JSON con:
     },
     {
       name: 'intro',
-      maxTokens: 3000,
-      systemPrompt: `Eres un abogado-redactor especialista en accidentes de tráfico. Redactas contenido web extenso, específico y humano para SEO. ${rules}`,
+      maxTokens: 6000,
+      systemPrompt: normalizeText(`Eres un abogado-redactor especialista en accidentes de tráfico con 20 años de experiencia en España. Redactas contenido web que un abogado real firmaría con su nombre. ${rules}
+
+REGLA ANTI-GENERICIDAD: Antes de escribir CADA párrafo, pregúntate: "¿Podría copiar este párrafo en la página de otra ciudad cambiando solo el nombre?" Si la respuesta es SÍ, reescríbelo con información que SOLO aplique a ${locality.name}. Si no hay datos locales para ese punto, sustituye por contenido jurídico de alto valor (jurisprudencia real, cifras concretas del baremo 2024, ejemplos de indemnizaciones tipo, plazos exactos) que un usuario nunca encontraría en un artículo genérico.
+
+PROHIBIDO:
+- "los accidentes de tráfico constituyen una de las principales preocupaciones"
+- "por su ubicación y características urbanas"
+- "tanto en vías urbanas como interurbanas"
+- "colisiones en cruces urbanos, atropellos en pasos de peatones"
+- Cualquier frase que sea una obviedad aplicable a cualquier ciudad de España`),
       userPrompt: normalizeText(`${context}
 
 Genera JSON con:
-- intro_es: HTML semántico (<p>, <strong>, <em>, <h3>). 800-1200 palabras. Texto introductorio completo sobre accidentes de tráfico en ${locality.name}. Incluye: contexto local verificado (carreteras, estadísticas de la evidencia), tipos de accidentes en la zona, relevancia del servicio, qué ofrece el despacho, procedimiento general de reclamación.
-- intro_en: traducción al inglés de intro_es. Misma longitud y estructura.
+- intro_es: HTML semántico (<p>, <strong>, <em>, <h3>). 800-1200 palabras.
 
-Cuando no haya datos locales en evidencia: usa normativa real (Ley 35/2015, Baremo de Tráfico), plazos, procedimientos verificables.`),
+ESTRUCTURA OBLIGATORIA del intro_es:
+1. PRIMER PÁRRAFO (gancho local): Dato concreto de ${locality.name} de la evidencia SERP (carretera específica, punto negro, estadística DGT, accidente reciente reportado). Si la evidencia menciona la N-IV, A-4, M-305 u otra vía, nombrar el tramo exacto y qué tipo de siniestros se producen ahí. NO generalidades.
+
+2. SEGUNDO BLOQUE (valor jurídico real): Explica el baremo de tráfico 2024 con CIFRAS CONCRETAS. Ejemplo: "Una cervicalgia (whiplash) con 45 días de baja se indemniza con aproximadamente 3.200-4.500 € según el baremo actualizado". Da 2-3 ejemplos de indemnizaciones tipo. Esto es lo que el usuario REALMENTE quiere saber.
+
+3. TERCER BLOQUE (proceso paso a paso en ${locality.name}): Dónde se presenta la reclamación (juzgado exacto si está en la evidencia), plazo de 1 año desde estabilización lesiones, los 3 meses de oferta motivada de la aseguradora, diferencia entre vía civil y penal.
+
+4. CUARTO BLOQUE (por qué este despacho): Qué ofrece concretamente: colaboración con peritos médicos independientes para valorar lesiones, experiencia en negociación con aseguradoras, actuación en toda España, atención presencial y online en ${locality.name}. Primera consulta sin compromiso. PROHIBIDO: prometer resultados, decir "maximizar indemnización", decir que adelantamos gastos.
+
+- intro_en: traducción profesional al inglés de intro_es. Misma longitud y estructura.`),
       validate: (r) => {
         if (!r.intro_es) throw new Error('Falta intro_es');
         const words = countWords(r.intro_es);
-        if (words < 500) throw new Error(`intro_es: ${words} palabras (mín 500)`);
+        if (words < 450) throw new Error(`intro_es: ${words} palabras (mín 450)`);
       },
     },
     {
       name: 'tipos_accidente',
-      maxTokens: 2000,
-      systemPrompt: `Eres un abogado especialista en siniestralidad vial. ${rules}`,
+      maxTokens: 1500,
+      systemPrompt: normalizeText(`Eres un abogado especialista en siniestralidad vial. ${rules}
+FORMATO: Las descripciones deben ser MUY BREVES (máximo 2 frases cortas). Esto aparece en tarjetas pequeñas de una web, NO en un artículo. Cada descripción: lesión típica + rango de indemnización. Nada más.`),
       userPrompt: normalizeText(`${context}
 
 Genera JSON con:
-- tipos_accidente_es: array de 4-6 objetos {titulo, descripcion, icon}. Tipos de accidentes de tráfico relevantes en ${locality.name}. Descripciones de 2-3 frases. Menciona datos locales de la evidencia cuando existan. icon: "car", "motorcycle", "truck", "pedestrian", "shield", "clock".
+- tipos_accidente_es: array de 5 objetos {titulo, descripcion, icon}.
+
+FORMATO ESTRICTO de cada descripcion: MÁXIMO 2 frases (30-40 palabras total). Ejemplo:
+"Lesiones cervicales y lumbares frecuentes. Indemnización habitual: 2.000 – 6.000 € según días de baja."
+
+Tipos: alcances traseros, colisiones laterales, atropellos, accidentes de moto, accidentes con vehículos pesados.
+icon: "car", "motorcycle", "truck", "pedestrian", "shield".
 - tipos_accidente_en: traducción al inglés.`),
       validate: (r) => {
-        if (!Array.isArray(r.tipos_accidente_es) || r.tipos_accidente_es.length < 3) throw new Error('tipos_accidente_es: mín 3');
+        if (!Array.isArray(r.tipos_accidente_es) || r.tipos_accidente_es.length < 4) throw new Error('tipos_accidente_es: mín 4');
       },
     },
     {
       name: 'sections',
-      maxTokens: 4000,
-      systemPrompt: `Eres un abogado-redactor de contenido jurídico de alta calidad. Cada sección debe ser sustancial (150+ palabras), con información jurídica real y específica. ${rules}`,
+      maxTokens: 3000,
+      systemPrompt: normalizeText(`Eres un abogado-redactor. ${rules}
+FORMATO CRÍTICO: Estas secciones aparecen en TARJETAS de una web. El content de cada sección debe tener MÁXIMO 80-100 palabras. Usa listas HTML (<ul><li>) para datos concretos, NO párrafos largos. El usuario escanea, no lee muros de texto.
+PROHIBIDO: repetir información de la intro. Cada sección aporta datos nuevos y concretos.`),
       userPrompt: normalizeText(`${context}
 
 Genera JSON con:
-- sections_es: array de EXACTAMENTE 4 objetos {title, content}. content es HTML (mín 150 palabras cada uno). Secciones informativas sobre accidentes de tráfico en ${locality.name}:
-  1. Reclamación de indemnizaciones (proceso, baremo, Ley 35/2015)
-  2. Acompañamiento y representación legal (fases, juzgados locales de la evidencia)
-  3. Valoración de daños y perjuicios (peritos, tipos de daño)
-  4. Atención cercana en ${locality.name} (datos locales de la evidencia)
+- sections_es: array de EXACTAMENTE 4 objetos {title, content}. content es HTML con listas. MÁXIMO 80-100 palabras cada uno.
+
+SECCIÓN 1 - "Indemnizaciones según el Baremo"
+Lista con cifras del baremo 2024:
+<ul><li>Perjuicio básico: ~35 €/día</li><li>Moderado: ~58 €/día</li>... etc.</ul>
+Solo datos, sin párrafos explicativos.
+
+SECCIÓN 2 - "Plazos legales clave"
+Lista de plazos: 72h parte médico, 7 días notificar aseguradora, 3 meses oferta motivada, 1 año prescripción. Formato lista.
+
+SECCIÓN 3 - "Valoración de daños"
+Breve: diferencia entre perito de la aseguradora y perito independiente. Tipos de daño (temporal, secuelas, patrimonial). Lista.
+
+SECCIÓN 4 - "Recursos en ${locality.name}"
+Datos CONCRETOS de la evidencia: dirección juzgado, comisaría, hospital. Si no hay datos, recursos generales de la Comunidad Autónoma. Lista.
+
 - sections_en: traducción al inglés.`),
       validate: (r) => {
         if (!Array.isArray(r.sections_es) || r.sections_es.length !== 4) throw new Error('sections_es: exactamente 4');
@@ -118,12 +155,19 @@ Genera JSON con:
     },
     {
       name: 'que_hacer',
-      maxTokens: 2000,
-      systemPrompt: `Eres un abogado que asesora a víctimas de accidentes de tráfico. ${rules}`,
+      maxTokens: 1500,
+      systemPrompt: normalizeText(`Eres un abogado dando instrucciones rápidas a un cliente. ${rules}
+FORMATO: Aparece en tarjetas pequeñas. Cada descripcion: MÁXIMO 2 frases cortas y directas (20-30 palabras). Sin rodeos.`),
       userPrompt: normalizeText(`${context}
 
 Genera JSON con:
-- que_hacer_es: array de 5-7 objetos {paso, titulo, descripcion}. Pasos a seguir tras un accidente de tráfico en ${locality.name}. paso es "1","2"... Menciona recursos locales de la evidencia (comisaría, hospital, etc). Cada descripcion: 1-2 frases.
+- que_hacer_es: array de 6 objetos {paso, titulo, descripcion}. paso es "1","2"...
+
+MÁXIMO 2 frases cortas por descripcion (20-30 palabras). Ejemplo:
+"Llama al 112 y asegura la zona. La Policía Local de ${locality.name} acudirá al lugar."
+
+Pasos: 1.Seguridad+112  2.Atención médica (72h)  3.Fotos y pruebas  4.No firmar nada de la aseguradora  5.Atestado policial  6.Contactar abogado
+
 - que_hacer_en: traducción al inglés.`),
       validate: (r) => {
         if (!Array.isArray(r.que_hacer_es) || r.que_hacer_es.length < 5) throw new Error('que_hacer_es: mín 5');
@@ -132,13 +176,29 @@ Genera JSON con:
     {
       name: 'process_faqs',
       maxTokens: 3000,
-      systemPrompt: `Eres un abogado especialista en accidentes de tráfico que explica el proceso legal de forma clara. ${rules}`,
+      systemPrompt: normalizeText(`Eres un abogado que responde preguntas de clientes de forma directa y con datos. ${rules}
+FORMATO process: Cada paso es 1 frase directa (15-25 palabras).
+FORMATO FAQs: Cada answer es 2-3 frases con datos concretos (cifras, plazos, artículos). NO párrafos largos. El answer es texto plano, NO HTML.`),
       userPrompt: normalizeText(`${context}
 
 Genera JSON con:
-- process_es: array de EXACTAMENTE 6 strings. Pasos del proceso legal de reclamación (texto plano, 1-2 frases cada uno).
+- process_es: array de EXACTAMENTE 6 strings. 1 frase por paso (15-25 palabras). Ejemplo:
+"Analizamos tu caso y documentación en la primera consulta sin compromiso para evaluar la viabilidad de la reclamación."
+
+Pasos: consulta inicial → pruebas y peritaje → reclamación extrajudicial (3 meses) → negociación oferta → demanda judicial → cobro indemnización
+
 - process_en: traducción al inglés.
-- faqs_es: array de EXACTAMENTE 6 objetos {question, answer}. question en texto plano, answer en HTML. Preguntas frecuentes sobre accidentes de tráfico en ${locality.name}. Respuestas sustanciales (3-5 frases).
+
+- faqs_es: array de EXACTAMENTE 6 objetos {question, answer}. answer en texto plano, 2-3 frases máximo con cifras concretas.
+
+Preguntas (adaptadas a ${locality.name}):
+1. "¿Cuánto puedo cobrar por un accidente de tráfico?" — Rangos: cervicalgia 2.000-6.000€, fractura 8.000-15.000€, graves 30.000€+
+2. "¿Cuánto tarda la reclamación?" — Extrajudicial 3-6 meses, judicial 12-18 meses
+3. "¿Y si el accidente fue parcialmente culpa mía?" — Concurrencia de culpas, reducción proporcional
+4. "¿Puedo reclamar sin parte amistoso?" — Alternativas: atestado, testigos, cámaras
+5. "¿Me puede obligar la aseguradora a ir a su médico?" — Derechos, perito independiente
+6. "¿Necesito abogado?" — Cuándo sí, ventaja media 30-40% más indemnización
+
 - faqs_en: traducción al inglés.`),
       validate: (r) => {
         if (!Array.isArray(r.process_es) || r.process_es.length !== 6) throw new Error('process_es: exactamente 6');

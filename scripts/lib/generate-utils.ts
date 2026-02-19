@@ -196,12 +196,19 @@ export function formatEvidence(evidence: EvidenceItem[]): string {
 export function baseRules(): string {
   return normalizeText(`
 REGLAS ABSOLUTAS:
-1. PROHIBIDO: "consulta gratuita", "gratuita", "gratis", "free consultation". Usa "primera consulta sin compromiso".
+1. PROHIBIDO: "consulta gratuita", "gratuita", "gratis", "free consultation". Usa "primera consulta sin compromiso" / "no-obligation initial consultation".
 2. PRINCIPIO DE VERIFICACIÓN: NO INVENTAR NADA. Solo datos que aparezcan TEXTUALMENTE en la evidencia SERP. Cuando no haya dato local verificado: explica procedimientos legales, plazos o normativa real que aporte valor. Nunca frases vacías.
 3. FRASES PROHIBIDAS: "cuenta con un volumen relevante de...", "tanto en su casco urbano como en...", "un asesoramiento jurídico especializado puede marcar la diferencia". Cualquier frase donde cambiar la ciudad no cambie el significado está PROHIBIDA.
 4. HTML PERMITIDO: <h2>, <h3>, <p>, <strong>, <em>, <ul>/<ol>/<li>, <blockquote>. PROHIBIDO: clases CSS, estilos inline, <div>, <span>, <a>, <img>.
 5. TEXTO PLANO (sin HTML): title, meta_description, short_description.
 6. Devuelve SOLO JSON válido, sin markdown ni texto fuera del JSON.
+7. DEONTOLOGÍA Y PUBLICIDAD — PROHIBICIONES ABSOLUTAS (Código Deontológico de la Abogacía):
+   - NUNCA prometer, garantizar o sugerir resultados ("garantizamos", "aseguramos el éxito", "conseguiremos").
+   - NUNCA usar "maximizar la indemnización" ni variantes ("obtener la máxima indemnización", "maximize your compensation"). Usar: "defender tus derechos para obtener una indemnización justa conforme al baremo".
+   - NUNCA decir que el despacho adelanta gastos periciales, procesales ni de ningún tipo. No se adelanta NADA.
+   - NUNCA decir que tenemos "red de peritos" propia. Decir: "colaboramos con peritos médicos independientes".
+   - NUNCA usar superlativos de resultado: "los mejores resultados", "las indemnizaciones más altas".
+   - SÍ se puede decir: "defendemos tus derechos", "luchamos por una indemnización justa", "primera consulta sin compromiso", "atención presencial y online".
 `);
 }
 

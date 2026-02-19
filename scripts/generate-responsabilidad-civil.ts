@@ -69,39 +69,51 @@ Genera JSON con:
     },
     {
       name: 'intro',
-      maxTokens: 3500,
-      systemPrompt: `Eres un abogado-redactor especialista en responsabilidad civil. Redactas contenido web extenso, específico y humano para SEO. ${rules}`,
+      maxTokens: 6000,
+      systemPrompt: normalizeText(`Eres un abogado-redactor especialista en responsabilidad civil con 20 años de experiencia. ${rules}
+
+REGLA ANTI-GENERICIDAD: Cada párrafo debe contener datos que SOLO apliquen a ${locality.name} o contenido jurídico de alto valor (arts. 1902-1910 CC, 1101-1107 CC, LEC, LCS, jurisprudencia TS).
+
+PROHIBIDO:
+- "la responsabilidad civil es una institución fundamental"
+- "cualquier persona puede causar un daño"
+- Frases genéricas sobre el concepto de responsabilidad`),
       userPrompt: normalizeText(`${context}
 
 Genera JSON con:
-- intro_es: HTML semántico (<p>, <strong>, <em>, <h3>). 800-1200 palabras. Texto introductorio completo sobre responsabilidad civil en ${locality.name}. Incluye: contexto local verificado (juzgados de primera instancia, centros de mediación de la evidencia), tipos de reclamaciones de responsabilidad civil más habituales, relevancia del servicio, qué ofrece el despacho, procedimiento general de reclamación. CTA: "Primera consulta sin compromiso" (NUNCA "consulta gratuita").
-- intro_en: traducción al inglés de intro_es. Misma longitud y estructura. CTA: "No-obligation initial consultation" (NUNCA "Free consultation").
-- banner_conceptos_es: texto HTML breve (2-4 frases) sobre los conceptos indemnizatorios en responsabilidad civil: daño emergente, lucro cesante y daño moral (Art. 1106 CC). Usa <p>, <strong>. Sin clases ni estilos.
-- banner_conceptos_en: traducción al inglés.
+- intro_es: HTML semántico (<p>, <strong>, <em>, <h3>). 800-1200 palabras.
 
-Cuando no haya datos locales en evidencia: usa normativa real (Código Civil arts. 1902-1910, 1101-1107, Ley de Enjuiciamiento Civil), plazos, procedimientos verificables.`),
+ESTRUCTURA OBLIGATORIA:
+1. GANCHO LOCAL: Juzgados de primera instancia de ${locality.name} (de la evidencia SERP), centros de mediación. Contexto: tipos de reclamaciones civiles habituales en la zona.
+2. VALOR JURÍDICO REAL: Diferencia entre responsabilidad contractual (art. 1101 CC, 5 años) y extracontractual (art. 1902 CC, 1 año). Conceptos indemnizatorios: daño emergente, lucro cesante, daño moral (art. 1106 CC). Cifras orientativas por tipo de caso.
+3. PROCESO: Reclamación extrajudicial (burofax), acto de conciliación o mediación, demanda civil (juicio verbal hasta 6.000€, ordinario >6.000€), costas, ejecución de sentencia. Acción directa contra aseguradora (art. 76 LCS).
+4. POR QUÉ ESTE DESPACHO: Experiencia en reclamaciones civiles, negociación extrajudicial, atención presencial y online en ${locality.name}. Primera consulta sin compromiso.
+
+- intro_en: traducción profesional al inglés. Misma longitud y estructura.
+- banner_conceptos_es: 2-3 frases sobre daño emergente, lucro cesante y daño moral. BREVE.
+- banner_conceptos_en: traducción.`),
       validate: (r) => {
         if (!r.intro_es) throw new Error('Falta intro_es');
         const words = countWords(r.intro_es);
-        if (words < 500) throw new Error(`intro_es: ${words} palabras (mín 500)`);
+        if (words < 450) throw new Error(`intro_es: ${words} palabras (mín 450)`);
         if (!r.banner_conceptos_es) throw new Error('Falta banner_conceptos_es');
       },
     },
     {
       name: 'tipos_responsabilidad',
-      maxTokens: 2000,
-      systemPrompt: `Eres un abogado especialista en responsabilidad civil. ${rules}`,
+      maxTokens: 1500,
+      systemPrompt: normalizeText(`Eres un abogado civilista. ${rules}
+FORMATO: Tarjetas pequeñas. Cada descripcion: MÁXIMO 2 frases cortas (30-40 palabras). Artículo de ley + caso típico.`),
       userPrompt: normalizeText(`${context}
 
 Genera JSON con:
-- tipos_responsabilidad_es: array de EXACTAMENTE 6 objetos {titulo, descripcion, icon}. Tipos de responsabilidad civil:
-  1. Contractual (incumplimiento de contratos, Art. 1101 CC)
-  2. Extracontractual (daños a terceros sin relación contractual, Art. 1902 CC)
-  3. Profesional (errores de profesionales: médicos, abogados, arquitectos, etc.)
-  4. Por productos defectuosos (Ley General para la Defensa de los Consumidores)
-  5. Entre vecinos / inmisiones (Art. 1908 CC, daños por agua, humo, ruidos)
-  6. De comunidades de propietarios (responsabilidad de la comunidad, elementos comunes)
-  Descripciones de 2-3 frases con normativa real. Menciona datos locales de la evidencia cuando existan. icon: "file-text", "alert-triangle", "briefcase", "package", "home", "users".
+- tipos_responsabilidad_es: array de EXACTAMENTE 6 objetos {titulo, descripcion, icon}.
+
+MÁXIMO 2 frases por descripcion (30-40 palabras). Ejemplo:
+"Incumplimiento de obligaciones pactadas (art. 1101 CC). Plazo de reclamación: 5 años desde el incumplimiento."
+
+Tipos: contractual, extracontractual, profesional, productos defectuosos, entre vecinos/inmisiones, comunidades de propietarios.
+icon: "file-text", "alert-triangle", "briefcase", "package", "home", "users".
 - tipos_responsabilidad_en: traducción al inglés.`),
       validate: (r) => {
         if (!Array.isArray(r.tipos_responsabilidad_es) || r.tipos_responsabilidad_es.length < 6)
@@ -110,16 +122,27 @@ Genera JSON con:
     },
     {
       name: 'sections',
-      maxTokens: 4000,
-      systemPrompt: `Eres un abogado-redactor de contenido jurídico de alta calidad. Cada sección debe ser sustancial (150+ palabras), con información jurídica real y específica. ${rules}`,
+      maxTokens: 3000,
+      systemPrompt: normalizeText(`Eres un abogado civilista. ${rules}
+FORMATO CRÍTICO: Tarjetas. Cada content: MÁXIMO 80-100 palabras. Listas HTML (<ul><li>). NO párrafos largos.
+PROHIBIDO: repetir info de la intro.`),
       userPrompt: normalizeText(`${context}
 
 Genera JSON con:
-- sections_es: array de EXACTAMENTE 4 objetos {title, content}. content es HTML (mín 150 palabras cada uno). Secciones informativas sobre responsabilidad civil en ${locality.name}:
-  1. Reclamación extrajudicial y negociación (burofax, mediación, acuerdo previo)
-  2. Proceso judicial civil (demanda, juicio ordinario/verbal, prueba pericial, juzgados locales de la evidencia)
-  3. Seguros de responsabilidad civil (acción directa Art. 76 LCS, reclamación a aseguradora)
-  4. Valoración de daños e indemnizaciones (daño emergente, lucro cesante, daño moral, criterios judiciales)
+- sections_es: array de EXACTAMENTE 4 objetos {title, content}. content es HTML con listas. MÁXIMO 80-100 palabras cada uno.
+
+SECCIÓN 1 - "Reclamación extrajudicial"
+Lista: burofax como primer paso, mediación civil, acto de conciliación, plazos para responder, ventajas de acuerdo previo.
+
+SECCIÓN 2 - "Proceso judicial civil"
+Lista: verbal (hasta 6.000€) vs ordinario (>6.000€), prueba pericial, costas, duración media 8-14 meses, ejecución sentencia.
+
+SECCIÓN 3 - "Seguros de responsabilidad civil"
+Lista: acción directa art. 76 LCS, plazo 1 año, reclamación simultánea a causante y aseguradora.
+
+SECCIÓN 4 - "Juzgados en ${locality.name}"
+Datos de la evidencia SERP: juzgados primera instancia, dirección, competencia territorial. Si no hay datos, procedimiento general.
+
 - sections_en: traducción al inglés.`),
       validate: (r) => {
         if (!Array.isArray(r.sections_es) || r.sections_es.length !== 4)
@@ -128,17 +151,23 @@ Genera JSON con:
     },
     {
       name: 'plazos_prescripcion',
-      maxTokens: 2000,
-      systemPrompt: `Eres un abogado especialista en plazos de prescripción de responsabilidad civil en España. ${rules}`,
+      maxTokens: 1200,
+      systemPrompt: normalizeText(`Eres un abogado civilista especialista en prescripción. ${rules}
+FORMATO: Cada descripcion: MÁXIMO 2 frases (30-40 palabras). Artículo + cómputo del plazo. Conciso.`),
       userPrompt: normalizeText(`${context}
 
 Genera JSON con:
-- plazos_prescripcion_es: array de EXACTAMENTE 4 objetos {tipo, plazo, descripcion}. Plazos de prescripción en responsabilidad civil:
-  1. Extracontractual: 1 año (Art. 1968.2 CC, desde que lo supo el agraviado)
-  2. Contractual: 5 años (Art. 1964 CC, reforma Ley 42/2015)
-  3. Productos defectuosos: 3 años (desde el daño o conocimiento del defecto)
-  4. Seguros: 1 año (Art. 23 LCS, acción directa contra aseguradora)
-  Cada descripcion: 2-3 frases explicando el cómputo del plazo, interrupciones y particularidades.
+- plazos_prescripcion_es: array de EXACTAMENTE 4 objetos {tipo, plazo, descripcion}.
+
+MÁXIMO 2 frases por descripcion. Ejemplo:
+"Desde que el perjudicado conoció el daño (art. 1968.2 CC). Se interrumpe por reclamación extrajudicial fehaciente."
+
+Tipos y plazos:
+1. Extracontractual: 1 año (art. 1968.2 CC)
+2. Contractual: 5 años (art. 1964 CC)
+3. Productos defectuosos: 3 años
+4. Seguros: 1 año (art. 23 LCS)
+
 - plazos_prescripcion_en: traducción al inglés.`),
       validate: (r) => {
         if (!Array.isArray(r.plazos_prescripcion_es) || r.plazos_prescripcion_es.length !== 4)
@@ -148,13 +177,27 @@ Genera JSON con:
     {
       name: 'process_faqs',
       maxTokens: 3000,
-      systemPrompt: `Eres un abogado especialista en responsabilidad civil que explica el proceso legal de forma clara. ${rules}`,
+      systemPrompt: normalizeText(`Eres un abogado civilista que responde preguntas de forma directa. ${rules}
+FORMATO process: 1 frase por paso (15-25 palabras).
+FORMATO FAQs: 2-3 frases con datos concretos. Texto plano, NO HTML.`),
       userPrompt: normalizeText(`${context}
 
 Genera JSON con:
-- process_es: array de EXACTAMENTE 6 strings. Pasos del proceso legal de reclamación por responsabilidad civil (texto plano, 1-2 frases cada uno).
+- process_es: array de EXACTAMENTE 6 strings. 1 frase por paso (15-25 palabras).
+Pasos: consulta inicial → análisis del caso → reclamación extrajudicial → negociación/mediación → demanda judicial → cobro indemnización
+
 - process_en: traducción al inglés.
-- faqs_es: array de EXACTAMENTE 6 objetos {question, answer}. question en texto plano, answer en HTML. Preguntas frecuentes sobre responsabilidad civil en ${locality.name}. Respuestas sustanciales (3-5 frases).
+
+- faqs_es: array de EXACTAMENTE 6 objetos {question, answer}. answer en texto plano, 2-3 frases con datos.
+
+Preguntas:
+1. "¿Cuánto tiempo tengo para reclamar daños?" — Extracontractual 1 año, contractual 5 años, seguros 1 año
+2. "¿Puedo reclamar directamente a la aseguradora?" — Sí, acción directa art. 76 LCS, sin necesidad de demandar al causante
+3. "¿Qué daños puedo reclamar?" — Daño emergente, lucro cesante, daño moral (art. 1106 CC)
+4. "¿Necesito ir a juicio obligatoriamente?" — No, la mayoría se resuelven extrajudicialmente (burofax, mediación, acuerdo)
+5. "¿Quién paga las costas del juicio?" — Normalmente la parte que pierde completamente (art. 394 LEC)
+6. "¿Qué pruebas necesito?" — Documentación del daño, informes periciales, facturas, testigos
+
 - faqs_en: traducción al inglés.`),
       validate: (r) => {
         if (!Array.isArray(r.process_es) || r.process_es.length !== 6)
@@ -170,7 +213,7 @@ Genera JSON con:
       userPrompt: normalizeText(`${context}
 
 Genera JSON con:
-- stats_es: array de EXACTAMENTE 4 objetos {value, label}. Estadísticas relevantes para mostrar en la barra del hero. Pueden ser locales (de la evidencia) o nacionales verificables. Ejemplo: {value: "55+", label: "Años de experiencia"}, {value: "${locality.name}", label: "Atención presencial y online"}.
+- stats_es: array de EXACTAMENTE 4 objetos {value, label}. Estadísticas para la barra del hero.
 - stats_en: traducción al inglés.`),
       validate: (r) => {
         if (!Array.isArray(r.stats_es) || r.stats_es.length !== 4)

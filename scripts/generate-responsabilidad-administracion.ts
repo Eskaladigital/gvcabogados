@@ -70,39 +70,51 @@ Genera JSON con:
     },
     {
       name: 'intro',
-      maxTokens: 3500,
-      systemPrompt: `Eres un abogado-redactor especialista en derecho administrativo y responsabilidad patrimonial. Redactas contenido web extenso, específico y humano para SEO. ${rules}`,
+      maxTokens: 6000,
+      systemPrompt: normalizeText(`Eres un abogado-redactor especialista en derecho administrativo y responsabilidad patrimonial con 20 años de experiencia. ${rules}
+
+REGLA ANTI-GENERICIDAD: Cada párrafo debe contener datos que SOLO apliquen a ${locality.name} o contenido jurídico de alto valor (Ley 39/2015, Ley 40/2015, LJCA, jurisprudencia TS/TSJ).
+
+PROHIBIDO:
+- "la administración pública tiene la obligación de responder"
+- "los ciudadanos tienen derecho a ser indemnizados"
+- Cualquier frase obvia sobre derechos del ciudadano`),
       userPrompt: normalizeText(`${context}
 
 Genera JSON con:
-- intro_es: HTML semántico (<p>, <strong>, <em>, <h3>). 800-1200 palabras. Texto introductorio completo sobre responsabilidad patrimonial de la administración en ${locality.name}. Incluye: contexto local verificado (ayuntamiento, juzgados contencioso-administrativos de la evidencia), tipos de reclamaciones más frecuentes, relevancia del servicio, qué ofrece el despacho, procedimiento general de reclamación. CTA: "Primera consulta sin compromiso" (NUNCA "consulta gratuita").
-- intro_en: traducción al inglés de intro_es. Misma longitud y estructura. CTA: "No-obligation initial consultation" (NUNCA "Free consultation").
-- banner_plazos_es: texto HTML breve (2-4 frases) sobre el plazo de 1 año para reclamar responsabilidad patrimonial (art. 67.1 Ley 39/2015 y art. 32 Ley 40/2015). Usa <p>, <strong>. Sin clases ni estilos.
-- banner_plazos_en: traducción al inglés.
+- intro_es: HTML semántico (<p>, <strong>, <em>, <h3>). 800-1200 palabras.
 
-Cuando no haya datos locales en evidencia: usa normativa real (Ley 39/2015, Ley 40/2015, LJCA), plazos, procedimientos verificables.`),
+ESTRUCTURA OBLIGATORIA:
+1. GANCHO LOCAL: Ayuntamiento de ${locality.name} (de la evidencia SERP), juzgados contencioso-administrativos competentes, TSJ de la comunidad. Casos típicos en la localidad (mal estado aceras, baches, servicios públicos).
+2. VALOR JURÍDICO REAL: Requisitos de la responsabilidad patrimonial: daño efectivo, relación causal, funcionamiento normal o anormal del servicio público, plazo de 1 año (art. 67.1 Ley 39/2015). Diferencia entre responsabilidad objetiva y subjetiva. Cifras orientativas: caída en vía pública 3.000-30.000€, error administrativo 5.000-50.000€.
+3. PROCEDIMIENTO: Reclamación administrativa previa obligatoria (6 meses silencio = desestimación), recurso contencioso-administrativo (2 meses desde resolución), prueba pericial, dictamen del Consejo de Estado o Consultivo autonómico en cuantías >50.000€.
+4. POR QUÉ ESTE DESPACHO: Experiencia en reclamaciones contra la Administración, conocimiento de la práctica del TSJ local, atención presencial y online en ${locality.name}. Primera consulta sin compromiso.
+
+- intro_en: traducción profesional al inglés. Misma longitud y estructura.
+- banner_plazos_es: 2-3 frases sobre el plazo de 1 año para reclamar. BREVE.
+- banner_plazos_en: traducción.`),
       validate: (r) => {
         if (!r.intro_es) throw new Error('Falta intro_es');
         const words = countWords(r.intro_es);
-        if (words < 500) throw new Error(`intro_es: ${words} palabras (mín 500)`);
+        if (words < 450) throw new Error(`intro_es: ${words} palabras (mín 450)`);
         if (!r.banner_plazos_es) throw new Error('Falta banner_plazos_es');
       },
     },
     {
       name: 'tipos_responsabilidad',
-      maxTokens: 2000,
-      systemPrompt: `Eres un abogado especialista en derecho administrativo y responsabilidad patrimonial. ${rules}`,
+      maxTokens: 1500,
+      systemPrompt: normalizeText(`Eres un abogado de derecho administrativo. ${rules}
+FORMATO: Tarjetas pequeñas. Cada descripcion: MÁXIMO 2 frases cortas (30-40 palabras). Caso típico + rango indemnización.`),
       userPrompt: normalizeText(`${context}
 
 Genera JSON con:
-- tipos_responsabilidad_es: array de EXACTAMENTE 6 objetos {titulo, descripcion, icon}. Tipos de responsabilidad patrimonial de la administración:
-  1. Sanitaria (errores en sanidad pública, listas de espera, daños en hospitales públicos)
-  2. Urbanística (licencias denegadas indebidamente, inactividad administrativa, expropiaciones)
-  3. Vía pública (caídas por mal estado de aceras, baches, señalización deficiente)
-  4. Servicios públicos (funcionamiento anormal de servicios, educación, transporte)
-  5. Penitenciaria (daños en centros penitenciarios, responsabilidad de Instituciones Penitenciarias)
-  6. Educativa (accidentes en centros educativos públicos, bullying no atajado)
-  Descripciones de 2-3 frases con normativa real. Menciona datos locales de la evidencia cuando existan. icon: "hospital", "building", "road", "shield", "lock", "school".
+- tipos_responsabilidad_es: array de EXACTAMENTE 6 objetos {titulo, descripcion, icon}.
+
+MÁXIMO 2 frases por descripcion (30-40 palabras). Ejemplo:
+"Caídas por mal estado de aceras o baches. Indemnizaciones habituales de 3.000 a 30.000 € según la gravedad de las lesiones."
+
+Tipos: sanitaria, urbanística, vía pública, servicios públicos, penitenciaria, educativa.
+icon: "hospital", "building", "road", "shield", "lock", "school".
 - tipos_responsabilidad_en: traducción al inglés.`),
       validate: (r) => {
         if (!Array.isArray(r.tipos_responsabilidad_es) || r.tipos_responsabilidad_es.length < 6)
@@ -111,16 +123,27 @@ Genera JSON con:
     },
     {
       name: 'sections',
-      maxTokens: 4000,
-      systemPrompt: `Eres un abogado-redactor de contenido jurídico de alta calidad. Cada sección debe ser sustancial (150+ palabras), con información jurídica real y específica. ${rules}`,
+      maxTokens: 3000,
+      systemPrompt: normalizeText(`Eres un abogado administrativista. ${rules}
+FORMATO CRÍTICO: Tarjetas. Cada content: MÁXIMO 80-100 palabras. Listas HTML (<ul><li>). NO párrafos largos.
+PROHIBIDO: repetir info de la intro.`),
       userPrompt: normalizeText(`${context}
 
 Genera JSON con:
-- sections_es: array de EXACTAMENTE 4 objetos {title, content}. content es HTML (mín 150 palabras cada uno). Secciones informativas sobre responsabilidad patrimonial en ${locality.name}:
-  1. Requisitos de la reclamación (daño efectivo, relación causal, funcionamiento anormal, plazo 1 año)
-  2. Procedimiento administrativo previo (reclamación ante la administración, silencio administrativo, resolución)
-  3. Vía contencioso-administrativa (recurso ante juzgados, plazos, prueba pericial)
-  4. Indemnizaciones y valoración del daño (criterios, baremos, tipos de daño indemnizable)
+- sections_es: array de EXACTAMENTE 4 objetos {title, content}. content es HTML con listas. MÁXIMO 80-100 palabras cada uno.
+
+SECCIÓN 1 - "Requisitos de la reclamación"
+Lista: daño efectivo y evaluable, relación de causalidad, funcionamiento normal o anormal, plazo 1 año, legitimación activa.
+
+SECCIÓN 2 - "Reclamación administrativa previa"
+Lista: escrito dirigido al órgano competente, 6 meses para resolver, silencio = desestimación, dictamen Consejo Consultivo si >50.000€.
+
+SECCIÓN 3 - "Vía contencioso-administrativa"
+Lista: plazo 2 meses desde resolución, juzgado competente, prueba pericial, costas, duración media 12-18 meses.
+
+SECCIÓN 4 - "Organismos en ${locality.name}"
+Datos de la evidencia SERP: ayuntamiento, juzgados contencioso, TSJ. Si no hay datos, procedimiento general.
+
 - sections_en: traducción al inglés.`),
       validate: (r) => {
         if (!Array.isArray(r.sections_es) || r.sections_es.length !== 4)
@@ -129,15 +152,15 @@ Genera JSON con:
     },
     {
       name: 'organismos',
-      maxTokens: 2000,
+      maxTokens: 1500,
       systemPrompt: `Eres un analista que extrae datos verificables de evidencia. SOLO incluyes lo que aparece TEXTUALMENTE en la evidencia. ${rules}`,
       userPrompt: normalizeText(`${context}
 
 Genera JSON con:
-- organismos_es: array de objetos {nombre, tipo, direccion}. Organismos administrativos y judiciales que aparezcan EXPLÍCITAMENTE en la evidencia SERP para ${locality.name}: ayuntamientos, juzgados contencioso-administrativos, TSJ, delegación de gobierno, etc. tipo: "ayuntamiento", "juzgado", "tribunal", "delegación", etc. Si NO hay evidencia con nombres/direcciones verificables, devuelve array VACÍO [].
-- organismos_en: traducción al inglés (mismo array, con tipos traducidos si procede; nombres propios y direcciones se mantienen).
+- organismos_es: array de objetos {nombre, tipo, direccion}. Organismos de la evidencia SERP: ayuntamientos, juzgados, TSJ, delegación de gobierno. Si NO hay datos verificables, devuelve [].
+- organismos_en: traducción (nombres propios y direcciones se mantienen).
 
-IMPORTANTE: Si la evidencia no contiene nombres exactos de organismos con dirección, devuelve []. No inventes.`),
+IMPORTANTE: Si la evidencia no contiene datos exactos, devuelve []. No inventes.`),
       validate: (r) => {
         if (!Array.isArray(r.organismos_es)) throw new Error('organismos_es debe ser array');
       },
@@ -145,13 +168,27 @@ IMPORTANTE: Si la evidencia no contiene nombres exactos de organismos con direcc
     {
       name: 'process_faqs',
       maxTokens: 3000,
-      systemPrompt: `Eres un abogado especialista en derecho administrativo que explica el proceso legal de forma clara. ${rules}`,
+      systemPrompt: normalizeText(`Eres un abogado administrativista que responde preguntas de forma directa. ${rules}
+FORMATO process: 1 frase por paso (15-25 palabras).
+FORMATO FAQs: 2-3 frases con datos concretos. Texto plano, NO HTML.`),
       userPrompt: normalizeText(`${context}
 
 Genera JSON con:
-- process_es: array de EXACTAMENTE 6 strings. Pasos del proceso legal de reclamación por responsabilidad patrimonial (texto plano, 1-2 frases cada uno).
+- process_es: array de EXACTAMENTE 6 strings. 1 frase por paso (15-25 palabras).
+Pasos: consulta inicial → análisis del caso → reclamación administrativa → espera resolución (6 meses) → recurso contencioso si necesario → cobro indemnización
+
 - process_en: traducción al inglés.
-- faqs_es: array de EXACTAMENTE 6 objetos {question, answer}. question en texto plano, answer en HTML. Preguntas frecuentes sobre responsabilidad patrimonial de la administración en ${locality.name}. Respuestas sustanciales (3-5 frases).
+
+- faqs_es: array de EXACTAMENTE 6 objetos {question, answer}. answer en texto plano, 2-3 frases con datos.
+
+Preguntas:
+1. "¿Cuánto tiempo tengo para reclamar?" — 1 año desde que se produjo el daño o desde el alta médica
+2. "¿Puedo reclamar al Ayuntamiento por una caída en la calle?" — Sí, responsabilidad patrimonial por mal estado vía pública
+3. "¿Cuánto puedo cobrar?" — Depende del daño: caída leve 3.000-10.000€, lesiones graves 20.000-50.000€+
+4. "¿Es obligatoria la reclamación administrativa previa?" — Sí, requisito previo al contencioso (art. 32 Ley 40/2015)
+5. "¿Cuánto tarda el procedimiento?" — Administrativa 6 meses, contencioso 12-18 meses adicionales
+6. "¿Quién paga si gano?" — La Administración condenada, incluidas costas si hay mala fe
+
 - faqs_en: traducción al inglés.`),
       validate: (r) => {
         if (!Array.isArray(r.process_es) || r.process_es.length !== 6)
@@ -167,7 +204,7 @@ Genera JSON con:
       userPrompt: normalizeText(`${context}
 
 Genera JSON con:
-- stats_es: array de EXACTAMENTE 4 objetos {value, label}. Estadísticas relevantes para mostrar en la barra del hero. Pueden ser locales (de la evidencia) o nacionales verificables. Ejemplo: {value: "55+", label: "Años de experiencia"}, {value: "${locality.name}", label: "Atención presencial y online"}.
+- stats_es: array de EXACTAMENTE 4 objetos {value, label}. Estadísticas para la barra del hero.
 - stats_en: traducción al inglés.`),
       validate: (r) => {
         if (!Array.isArray(r.stats_es) || r.stats_es.length !== 4)

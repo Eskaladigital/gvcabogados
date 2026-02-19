@@ -27,19 +27,21 @@ export const dynamicParams = false;
 export const revalidate = 60;
 
 export async function generateStaticParams() {
-  const { data } = await supabaseAdmin
+  const slugs = new Set<string>();
+
+  const { data: nuevo } = await supabaseAdmin
     .from('svc_permisos_residencia')
     .select('localities!inner(slug)');
+  if (nuevo) nuevo.forEach((r: any) => slugs.add(r.localities.slug));
 
-  if (!data || data.length === 0) {
-    const { data: legacy } = await supabaseAdmin
-      .from('service_content')
-      .select('localities!inner(slug), services!inner(service_key)')
-      .eq('services.service_key', SERVICE_KEY);
-    if (!legacy || legacy.length === 0) return [{ ciudad: 'murcia' }];
-    return legacy.map((row: any) => ({ ciudad: row.localities.slug }));
-  }
-  return data.map((row: any) => ({ ciudad: row.localities.slug }));
+  const { data: legacy } = await supabaseAdmin
+    .from('service_content')
+    .select('localities!inner(slug), services!inner(service_key)')
+    .eq('services.service_key', SERVICE_KEY);
+  if (legacy) legacy.forEach((r: any) => slugs.add(r.localities.slug));
+
+  if (slugs.size === 0) return [{ ciudad: 'murcia' }];
+  return [...slugs].map((slug) => ({ ciudad: slug }));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {

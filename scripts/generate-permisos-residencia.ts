@@ -70,39 +70,52 @@ Genera JSON con:
     },
     {
       name: 'intro',
-      maxTokens: 3500,
-      systemPrompt: `Eres un abogado-redactor especialista en extranjería e inmigración. Redactas contenido web extenso, específico y humano para SEO. ${rules}`,
+      maxTokens: 6000,
+      systemPrompt: normalizeText(`Eres un abogado-redactor especialista en extranjería e inmigración con 20 años de experiencia en España. ${rules}
+
+REGLA ANTI-GENERICIDAD: Cada párrafo debe contener datos que SOLO apliquen a ${locality.name} o contenido jurídico de alto valor (artículos LO 4/2000, RD 557/2011, plazos concretos, requisitos verificables).
+
+PROHIBIDO:
+- "la inmigración es un fenómeno complejo"
+- "cada caso es diferente"
+- "España es un país multicultural"
+- Cualquier frase genérica sobre inmigración`),
       userPrompt: normalizeText(`${context}
 
 Genera JSON con:
-- intro_es: HTML semántico (<p>, <strong>, <em>, <h3>). 800-1200 palabras. Texto introductorio completo sobre permisos de residencia y extranjería en ${locality.name}. Incluye: contexto local verificado (oficina de extranjería, delegación de gobierno de la evidencia), tipos de permisos más solicitados en la zona, relevancia del servicio, qué ofrece el despacho, procedimiento general de tramitación. CTA: "Primera consulta sin compromiso" (NUNCA "consulta gratuita").
-- intro_en: traducción al inglés de intro_es. Misma longitud y estructura. CTA: "No-obligation initial consultation" (NUNCA "Free consultation").
-- banner_oficina_es: texto HTML breve (2-4 frases) sobre la oficina de extranjería local o delegación de gobierno en ${locality.name}. Información práctica para el ciudadano extranjero. Usa <p>, <strong>. Sin clases ni estilos.
-- banner_oficina_en: traducción al inglés.
+- intro_es: HTML semántico (<p>, <strong>, <em>, <h3>). 800-1200 palabras.
 
-Cuando no haya datos locales en evidencia: usa normativa real (Ley Orgánica 4/2000, Reglamento de Extranjería RD 557/2011), plazos, procedimientos verificables.`),
+ESTRUCTURA OBLIGATORIA:
+1. GANCHO LOCAL: Oficina de extranjería o delegación de gobierno en ${locality.name} (de la evidencia SERP). Población extranjera si hay datos. Contexto: trámites que se gestionan en esta localidad.
+2. VALOR JURÍDICO REAL: Tipos de permisos más solicitados con REQUISITOS CONCRETOS: arraigo social (3 años + contrato + informe integración), arraigo familiar (padre/madre de menor español), arraigo laboral (2 años + relación laboral). Plazos de resolución: 3 meses silencio positivo residencia temporal.
+3. PROCESO PASO A PASO: Dónde se presenta la solicitud (sede electrónica, oficina de extranjería), documentación necesaria, tasas (modelo 790 código 052, importe ~15-40€), toma de huellas, tarjeta TIE.
+4. POR QUÉ ESTE DESPACHO: Experiencia en extranjería, tramitación de recursos contra denegaciones, atención en varios idiomas, presencial y online en ${locality.name}. Primera consulta sin compromiso.
+
+- intro_en: traducción profesional al inglés. Misma longitud y estructura.
+- banner_oficina_es: 2-3 frases sobre la oficina de extranjería local. BREVE. Datos de la evidencia si existen.
+- banner_oficina_en: traducción.`),
       validate: (r) => {
         if (!r.intro_es) throw new Error('Falta intro_es');
         const words = countWords(r.intro_es);
-        if (words < 500) throw new Error(`intro_es: ${words} palabras (mín 500)`);
+        if (words < 450) throw new Error(`intro_es: ${words} palabras (mín 450)`);
         if (!r.banner_oficina_es) throw new Error('Falta banner_oficina_es');
       },
     },
     {
       name: 'tipos_permiso',
-      maxTokens: 2000,
-      systemPrompt: `Eres un abogado especialista en extranjería e inmigración en España. ${rules}`,
+      maxTokens: 1500,
+      systemPrompt: normalizeText(`Eres un abogado de extranjería. ${rules}
+FORMATO: Tarjetas pequeñas. Cada descripcion: MÁXIMO 2 frases cortas (30-40 palabras). Requisito principal + plazo.`),
       userPrompt: normalizeText(`${context}
 
 Genera JSON con:
-- tipos_permiso_es: array de EXACTAMENTE 6 objetos {titulo, descripcion, icon}. Tipos de permisos de residencia:
-  1. Arraigo social (3 años residencia + contrato/medios)
-  2. Arraigo familiar (padre de menor español o hijo de residente)
-  3. Arraigo laboral (2 años residencia + relación laboral acreditada)
-  4. Residencia comunitaria (familiar de ciudadano UE)
-  5. Reagrupación familiar (requisitos, familiares reagrupables)
-  6. Renovaciones (plazos, requisitos para renovar permisos)
-  Descripciones de 2-3 frases con normativa real. Menciona datos locales de la evidencia cuando existan. icon: "home", "users", "briefcase", "flag", "heart", "refresh".
+- tipos_permiso_es: array de EXACTAMENTE 6 objetos {titulo, descripcion, icon}.
+
+MÁXIMO 2 frases por descripcion (30-40 palabras). Ejemplo:
+"Requiere 3 años de residencia continuada, contrato de trabajo e informe de integración social. Resolución en 3 meses."
+
+Tipos: arraigo social, arraigo familiar, arraigo laboral, residencia comunitaria, reagrupación familiar, renovaciones.
+icon: "home", "users", "briefcase", "flag", "heart", "refresh".
 - tipos_permiso_en: traducción al inglés.`),
       validate: (r) => {
         if (!Array.isArray(r.tipos_permiso_es) || r.tipos_permiso_es.length < 6)
@@ -111,16 +124,27 @@ Genera JSON con:
     },
     {
       name: 'sections',
-      maxTokens: 4000,
-      systemPrompt: `Eres un abogado-redactor de contenido jurídico de alta calidad. Cada sección debe ser sustancial (150+ palabras), con información jurídica real y específica. ${rules}`,
+      maxTokens: 3000,
+      systemPrompt: normalizeText(`Eres un abogado de extranjería. ${rules}
+FORMATO CRÍTICO: Tarjetas. Cada content: MÁXIMO 80-100 palabras. Listas HTML (<ul><li>). NO párrafos largos.
+PROHIBIDO: repetir info de la intro.`),
       userPrompt: normalizeText(`${context}
 
 Genera JSON con:
-- sections_es: array de EXACTAMENTE 4 objetos {title, content}. content es HTML (mín 150 palabras cada uno). Secciones informativas sobre permisos de residencia en ${locality.name}:
-  1. Arraigo social: requisitos y procedimiento (3 años, empadronamiento, contrato, informe de integración social)
-  2. Reagrupación familiar (quién puede reagrupar, requisitos económicos, vivienda adecuada)
-  3. Renovación de permisos (plazos: 60 días antes / 90 días después, documentación necesaria)
-  4. Recursos ante denegaciones (reposición, contencioso-administrativo, plazos)
+- sections_es: array de EXACTAMENTE 4 objetos {title, content}. content es HTML con listas. MÁXIMO 80-100 palabras cada uno.
+
+SECCIÓN 1 - "Arraigo social: requisitos"
+Lista: 3 años residencia, empadronamiento, contrato de trabajo o medios económicos, informe de integración social, antecedentes penales limpios.
+
+SECCIÓN 2 - "Reagrupación familiar"
+Lista: quién puede reagrupar, familiares reagrupables (cónyuge, hijos, ascendientes), requisitos económicos (IPREM), vivienda adecuada.
+
+SECCIÓN 3 - "Renovación de permisos"
+Lista: plazo 60 días antes / 90 días después de caducidad, documentación, consecuencias de retraso, silencio administrativo positivo.
+
+SECCIÓN 4 - "Recursos ante denegación"
+Lista: recurso de reposición (1 mes), recurso contencioso-administrativo (2 meses), cautelarísima para evitar expulsión.
+
 - sections_en: traducción al inglés.`),
       validate: (r) => {
         if (!Array.isArray(r.sections_es) || r.sections_es.length !== 4)
@@ -129,12 +153,19 @@ Genera JSON con:
     },
     {
       name: 'documentacion',
-      maxTokens: 2000,
-      systemPrompt: `Eres un abogado que asesora a extranjeros sobre documentación para permisos de residencia en España. ${rules}`,
+      maxTokens: 1500,
+      systemPrompt: normalizeText(`Eres un abogado dando instrucciones claras a un cliente extranjero. ${rules}
+FORMATO: Tarjetas pequeñas. Cada descripcion: MÁXIMO 2 frases cortas (20-30 palabras).`),
       userPrompt: normalizeText(`${context}
 
 Genera JSON con:
-- documentacion_es: array de 5-7 objetos {paso, titulo, descripcion}. Documentación y pasos necesarios para tramitar un permiso de residencia en ${locality.name}. paso es "1","2"... Menciona recursos locales de la evidencia (oficina de extranjería, delegación de gobierno, empadronamiento, etc). Cada descripcion: 1-2 frases. Incluir: empadronamiento, pasaporte vigente, antecedentes penales, informe de arraigo, contrato de trabajo, seguro médico, medios económicos.
+- documentacion_es: array de 6 objetos {paso, titulo, descripcion}. paso es "1","2"...
+
+MÁXIMO 2 frases cortas por descripcion. Ejemplo:
+"Certificado de empadronamiento del Ayuntamiento de ${locality.name}. Debe acreditar al menos 3 años de residencia."
+
+Documentos: 1.Pasaporte vigente  2.Empadronamiento  3.Antecedentes penales  4.Contrato de trabajo  5.Informe de integración social  6.Tasa modelo 790
+
 - documentacion_en: traducción al inglés.`),
       validate: (r) => {
         if (!Array.isArray(r.documentacion_es) || r.documentacion_es.length < 5)
@@ -144,13 +175,27 @@ Genera JSON con:
     {
       name: 'process_faqs',
       maxTokens: 3000,
-      systemPrompt: `Eres un abogado especialista en extranjería que explica el proceso legal de forma clara. ${rules}`,
+      systemPrompt: normalizeText(`Eres un abogado de extranjería que responde preguntas de forma directa. ${rules}
+FORMATO process: 1 frase por paso (15-25 palabras).
+FORMATO FAQs: 2-3 frases con datos concretos. Texto plano, NO HTML.`),
       userPrompt: normalizeText(`${context}
 
 Genera JSON con:
-- process_es: array de EXACTAMENTE 6 strings. Pasos del proceso legal de tramitación de permisos de residencia (texto plano, 1-2 frases cada uno).
+- process_es: array de EXACTAMENTE 6 strings. 1 frase por paso (15-25 palabras).
+Pasos: consulta inicial → análisis de situación migratoria → preparación documentación → presentación solicitud → seguimiento expediente → obtención TIE
+
 - process_en: traducción al inglés.
-- faqs_es: array de EXACTAMENTE 6 objetos {question, answer}. question en texto plano, answer en HTML. Preguntas frecuentes sobre permisos de residencia y extranjería en ${locality.name}. Respuestas sustanciales (3-5 frases).
+
+- faqs_es: array de EXACTAMENTE 6 objetos {question, answer}. answer en texto plano, 2-3 frases con datos.
+
+Preguntas:
+1. "¿Cuánto tarda en resolverse un arraigo social?" — 3 meses plazo legal, silencio positivo
+2. "¿Puedo trabajar mientras tramito el permiso?" — Depende del tipo, autorización provisional
+3. "¿Qué pasa si me deniegan el permiso?" — Recurso reposición 1 mes, contencioso 2 meses
+4. "¿Necesito contrato de trabajo para el arraigo?" — Sí para arraigo social, alternativa: medios económicos
+5. "¿Puedo salir de España mientras tramito?" — Riesgo de perder la solicitud, excepciones
+6. "¿Cuánto cuesta tramitar un permiso de residencia?" — Tasas oficiales 15-40€, honorarios aparte
+
 - faqs_en: traducción al inglés.`),
       validate: (r) => {
         if (!Array.isArray(r.process_es) || r.process_es.length !== 6)
@@ -166,7 +211,7 @@ Genera JSON con:
       userPrompt: normalizeText(`${context}
 
 Genera JSON con:
-- stats_es: array de EXACTAMENTE 4 objetos {value, label}. Estadísticas relevantes para mostrar en la barra del hero. Pueden ser locales (de la evidencia) o nacionales verificables. Ejemplo: {value: "55+", label: "Años de experiencia"}, {value: "${locality.name}", label: "Atención presencial y online"}.
+- stats_es: array de EXACTAMENTE 4 objetos {value, label}. Estadísticas para la barra del hero.
 - stats_en: traducción al inglés.`),
       validate: (r) => {
         if (!Array.isArray(r.stats_es) || r.stats_es.length !== 4)
