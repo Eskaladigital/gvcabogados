@@ -202,45 +202,45 @@ export default async function FamilyLawLocalPage({ params }: Props) {
         ═══════════════════════════════════════ */}
         <section className="py-16 md:py-24 bg-white">
           <div className="container-custom max-w-6xl">
-            <div className="reveal grid grid-cols-1 lg:grid-cols-5 gap-10 lg:gap-16 items-start">
-              <div className="lg:col-span-3">
-                <div className="flex items-center gap-3 mb-4">
-                  <span className="w-9 h-0.5 bg-brand-brown" />
-                  <span className="text-[0.6rem] font-semibold text-brand-brown tracking-[0.2em] uppercase">
-                    Specialists in {cityName}
-                  </span>
+            <div className="reveal">
+              <div className="flex items-center gap-3 mb-4">
+                <span className="w-9 h-0.5 bg-brand-brown" />
+                <span className="text-[0.6rem] font-semibold text-brand-brown tracking-[0.2em] uppercase">
+                  Specialists in {cityName}
+                </span>
+              </div>
+              <h2 className="section-title mb-6">
+                {content.titleEn || `Family law lawyers in ${cityName}`}
+              </h2>
+
+              <div className="relative float-right ml-8 mb-6 w-full sm:w-[320px] lg:w-[380px]">
+                <div className="relative aspect-[3/4] rounded-2xl overflow-hidden shadow-xl">
+                  <Image
+                    src="/images/slides/garcia_valcarcel_caceres_abogados_slide_home_v2.webp"
+                    alt={`Family lawyers ${cityName}`}
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 640px) 100vw, 380px"
+                    quality={60}
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-brand-dark/60 via-transparent to-transparent" />
                 </div>
-                <h2 className="section-title mb-6">
-                  {content.titleEn || `Family law lawyers in ${cityName}`}
-                </h2>
-                <div className="text-sm text-neutral-500 leading-relaxed space-y-4">
-                  <RichTextContent content={customIntro || content.longDescriptionEn || ''} />
-                </div>
-                <div className="flex gap-3 flex-wrap mt-8">
-                  <Link href="/en/contact" className="btn-primary">Discuss my case →</Link>
-                  <a href="tel:+34968241025" className="btn-outline-dark">☎ Call now</a>
+                <div className="absolute -bottom-6 -left-6 bg-brand-brown-hover text-white p-6 rounded-2xl shadow-xl max-w-[220px]">
+                  <MapPin size={20} className="text-brand-brown mb-2" />
+                  <div className="font-display text-xl font-bold mb-1">{cityName}</div>
+                  <div className="text-[0.65rem] text-white/80 uppercase tracking-wider">In-person and online service</div>
                 </div>
               </div>
 
-              <div className="lg:col-span-2">
-                <div className="relative">
-                  <div className="relative aspect-[3/4] rounded-2xl overflow-hidden shadow-xl">
-                    <Image
-                      src="/images/slides/garcia_valcarcel_caceres_abogados_slide_home_v2.webp"
-                      alt={`Family lawyers ${cityName}`}
-                      fill
-                      className="object-cover"
-                      sizes="(max-width: 1024px) 100vw, 400px"
-                      quality={60}
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-brand-dark/60 via-transparent to-transparent" />
-                  </div>
-                  <div className="absolute -bottom-6 -left-6 bg-brand-brown-hover text-white p-6 rounded-2xl shadow-xl max-w-[220px]">
-                    <MapPin size={20} className="text-brand-brown mb-2" />
-                    <div className="font-display text-xl font-bold mb-1">{cityName}</div>
-                    <div className="text-[0.65rem] text-white/80 uppercase tracking-wider">In-person and online service</div>
-                  </div>
-                </div>
+              <div className="text-sm text-neutral-500 leading-relaxed space-y-4">
+                <RichTextContent content={customIntro || content.longDescriptionEn || ''} />
+              </div>
+
+              <div className="clear-both" />
+
+              <div className="flex gap-3 flex-wrap mt-8">
+                <Link href="/en/contact" className="btn-primary">Discuss my case →</Link>
+                <a href="tel:+34968241025" className="btn-outline-dark">☎ Call now</a>
               </div>
             </div>
           </div>
