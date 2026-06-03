@@ -10,6 +10,7 @@ import TeamSection from '@/components/home/TeamSection';
 import TestimonialsSection from '@/components/home/TestimonialsSection';
 import ContactSection from '@/components/home/ContactSection';
 import StrategicCTAs from '@/components/home/StrategicCTAs';
+import AnavaMembership from '@/components/home/AnavaMembership';
 import { LocalBusinessSchema } from '@/components/seo/SchemaOrg';
 
 export const metadata: Metadata = {
@@ -44,6 +45,7 @@ export default function HomePageEs() {
         <StrategicCTAs locale={locale} />
         <TeamSection locale={locale} />
         <TestimonialsSection locale={locale} />
+        <AnavaMembership locale={locale} />
         <ContactSection locale={locale} />
       </main>
       <Footer locale={locale} />

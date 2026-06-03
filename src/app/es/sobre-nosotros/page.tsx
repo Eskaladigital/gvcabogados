@@ -5,6 +5,7 @@ import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import ScrollReveal from '@/components/ui/ScrollReveal';
 import Breadcrumbs from '@/components/ui/Breadcrumbs';
+import AnavaMembership from '@/components/home/AnavaMembership';
 import { BreadcrumbSchema, LocalBusinessSchema } from '@/components/seo/SchemaOrg';
 import { getTranslations } from '@/data/translations';
 
@@ -260,6 +261,9 @@ export default function SobreNosotrosPage() {
             </div>
           </div>
         </section>
+
+        {/* Pertenencia ANAVA-RC */}
+        <AnavaMembership locale={locale} />
 
         {/* CTA */}
         <section className="py-12 md:py-16 bg-brand-brown-hover text-white">

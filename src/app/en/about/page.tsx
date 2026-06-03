@@ -2,6 +2,7 @@ import { Metadata } from 'next';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import ScrollReveal from '@/components/ui/ScrollReveal';
+import AnavaMembership from '@/components/home/AnavaMembership';
 import { getTranslations } from '@/data/translations';
 
 export const metadata: Metadata = {
@@ -57,6 +58,7 @@ export default function AboutPage() {
             </div>
           </div>
         </section>
+        <AnavaMembership locale={locale} />
       </main>
       <Footer locale={locale} />
       <ScrollReveal />

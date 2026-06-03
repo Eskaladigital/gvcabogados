@@ -2,6 +2,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { getTranslations, Locale } from '@/data/translations';
 import { getServicesByLocale } from '@/data/services';
+import AnavaMembership from '@/components/home/AnavaMembership';
 
 interface FooterProps {
   locale: Locale;
@@ -33,6 +34,7 @@ export default function Footer({ locale }: FooterProps) {
             <p className="text-[0.78rem] text-brand-dark/70 leading-relaxed max-w-[280px]">
               {t.footer.description}
             </p>
+            <AnavaMembership locale={locale} variant="compact" />
           </div>
 
           {/* Areas */}
