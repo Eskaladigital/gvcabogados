@@ -48,8 +48,8 @@ export default function AnavaMembership({ locale, variant = 'banner' }: AnavaMem
         className="group flex items-center gap-3 max-w-[280px]"
         aria-label={`${t.compactTitle} — ${t.compactSubtitle}`}
       >
-        <div className="w-14 h-14 relative shrink-0 bg-white rounded-full p-1.5 shadow-sm">
-          <Image src={SEAL_SRC} alt={SEAL_ALT} fill className="object-contain" sizes="56px" />
+        <div className="w-16 h-16 relative shrink-0">
+          <Image src={SEAL_SRC} alt={SEAL_ALT} fill className="object-contain" sizes="64px" />
         </div>
         <div className="leading-tight">
           <span className="block text-[0.78rem] font-semibold text-brand-dark group-hover:text-brand-dark/70 transition-colors">
@@ -67,13 +67,13 @@ export default function AnavaMembership({ locale, variant = 'banner' }: AnavaMem
         <div className="reveal grid grid-cols-1 md:grid-cols-[auto_1fr] gap-8 md:gap-12 items-center">
           {/* Sello */}
           <div className="flex justify-center md:justify-start">
-            <div className="w-36 h-36 md:w-44 md:h-44 relative bg-white rounded-full p-4 shadow-lg shadow-neutral-300/50 border border-neutral-200">
+            <div className="w-40 h-40 md:w-48 md:h-48 relative">
               <Image
                 src={SEAL_SRC}
                 alt={SEAL_ALT}
                 fill
                 className="object-contain"
-                sizes="(max-width: 768px) 144px, 176px"
+                sizes="(max-width: 768px) 160px, 192px"
               />
             </div>
           </div>
