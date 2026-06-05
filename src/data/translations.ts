@@ -78,7 +78,7 @@ export const translations = {
       address: { label: 'Dirección', value: 'Gran Vía, 15 — 3ª Planta\n30008 Murcia' },
       phone: { label: 'Teléfono', value: '968 241 025' },
       email: { label: 'Email', value: 'contacto@gvcabogados.com' },
-      schedule: { label: 'Horario', value: 'Lun–Vie: 9:00–14:00 / 17:00–20:00' },
+      schedule: { label: 'Horario', value: 'Lun–Jue: 9:00–18:00 · Vie: 9:00–14:00' },
       form: {
         name: 'Nombre completo',
         namePlaceholder: 'Su nombre y apellidos',
@@ -219,7 +219,7 @@ export const translations = {
       address: { label: 'Address', value: 'Gran Vía, 15 — 3rd Floor\n30008 Murcia, Spain' },
       phone: { label: 'Phone', value: '+34 968 241 025' },
       email: { label: 'Email', value: 'contacto@gvcabogados.com' },
-      schedule: { label: 'Hours', value: 'Mon–Fri: 9:00–14:00 / 17:00–20:00' },
+      schedule: { label: 'Hours', value: 'Mon–Thu: 9:00–18:00 · Fri: 9:00–14:00' },
       form: {
         name: 'Full name',
         namePlaceholder: 'Your full name',

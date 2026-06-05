@@ -28,8 +28,8 @@ export function LocalBusinessSchema({ locale }: SchemaProps) {
     address: { '@type': 'PostalAddress', streetAddress: 'Gran Vía, 15 — 3ª Planta', addressLocality: 'Murcia', postalCode: '30008', addressRegion: 'Región de Murcia', addressCountry: 'ES' },
     geo: { '@type': 'GeoCoordinates', latitude: 37.9834, longitude: -1.1299 },
     openingHoursSpecification: [
-      { '@type': 'OpeningHoursSpecification', dayOfWeek: ['Monday','Tuesday','Wednesday','Thursday','Friday'], opens: '09:00', closes: '14:00' },
-      { '@type': 'OpeningHoursSpecification', dayOfWeek: ['Monday','Tuesday','Wednesday','Thursday','Friday'], opens: '17:00', closes: '20:00' },
+      { '@type': 'OpeningHoursSpecification', dayOfWeek: ['Monday','Tuesday','Wednesday','Thursday'], opens: '09:00', closes: '18:00' },
+      { '@type': 'OpeningHoursSpecification', dayOfWeek: ['Friday'], opens: '09:00', closes: '14:00' },
     ],
     priceRange: '€€',
     areaServed: [

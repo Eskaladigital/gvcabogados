@@ -102,7 +102,7 @@ export default function Footer({ locale }: FooterProps) {
                   contacto@gvcabogados.com
                 </a>
               </li>
-              <li className="m-0 p-0 text-[0.78rem] text-brand-dark/70">{locale === 'es' ? 'Lun–Vie: 9–14 / 17–20' : 'Mon–Fri: 9–14 / 17–20'}</li>
+              <li className="m-0 p-0 text-[0.78rem] text-brand-dark/70">{t.contact.schedule.value}</li>
             </ul>
           </div>
         </div>
