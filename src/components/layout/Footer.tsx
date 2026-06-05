@@ -2,7 +2,6 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { getTranslations, Locale } from '@/data/translations';
 import { getServicesByLocale } from '@/data/services';
-import AnavaMembership from '@/components/home/AnavaMembership';
 
 interface FooterProps {
   locale: Locale;
@@ -16,33 +15,32 @@ export default function Footer({ locale }: FooterProps) {
   return (
     <footer className="bg-brand-brown pt-14 text-brand-dark">
       <div className="container-custom">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 pb-10 border-b border-brand-dark/10">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-[1.4fr_1fr_0.7fr_1fr] gap-x-8 gap-y-10 pb-10 border-b border-brand-dark/10">
           {/* Brand */}
           <div className="flex flex-col gap-4">
-            <Link href={prefix} className="flex flex-col items-start gap-2">
-              <div className="w-16 h-16 relative flex items-center justify-center">
+            <Link href={prefix} className="flex items-center gap-3">
+              <div className="w-12 h-12 relative shrink-0">
                 <Image
                   src="/images/logo/gvcabogados_murcia_logo_favicon_marron_sinfondo.webp"
                   alt="GV&C Logo"
                   fill
                   className="object-contain"
-                  sizes="64px"
+                  sizes="48px"
                 />
               </div>
-              <span className="text-brand-dark text-base font-semibold">García-Valcárcel & Cáceres</span>
+              <span className="text-brand-dark text-base font-semibold leading-tight">García-Valcárcel<br />& Cáceres</span>
             </Link>
-            <p className="text-[0.78rem] text-brand-dark/70 leading-relaxed max-w-[280px]">
+            <p className="text-[0.78rem] text-brand-dark/70 leading-relaxed">
               {t.footer.description}
             </p>
-            <AnavaMembership locale={locale} variant="compact" />
           </div>
 
           {/* Areas */}
           <div>
-            <h4 className="text-[0.68rem] font-semibold text-brand-dark uppercase tracking-[0.12em] mb-2">
+            <h4 className="text-[0.68rem] font-semibold text-brand-dark uppercase tracking-[0.12em] mb-3">
               {t.footer.areas}
             </h4>
-            <ul className="flex flex-col gap-1 list-none">
+            <ul className="flex flex-col gap-1.5 list-none">
               {services.map((s) => (
                 <li key={s.id} className="m-0 p-0">
                   <Link
@@ -58,10 +56,10 @@ export default function Footer({ locale }: FooterProps) {
 
           {/* Firm */}
           <div>
-            <h4 className="text-[0.68rem] font-semibold text-brand-dark uppercase tracking-[0.12em] mb-2">
+            <h4 className="text-[0.68rem] font-semibold text-brand-dark uppercase tracking-[0.12em] mb-3">
               {t.footer.firm}
             </h4>
-            <ul className="flex flex-col gap-1 list-none">
+            <ul className="flex flex-col gap-1.5 list-none">
               <li className="m-0 p-0">
                 <Link href={`${prefix}/sobre-nosotros`} className="text-[0.78rem] text-brand-dark/70 hover:text-brand-dark transition-colors">
                   {t.footer.aboutUs}
@@ -87,11 +85,11 @@ export default function Footer({ locale }: FooterProps) {
 
           {/* Contact */}
           <div>
-            <h4 className="text-[0.68rem] font-semibold text-brand-dark uppercase tracking-[0.12em] mb-2">
+            <h4 className="text-[0.68rem] font-semibold text-brand-dark uppercase tracking-[0.12em] mb-3">
               {t.footer.contactSection}
             </h4>
-            <ul className="flex flex-col gap-1 list-none">
-              <li className="m-0 p-0 text-[0.78rem] text-brand-dark/70">Gran Vía, 15 · Murcia</li>
+            <ul className="flex flex-col gap-1.5 list-none">
+              <li className="m-0 p-0 text-[0.78rem] text-brand-dark/70">Gran Vía, 15 — 3ª Planta<br />30008 Murcia</li>
               <li className="m-0 p-0">
                 <a href="tel:+34968241025" className="text-[0.78rem] text-brand-dark/70 hover:text-brand-dark transition-colors">
                   968 241 025
@@ -109,7 +107,7 @@ export default function Footer({ locale }: FooterProps) {
 
         {/* Bottom */}
         <div className="py-5 flex flex-col md:flex-row justify-between items-center gap-3">
-            <p className="text-[0.68rem] text-brand-dark/70">{t.footer.rights}</p>
+          <p className="text-[0.68rem] text-brand-dark/70">{t.footer.rights}</p>
           <div className="flex gap-6">
             <Link href={`${prefix}/aviso-legal`} className="text-[0.68rem] text-brand-dark/70 hover:text-brand-dark transition-colors">
               {t.nav.legalNotice}
