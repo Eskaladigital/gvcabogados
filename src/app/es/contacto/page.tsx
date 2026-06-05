@@ -4,6 +4,7 @@ import Footer from '@/components/layout/Footer';
 import ScrollReveal from '@/components/ui/ScrollReveal';
 import Breadcrumbs from '@/components/ui/Breadcrumbs';
 import ContactSection from '@/components/home/ContactSection';
+import OfficeMap from '@/components/home/OfficeMap';
 import { BreadcrumbSchema, LocalBusinessSchema } from '@/components/seo/SchemaOrg';
 
 export const metadata: Metadata = {
@@ -44,16 +45,7 @@ export default function ContactoPage() {
 
         <ContactSection locale={locale} />
 
-        <section className="border-t border-neutral-200">
-          <iframe
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3145.7!2d-1.13!3d37.98!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2sGran+V%C3%ADa+15%2C+30008+Murcia!5e0!3m2!1ses!2ses!4v1"
-            className="w-full h-[400px] border-0"
-            allowFullScreen
-            loading="lazy"
-            referrerPolicy="no-referrer-when-downgrade"
-            title="García-Valcárcel & Cáceres - Abogados en Murcia - Gran Vía 15"
-          />
-        </section>
+        <OfficeMap locale={locale} />
       </main>
       <Footer locale={locale} />
       <ScrollReveal />
