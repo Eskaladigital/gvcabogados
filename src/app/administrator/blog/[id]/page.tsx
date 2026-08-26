@@ -1,12 +1,13 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, use } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft, Save, Trash2 } from 'lucide-react';
 import { Editor } from '@tinymce/tinymce-react';
 
-export default function EditBlogPostPage({ params }: { params: { id: string } }) {
+export default function EditBlogPostPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = use(params);
   const router = useRouter();
   const editorRefEs = useRef<any>(null);
   const editorRefEn = useRef<any>(null);
@@ -21,7 +22,7 @@ export default function EditBlogPostPage({ params }: { params: { id: string } })
 
   useEffect(() => {
     (async () => {
-      const res = await fetch(`/api/blog/${params.id}`);
+      const res = await fetch(`/api/blog/${id}`);
       if (res.status === 401) { router.push('/administrator/login'); return; }
       if (!res.ok) { router.push('/administrator/blog'); return; }
       const data = await res.json();
@@ -35,7 +36,7 @@ export default function EditBlogPostPage({ params }: { params: { id: string } })
       });
       setLoading(false);
     })();
-  }, [params.id, router]);
+  }, [id, router]);
 
   const handleChange = (field: string, value: any) => setForm((prev) => ({ ...prev, [field]: value }));
 
@@ -44,7 +45,7 @@ export default function EditBlogPostPage({ params }: { params: { id: string } })
     try {
       const contentEs = editorRefEs.current?.getContent() || form.content_es;
       const contentEn = editorRefEn.current?.getContent() || form.content_en;
-      await fetch(`/api/blog/${params.id}`, {
+      await fetch(`/api/blog/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ ...form, content_es: contentEs, content_en: contentEn, published_at: form.published_at + 'T12:00:00Z' }),
@@ -56,7 +57,7 @@ export default function EditBlogPostPage({ params }: { params: { id: string } })
 
   const handleDelete = async () => {
     if (!confirm('¿Eliminar artículo?')) return;
-    await fetch(`/api/blog/${params.id}`, { method: 'DELETE' });
+    await fetch(`/api/blog/${id}`, { method: 'DELETE' });
     router.push('/administrator/blog');
   };
 

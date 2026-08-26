@@ -11,7 +11,7 @@ import { SITE_URL } from '@/lib/site-config';
 export const revalidate = 60;
 
 interface Props {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }
 
 async function getPost(slug: string) {
@@ -30,7 +30,8 @@ async function getPost(slug: string) {
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const post = await getPost(params.slug);
+  const { slug } = await params;
+  const post = await getPost(slug);
   if (!post) return {};
 
   return {
@@ -53,7 +54,8 @@ function cleanHtmlContent(html: string): string {
 }
 
 export default async function BlogPostPage({ params }: Props) {
-  const post = await getPost(params.slug);
+  const { slug } = await params;
+  const post = await getPost(slug);
   if (!post) notFound();
 
   const locale = 'es';

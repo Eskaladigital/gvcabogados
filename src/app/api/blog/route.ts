@@ -2,14 +2,14 @@ import { NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase';
 import { cookies } from 'next/headers';
 
-function getAuthToken() {
-  const cookieStore = cookies();
+async function getAuthToken() {
+  const cookieStore = await cookies();
   return cookieStore.get('sb-access-token')?.value;
 }
 
 // GET all posts (admin)
 export async function GET() {
-  const token = getAuthToken();
+  const token = await getAuthToken();
   if (!token) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
   const { data, error } = await supabaseAdmin
@@ -23,7 +23,7 @@ export async function GET() {
 
 // CREATE post
 export async function POST(request: Request) {
-  const token = getAuthToken();
+  const token = await getAuthToken();
   if (!token) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
   const body = await request.json();

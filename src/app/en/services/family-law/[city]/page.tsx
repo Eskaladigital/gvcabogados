@@ -21,7 +21,7 @@ const FOLDER_SLUG_EN = 'family-law';
 const FOLDER_SLUG_ES = 'derecho-familia';
 
 interface Props {
-  params: { city: string };
+  params: Promise<{ city: string }>;
 }
 
 export const dynamicParams = false;
@@ -46,7 +46,8 @@ export async function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const content = await getServiceContentByServiceAndCity(SERVICE_KEY, params.city);
+  const { city } = await params;
+  const content = await getServiceContentByServiceAndCity(SERVICE_KEY, city);
   if (!content) return {};
 
   const cityName = content.localityName;
@@ -58,10 +59,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title,
     description,
     alternates: {
-      canonical: `https://www.gvcabogados.com/en/services/${FOLDER_SLUG_EN}/${params.city}`,
-      languages: { es: `/es/servicios/${FOLDER_SLUG_ES}/${params.city}` },
+      canonical: `https://www.gvcabogados.com/en/services/${FOLDER_SLUG_EN}/${city}`,
+      languages: { es: `/es/servicios/${FOLDER_SLUG_ES}/${city}` },
     },
-    openGraph: { title, description, locale: 'en_GB', type: 'website', url: `https://www.gvcabogados.com/en/services/${FOLDER_SLUG_EN}/${params.city}` },
+    openGraph: { title, description, locale: 'en_GB', type: 'website', url: `https://www.gvcabogados.com/en/services/${FOLDER_SLUG_EN}/${city}` },
   };
 }
 
@@ -88,7 +89,8 @@ const DEFAULT_QUE_SABER = [
 ];
 
 export default async function FamilyLawLocalPage({ params }: Props) {
-  const content = await getServiceContentByServiceAndCity(SERVICE_KEY, params.city);
+  const { city } = await params;
+  const content = await getServiceContentByServiceAndCity(SERVICE_KEY, city);
   if (!content) notFound();
 
   const cityName = content.localityName;
@@ -110,7 +112,7 @@ export default async function FamilyLawLocalPage({ params }: Props) {
     { name: 'Home', href: '/en' },
     { name: 'Practice Areas', href: '/en/services' },
     { name: 'Family Law', href: `/en/services/${FOLDER_SLUG_EN}` },
-    { name: `${SERVICE_NAME} in ${cityName}`, href: `/en/services/${FOLDER_SLUG_EN}/${params.city}` },
+    { name: `${SERVICE_NAME} in ${cityName}`, href: `/en/services/${FOLDER_SLUG_EN}/${city}` },
   ];
 
   return (

@@ -20,7 +20,7 @@ const SERVICE_NAME = 'Responsabilidad Civil y Seguros';
 const FOLDER_SLUG = 'responsabilidad-civil';
 
 interface Props {
-  params: { ciudad: string };
+  params: Promise<{ ciudad: string }>;
 }
 
 export const dynamicParams = false;
@@ -45,7 +45,8 @@ export async function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const content = await getServiceContentByServiceAndCity(SERVICE_KEY, params.ciudad);
+  const { ciudad } = await params;
+  const content = await getServiceContentByServiceAndCity(SERVICE_KEY, ciudad);
   if (!content) return {};
 
   const cityName = content.localityName;
@@ -57,10 +58,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title,
     description,
     alternates: {
-      canonical: `https://www.gvcabogados.com/es/servicios/${FOLDER_SLUG}/${params.ciudad}`,
-      languages: { en: `/en/services/civil-liability/${params.ciudad}` },
+      canonical: `https://www.gvcabogados.com/es/servicios/${FOLDER_SLUG}/${ciudad}`,
+      languages: { en: `/en/services/civil-liability/${ciudad}` },
     },
-    openGraph: { title, description, locale: 'es_ES', type: 'website', url: `https://www.gvcabogados.com/es/servicios/${FOLDER_SLUG}/${params.ciudad}` },
+    openGraph: { title, description, locale: 'es_ES', type: 'website', url: `https://www.gvcabogados.com/es/servicios/${FOLDER_SLUG}/${ciudad}` },
   };
 }
 
@@ -87,7 +88,8 @@ const DEFAULT_PLAZOS_PRESCRIPCION = [
 ];
 
 export default async function ResponsabilidadCivilLocalPage({ params }: Props) {
-  const content = await getServiceContentByServiceAndCity(SERVICE_KEY, params.ciudad);
+  const { ciudad } = await params;
+  const content = await getServiceContentByServiceAndCity(SERVICE_KEY, ciudad);
   if (!content) notFound();
 
   const cityName = content.localityName;
@@ -109,7 +111,7 @@ export default async function ResponsabilidadCivilLocalPage({ params }: Props) {
     { name: 'Inicio', href: '/es' },
     { name: 'Áreas de Práctica', href: '/es/servicios' },
     { name: SERVICE_NAME, href: `/es/servicios/${FOLDER_SLUG}` },
-    { name: `${SERVICE_NAME} en ${cityName}`, href: `/es/servicios/${FOLDER_SLUG}/${params.ciudad}` },
+    { name: `${SERVICE_NAME} en ${cityName}`, href: `/es/servicios/${FOLDER_SLUG}/${ciudad}` },
   ];
 
   return (

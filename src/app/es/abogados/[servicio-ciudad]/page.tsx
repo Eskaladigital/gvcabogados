@@ -11,7 +11,7 @@ import { BreadcrumbSchema, ServiceSchema, FAQSchema } from '@/components/seo/Sch
 import { getServiceContentBySlug, getAllServiceContentSlugs, type ServiceContent } from '@/lib/service-content';
 
 interface Props {
-  params: { 'servicio-ciudad': string };
+  params: Promise<{ 'servicio-ciudad': string }>;
 }
 
 export const dynamicParams = false;
@@ -23,7 +23,8 @@ export async function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const content = await getServiceContentBySlug(params['servicio-ciudad']);
+  const slug = (await params)['servicio-ciudad'];
+  const content = await getServiceContentBySlug(slug);
   if (!content) return {};
   
   const title = content.titleEs || `${content.serviceNameEs} en ${content.localityName} — Abogados Especialistas | GVC Abogados`;
@@ -45,7 +46,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function LandingPageEs({ params }: Props) {
-  const content = await getServiceContentBySlug(params['servicio-ciudad']);
+  const slug = (await params)['servicio-ciudad'];
+  const content = await getServiceContentBySlug(slug);
   if (!content) notFound();
   
   const locale = 'es';
