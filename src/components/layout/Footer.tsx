@@ -2,6 +2,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { getTranslations, Locale } from '@/data/translations';
 import { getServicesByLocale } from '@/data/services';
+import { CookieSettingsButton } from '@/components/CookieConsentBar';
 
 interface FooterProps {
   locale: Locale;
@@ -118,6 +119,10 @@ export default function Footer({ locale }: FooterProps) {
             <Link href={`${prefix}/politica-cookies`} className="text-[0.68rem] text-brand-dark/70 hover:text-brand-dark transition-colors">
               {t.nav.cookies}
             </Link>
+            <CookieSettingsButton
+              className="text-[0.68rem] text-brand-dark/70 hover:text-brand-dark transition-colors bg-transparent p-0 border-0 cursor-pointer"
+              label={locale === 'es' ? 'Configurar cookies' : 'Manage cookies'}
+            />
           </div>
         </div>
       </div>

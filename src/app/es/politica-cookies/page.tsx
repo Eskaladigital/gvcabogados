@@ -1,6 +1,7 @@
 import { Metadata } from 'next';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
+import { CookieSettingsButton } from '@/components/CookieConsentBar';
 
 export const metadata: Metadata = { title: 'Política de Cookies — GVC Abogados Murcia', robots: 'noindex' };
 
@@ -19,6 +20,10 @@ export default function CookiesPage() {
             <p><strong>Cookies técnicas:</strong> Son necesarias para el funcionamiento del sitio web.</p>
             <p><strong>Cookies analíticas:</strong> Nos permiten conocer cómo interactúan los usuarios con el sitio web para mejorar su funcionamiento.</p>
             <h2>Cómo gestionar las cookies</h2>
+            <p>Puedes modificar tu consentimiento en cualquier momento desde el pie de página o con este botón:</p>
+            <p>
+              <CookieSettingsButton className="inline-flex items-center px-5 py-3 rounded-lg bg-[#3d2b1f] text-white text-sm font-semibold hover:opacity-90" />
+            </p>
             <p>Puede configurar su navegador para rechazar todas las cookies o para que le avise cuando se envía una cookie. Sin embargo, si rechaza las cookies, es posible que algunas funcionalidades del sitio no estén disponibles.</p>
           </div>
         </div>
