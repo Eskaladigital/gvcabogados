@@ -7,11 +7,13 @@ import { Plus, Edit, Trash2, Eye, EyeOff, LogOut } from 'lucide-react';
 
 interface Post {
   id: string;
-  slug: string;
+  slug?: string;
+  slug_es?: string;
   title_es: string;
   title_en: string;
-  category: string;
-  published: boolean;
+  category?: string;
+  status?: string;
+  published?: boolean;
   published_at: string;
   created_at: string;
 }
@@ -45,7 +47,7 @@ export default function AdminBlogPage() {
     await fetch(`/api/blog/${id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ published: !published }),
+      body: JSON.stringify({ status: published ? 'draft' : 'published' }),
     });
     fetchPosts();
   }
@@ -109,18 +111,20 @@ export default function AdminBlogPage() {
                 </tr>
               </thead>
               <tbody>
-                {posts.map((post) => (
+                {posts.map((post) => {
+                  const isPublished = post.status === 'published' || post.published === true;
+                  return (
                   <tr key={post.id} className="border-b border-neutral-100 hover:bg-neutral-50 transition-colors">
                     <td className="p-4">
                       <div className="text-sm font-medium text-brand-dark">{post.title_es}</div>
-                      <div className="text-[0.65rem] text-neutral-300 mt-0.5">/{post.slug}</div>
+                      <div className="text-[0.65rem] text-neutral-300 mt-0.5">/{post.slug_es || post.slug}</div>
                     </td>
                     <td className="p-4">
                       <span className="text-xs text-neutral-400">{post.category || '—'}</span>
                     </td>
                     <td className="p-4">
-                      <span className={`text-[0.6rem] font-semibold uppercase tracking-wider px-2 py-0.5 ${post.published ? 'bg-green-50 text-green-600' : 'bg-yellow-50 text-yellow-600'}`}>
-                        {post.published ? 'Publicado' : 'Borrador'}
+                      <span className={`text-[0.6rem] font-semibold uppercase tracking-wider px-2 py-0.5 ${isPublished ? 'bg-green-50 text-green-600' : 'bg-yellow-50 text-yellow-600'}`}>
+                        {isPublished ? 'Publicado' : 'Borrador'}
                       </span>
                     </td>
                     <td className="p-4 text-xs text-neutral-400">
@@ -129,11 +133,11 @@ export default function AdminBlogPage() {
                     <td className="p-4">
                       <div className="flex items-center justify-end gap-2">
                         <button
-                          onClick={() => togglePublish(post.id, post.published)}
+                          onClick={() => togglePublish(post.id, isPublished)}
                           className="p-1.5 text-neutral-400 hover:text-brand-brown transition-colors"
-                          title={post.published ? 'Despublicar' : 'Publicar'}
+                          title={isPublished ? 'Despublicar' : 'Publicar'}
                         >
-                          {post.published ? <EyeOff size={16} /> : <Eye size={16} />}
+                          {isPublished ? <EyeOff size={16} /> : <Eye size={16} />}
                         </button>
                         <Link
                           href={`/administrator/blog/${post.id}`}
@@ -152,7 +156,8 @@ export default function AdminBlogPage() {
                       </div>
                     </td>
                   </tr>
-                ))}
+                  );
+                })}
               </tbody>
             </table>
           </div>

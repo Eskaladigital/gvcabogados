@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef, use } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { ArrowLeft, Save, Trash2 } from 'lucide-react';
+import { ArrowLeft, Save, Sparkles, Trash2 } from 'lucide-react';
 import { Editor } from '@tinymce/tinymce-react';
 
 export default function EditBlogPostPage({ params }: { params: Promise<{ id: string }> }) {
@@ -12,6 +12,7 @@ export default function EditBlogPostPage({ params }: { params: Promise<{ id: str
   const editorRefEs = useRef<any>(null);
   const editorRefEn = useRef<any>(null);
   const [saving, setSaving] = useState(false);
+  const [redacting, setRedacting] = useState(false);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<'es' | 'en'>('es');
   const [form, setForm] = useState({
@@ -27,11 +28,13 @@ export default function EditBlogPostPage({ params }: { params: Promise<{ id: str
       if (!res.ok) { router.push('/administrator/blog'); return; }
       const data = await res.json();
       setForm({
-        slug: data.slug || '', title_es: data.title_es || '', title_en: data.title_en || '',
+        slug: data.slug_es || data.slug || '', title_es: data.title_es || '', title_en: data.title_en || '',
         excerpt_es: data.excerpt_es || '', excerpt_en: data.excerpt_en || '',
         content_es: data.content_es || '', content_en: data.content_en || '',
-        category: data.category || '', cover_image: data.cover_image || '',
-        author: data.author || '', published: data.published || false,
+        category: data.category || data.blog_categories?.name_es || '',
+        cover_image: data.featured_image_url || data.cover_image || '',
+        author: data.author || data.blog_authors?.name || '',
+        published: data.status === 'published' || data.published === true,
         published_at: data.published_at ? data.published_at.split('T')[0] : '',
       });
       setLoading(false);
@@ -48,7 +51,18 @@ export default function EditBlogPostPage({ params }: { params: Promise<{ id: str
       await fetch(`/api/blog/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...form, content_es: contentEs, content_en: contentEn, published_at: form.published_at + 'T12:00:00Z' }),
+        body: JSON.stringify({
+          slug_es: form.slug,
+          title_es: form.title_es,
+          title_en: form.title_en,
+          excerpt_es: form.excerpt_es,
+          excerpt_en: form.excerpt_en,
+          content_es: contentEs,
+          content_en: contentEn,
+          featured_image_url: form.cover_image || null,
+          status: form.published ? 'published' : 'draft',
+          published_at: form.published_at ? `${form.published_at}T12:00:00Z` : null,
+        }),
       });
       router.push('/administrator/blog');
     } catch { alert('Error al guardar'); }
@@ -59,6 +73,39 @@ export default function EditBlogPostPage({ params }: { params: Promise<{ id: str
     if (!confirm('¿Eliminar artículo?')) return;
     await fetch(`/api/blog/${id}`, { method: 'DELETE' });
     router.push('/administrator/blog');
+  };
+
+  const handleRedactArticle = async () => {
+    const currentEs = editorRefEs.current?.getContent() || form.content_es;
+    if (currentEs && currentEs !== '<p></p>') {
+      const ok = window.confirm('Esto reescribirá el contenido en español. El inglés no se toca. ¿Continuar?');
+      if (!ok) return;
+    }
+    setRedacting(true);
+    try {
+      const response = await fetch('/api/admin/blog/redact', {
+        method: 'POST',
+        credentials: 'same-origin',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ postId: id }),
+      });
+      const result = await response.json().catch(() => null);
+      if (!response.ok || !result?.ok) {
+        throw new Error(result?.error || `No se pudo redactar (${response.status})`);
+      }
+      if (editorRefEs.current) editorRefEs.current.setContent(result.content || '');
+      setForm((prev) => ({
+        ...prev,
+        content_es: result.content || prev.content_es,
+        excerpt_es: result.excerpt || prev.excerpt_es,
+      }));
+      setActiveTab('es');
+      alert(`Artículo redactado (${result.wordCount || 0} palabras). Revisa el español; el inglés se traduce después.`);
+    } catch (error: unknown) {
+      alert(error instanceof Error ? error.message : 'Error al redactar el artículo');
+    } finally {
+      setRedacting(false);
+    }
   };
 
   const tinymceKey = process.env.NEXT_PUBLIC_TINYMCE_API_KEY || '';
@@ -74,8 +121,16 @@ export default function EditBlogPostPage({ params }: { params: Promise<{ id: str
             <span className="text-white text-sm font-semibold">Editar artículo</span>
           </div>
           <div className="flex items-center gap-3">
-            <button onClick={handleDelete} className="text-red-400 hover:text-red-300 text-xs flex items-center gap-1"><Trash2 size={14} /> Eliminar</button>
-            <button onClick={handleSave} disabled={saving} className="btn-primary !text-xs"><Save size={14} /> {saving ? 'Guardando...' : 'Guardar'}</button>
+            <button
+              type="button"
+              onClick={handleRedactArticle}
+              disabled={saving || redacting}
+              className="text-white/90 hover:text-white text-xs flex items-center gap-1 border border-white/20 px-3 py-1.5 disabled:opacity-50"
+            >
+              <Sparkles size={14} /> {redacting ? 'Redactando…' : 'Redactar con IA'}
+            </button>
+            <button onClick={handleDelete} disabled={redacting} className="text-red-400 hover:text-red-300 text-xs flex items-center gap-1"><Trash2 size={14} /> Eliminar</button>
+            <button onClick={handleSave} disabled={saving || redacting} className="btn-primary !text-xs"><Save size={14} /> {saving ? 'Guardando...' : 'Guardar'}</button>
           </div>
         </div>
       </header>

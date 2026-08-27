@@ -23,7 +23,8 @@
     "import:csv": "tsx scripts/import-csv-articles.ts",
     "update:blog-dates": "tsx scripts/update-blog-dates.ts",
     "fix:blog-html": "tsx scripts/fix-blog-html.ts",
-    "translate:blog": "tsx scripts/translate-blog-posts.ts"
+    "translate:blog": "tsx scripts/translate-blog-posts.ts",
+    "redact:blog": "tsx scripts/redact-blog-article.ts"
   },
   "dependencies": {
     "@next/third-parties": "16.3.3",

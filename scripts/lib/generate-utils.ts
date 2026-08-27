@@ -25,7 +25,7 @@ export const supabase = createClient(SUPABASE_URL, SUPABASE_KEY, {
 
 export const openai = new OpenAI({ apiKey: OPENAI_API_KEY });
 
-export const DEFAULT_MODEL = process.env.OPENAI_MODEL || 'gpt-4.1';
+export const DEFAULT_MODEL = process.env.OPENAI_MODEL || 'gpt-5.6-terra';
 export const DEFAULT_MAX_TOKENS = Number.parseInt(process.env.OPENAI_MAX_TOKENS || '4000', 10);
 export const DEFAULT_TEMPERATURE = Number.parseFloat(process.env.OPENAI_TEMPERATURE || '0.6');
 
@@ -142,15 +142,18 @@ export async function runSerpQueries(queries: string[], verbose: boolean): Promi
 // ─── OpenAI ──────────────────────────────────────────────
 
 export async function callOpenAI(systemPrompt: string, userPrompt: string, args: ScriptArgs, maxTokensOverride?: number): Promise<string> {
+  const model = args.model;
+  const isGpt5 = /^gpt-5/i.test(model);
   const completion = await openai.chat.completions.create({
-    model: args.model,
-    temperature: DEFAULT_TEMPERATURE,
-    max_tokens: maxTokensOverride || args.maxTokens,
+    model,
     response_format: { type: 'json_object' },
     messages: [
       { role: 'system', content: systemPrompt },
       { role: 'user', content: userPrompt },
     ],
+    ...(isGpt5
+      ? { max_completion_tokens: maxTokensOverride || args.maxTokens, reasoning_effort: 'low' as const }
+      : { temperature: DEFAULT_TEMPERATURE, max_tokens: maxTokensOverride || args.maxTokens }),
   });
   const text = completion.choices?.[0]?.message?.content || '';
   if (!text) throw new Error('OpenAI no devolvió contenido.');
