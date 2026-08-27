@@ -68,9 +68,15 @@ export default function AdminBlogPage() {
       {/* Header */}
       <header className="bg-brand-dark">
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 bg-brand-brown flex items-center justify-center font-serif text-sm font-bold text-white">GV</div>
-            <span className="text-white text-sm font-semibold">Panel de Administración</span>
+          <div className="flex items-center gap-6">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 bg-brand-brown flex items-center justify-center font-serif text-sm font-bold text-white">GV</div>
+              <span className="text-white text-sm font-semibold">Panel de Administración</span>
+            </div>
+            <nav className="flex gap-4 text-xs">
+              <Link href="/administrator/blog" className="text-white">Blog</Link>
+              <Link href="/administrator/contactos" className="text-neutral-400 hover:text-white">Contactos</Link>
+            </nav>
           </div>
           <div className="flex items-center gap-4">
             <Link href="/es" className="text-neutral-400 text-xs hover:text-white transition-colors">Ver web →</Link>

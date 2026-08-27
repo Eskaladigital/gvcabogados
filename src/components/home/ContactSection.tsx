@@ -8,10 +8,16 @@ interface ContactSectionProps {
   locale: Locale;
 }
 
+const inputClass =
+  'w-full font-sans text-[0.82rem] text-brand-dark bg-white border border-neutral-200 px-4 py-3 outline-none transition-colors focus:border-brand-brown';
+const labelClass =
+  'text-[0.58rem] font-bold text-neutral-400 uppercase tracking-[0.1em] mb-1.5 block';
+
 export default function ContactSection({ locale }: ContactSectionProps) {
   const t = getTranslations(locale);
   const services = getServicesByLocale(locale);
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+  const [contactType, setContactType] = useState<'particular' | 'professional'>('particular');
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -24,6 +30,10 @@ export default function ContactSection({ locale }: ContactSectionProps) {
       email: formData.get('email'),
       area: formData.get('area'),
       message: formData.get('message'),
+      contact_type: formData.get('contact_type'),
+      company: formData.get('company'),
+      referral_source: formData.get('referral_source'),
+      gdpr_consent: formData.get('privacy') === 'on',
       locale,
     };
 
@@ -37,6 +47,7 @@ export default function ContactSection({ locale }: ContactSectionProps) {
       if (res.ok) {
         setStatus('success');
         (e.target as HTMLFormElement).reset();
+        setContactType('particular');
       } else {
         setStatus('error');
       }
@@ -49,7 +60,6 @@ export default function ContactSection({ locale }: ContactSectionProps) {
     <section className="py-12 md:py-20" id="contact">
       <div className="container-custom">
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.3fr] gap-8 lg:gap-16">
-          {/* Info */}
           <div className="reveal">
             <div className="mb-8">
               <h2 className="section-title">
@@ -83,58 +93,84 @@ export default function ContactSection({ locale }: ContactSectionProps) {
             </div>
           </div>
 
-          {/* Form */}
           <form
             onSubmit={handleSubmit}
             className="reveal bg-neutral-50 border border-neutral-200 p-8 md:p-10"
           >
+            <div className="mb-4">
+              <span className={labelClass}>{t.contact.form.contactType}</span>
+              <div className="flex gap-4">
+                <label className="flex items-center gap-2 text-[0.82rem] text-brand-dark">
+                  <input
+                    type="radio"
+                    name="contact_type"
+                    value="particular"
+                    checked={contactType === 'particular'}
+                    onChange={() => setContactType('particular')}
+                  />
+                  {t.contact.form.particular}
+                </label>
+                <label className="flex items-center gap-2 text-[0.82rem] text-brand-dark">
+                  <input
+                    type="radio"
+                    name="contact_type"
+                    value="professional"
+                    checked={contactType === 'professional'}
+                    onChange={() => setContactType('professional')}
+                  />
+                  {t.contact.form.professional}
+                </label>
+              </div>
+            </div>
+
+            {contactType === 'professional' && (
+              <div className="mb-4">
+                <label className={labelClass}>{t.contact.form.company}</label>
+                <input
+                  name="company"
+                  type="text"
+                  placeholder={t.contact.form.companyPlaceholder}
+                  className={inputClass}
+                />
+              </div>
+            )}
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
               <div>
-                <label className="text-[0.58rem] font-bold text-neutral-400 uppercase tracking-[0.1em] mb-1.5 block">
-                  {t.contact.form.name}
-                </label>
+                <label className={labelClass}>{t.contact.form.name}</label>
                 <input
                   name="name"
                   type="text"
                   placeholder={t.contact.form.namePlaceholder}
                   required
-                  className="w-full font-sans text-[0.82rem] text-brand-dark bg-white border border-neutral-200 px-4 py-3 outline-none transition-colors focus:border-brand-brown"
+                  className={inputClass}
                 />
               </div>
               <div>
-                <label className="text-[0.58rem] font-bold text-neutral-400 uppercase tracking-[0.1em] mb-1.5 block">
-                  {t.contact.form.phone}
-                </label>
+                <label className={labelClass}>{t.contact.form.phone}</label>
                 <input
                   name="phone"
                   type="tel"
                   placeholder={t.contact.form.phonePlaceholder}
-                  className="w-full font-sans text-[0.82rem] text-brand-dark bg-white border border-neutral-200 px-4 py-3 outline-none transition-colors focus:border-brand-brown"
+                  className={inputClass}
                 />
               </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
               <div>
-                <label className="text-[0.58rem] font-bold text-neutral-400 uppercase tracking-[0.1em] mb-1.5 block">
-                  {t.contact.form.email}
-                </label>
+                <label className={labelClass}>{t.contact.form.email}</label>
                 <input
                   name="email"
                   type="email"
                   placeholder={t.contact.form.emailPlaceholder}
                   required
-                  className="w-full font-sans text-[0.82rem] text-brand-dark bg-white border border-neutral-200 px-4 py-3 outline-none transition-colors focus:border-brand-brown"
+                  className={inputClass}
                 />
               </div>
               <div>
-                <label className="text-[0.58rem] font-bold text-neutral-400 uppercase tracking-[0.1em] mb-1.5 block">
-                  {t.contact.form.area}
-                </label>
-                <select
-                  name="area"
-                  className="w-full font-sans text-[0.82rem] text-brand-dark bg-white border border-neutral-200 px-4 py-3 outline-none transition-colors focus:border-brand-brown appearance-none cursor-pointer"
-                >
+                <label className={labelClass}>{t.contact.form.area}</label>
+                <select name="area" className={`${inputClass} appearance-none cursor-pointer`}>
                   <option value="">{t.contact.form.areaPlaceholder}</option>
                   {services.map((s) => (
                     <option key={s.id} value={s.name}>
@@ -145,27 +181,44 @@ export default function ContactSection({ locale }: ContactSectionProps) {
               </div>
             </div>
 
-            <div className="mb-6">
-              <label className="text-[0.58rem] font-bold text-neutral-400 uppercase tracking-[0.1em] mb-1.5 block">
-                {t.contact.form.message}
-              </label>
+            <div className="mb-4">
+              <label className={labelClass}>{t.contact.form.referral}</label>
+              <select name="referral_source" className={`${inputClass} appearance-none cursor-pointer`}>
+                <option value="">{t.contact.form.referralPlaceholder}</option>
+                <option value="google">{t.contact.form.referralGoogle}</option>
+                <option value="social">{t.contact.form.referralSocial}</option>
+                <option value="referral">{t.contact.form.referralKnown}</option>
+                <option value="other">{t.contact.form.referralOther}</option>
+              </select>
+            </div>
+
+            <div className="mb-4">
+              <label className={labelClass}>{t.contact.form.message}</label>
               <textarea
                 name="message"
                 placeholder={t.contact.form.messagePlaceholder}
                 required
-                className="w-full font-sans text-[0.82rem] text-brand-dark bg-white border border-neutral-200 px-4 py-3 outline-none transition-colors focus:border-brand-brown min-h-[100px] resize-y"
+                className={`${inputClass} min-h-[100px] resize-y`}
               />
             </div>
+
+            <label className="flex items-start gap-2 mb-6 text-[0.78rem] text-neutral-500">
+              <input type="checkbox" name="privacy" required className="mt-1" />
+              <span>
+                {t.contact.form.privacy}{' '}
+                <a href="/es/politica-privacidad" className="text-brand-brown underline">
+                  {t.contact.form.privacyLink}
+                </a>
+                .
+              </span>
+            </label>
 
             <button
               type="submit"
               disabled={status === 'loading'}
               className="btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {status === 'loading'
-                ? '...'
-                : t.contact.form.submit}{' '}
-              →
+              {status === 'loading' ? t.contact.form.sending : t.contact.form.submit} →
             </button>
 
             {status === 'success' && (
