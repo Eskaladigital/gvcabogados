@@ -9,7 +9,7 @@ import Breadcrumbs from '@/components/ui/Breadcrumbs';
 import RichTextContent from '@/components/content/RichTextContent';
 import { BreadcrumbSchema, ServiceSchema, FAQSchema } from '@/components/seo/SchemaOrg';
 import { services } from '@/data/services';
-import { supabaseAdmin } from '@/lib/supabase';
+import { EXPERTOS_URL } from '@/lib/negligencias-valla';
 
 const SERVICE_KEY = 'negligencias-medicas';
 const SERVICE_NAME = 'Negligencias Médicas';
@@ -19,15 +19,17 @@ const GENERIC_SLUG_EN = 'medical-malpractice';
 export const revalidate = 60;
 
 export const metadata: Metadata = {
-  title: `${SERVICE_NAME} — Abogados Especialistas | GVC Abogados`,
-  description: `Abogados especialistas en ${SERVICE_NAME.toLowerCase()}. Más de 55 años de experiencia. Sede en Murcia, actuación en toda España.`,
+  title: 'Negligencias médicas en Murcia | GVC Abogados',
+  description:
+    'Abogados de negligencias médicas en Murcia. Guía del bufete en la plaza. Si el daño ocurrió en otra ciudad, el producto nacional es GVC Expertos.',
   alternates: {
     canonical: `https://www.gvcabogados.com/es/servicios/${FOLDER_SLUG}`,
     languages: { en: `/en/services/${GENERIC_SLUG_EN}` },
   },
   openGraph: {
-    title: `${SERVICE_NAME} — Abogados Especialistas | GVC Abogados`,
-    description: `Abogados especialistas en ${SERVICE_NAME.toLowerCase()}. Más de 55 años de experiencia. Sede en Murcia, actuación en toda España.`,
+    title: 'Negligencias médicas en Murcia | GVC Abogados',
+    description:
+      'Abogados de negligencias médicas en Murcia. El producto nacional es GVC Expertos.',
     url: `https://www.gvcabogados.com/es/servicios/${FOLDER_SLUG}`,
     siteName: 'García-Valcárcel & Cáceres Abogados',
     locale: 'es_ES',
@@ -35,42 +37,8 @@ export const metadata: Metadata = {
   },
 };
 
-function cleanMurciaRefs(text: string): string {
-  return text
-    .replace(/\ben Murcia\b/gi, 'en toda España')
-    .replace(/\bde Murcia\b/gi, '')
-    .replace(/\bmurcianos?\b/gi, '')
-    .replace(/\s{2,}/g, ' ')
-    .trim();
-}
-
-function cleanMurciaRefsNeutral(text: string): string {
-  return text
-    .replace(/\ben Murcia\b/gi, '')
-    .replace(/\bde Murcia\b/gi, '')
-    .replace(/\bmurcianos?\b/gi, '')
-    .replace(/\s{2,}/g, ' ')
-    .trim();
-}
-
-async function getCitiesForService(): Promise<{ name: string; slug: string }[]> {
-  const { data } = await supabaseAdmin
-    .from('service_content')
-    .select('slug_es, localities!inner(name, slug), services!inner(service_key)')
-    .eq('services.service_key', SERVICE_KEY)
-    .order('localities.name');
-
-  if (!data || data.length === 0) return [];
-
-  return data.map((row: any) => ({
-    name: row.localities.name,
-    slug: row.localities.slug,
-  }));
-}
-
 export default async function NegligenciasMedicasPage() {
   const svc = services.find(s => s.id === SERVICE_KEY)!;
-  const cities = await getCitiesForService();
 
   const breadcrumbs = [
     { name: 'Inicio', href: '/es' },
@@ -79,17 +47,10 @@ export default async function NegligenciasMedicasPage() {
   ];
 
   const genericDescription = svc.descriptionEs;
-  const genericLongDescription = cleanMurciaRefs(svc.longDescriptionEs);
+  const genericLongDescription = svc.longDescriptionEs;
 
-  const genericSections = svc.sectionsEs.map(s => ({
-    title: cleanMurciaRefsNeutral(s.title),
-    content: cleanMurciaRefsNeutral(s.content),
-  }));
-
-  const genericFaqs = svc.faqsEs.map(f => ({
-    question: cleanMurciaRefsNeutral(f.question),
-    answer: cleanMurciaRefsNeutral(f.answer),
-  }));
+  const genericSections = svc.sectionsEs;
+  const genericFaqs = svc.faqsEs;
 
   return (
     <>
@@ -126,10 +87,14 @@ export default async function NegligenciasMedicasPage() {
                 <div className="w-16 h-0.5 bg-brand-gold/40" />
               </div>
               <h1 className="font-display text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white leading-[1.2] mb-5 md:mb-6 max-w-[95%]">
-                Abogados especialistas en {SERVICE_NAME.toLowerCase()}
+                Abogados especialistas en negligencias médicas en Murcia
               </h1>
               <p className="text-sm md:text-base text-neutral-300 leading-relaxed mb-8 md:mb-10 max-w-[600px]">
-                {genericDescription}. Despacho multidisciplinar con sede central en Murcia y actuación en toda España. Más de 55 años de experiencia.
+                {genericDescription}. Bufete en Murcia. Si el daño ocurrió en otra ciudad, el caso nacional lo lleva{' '}
+                <a href={EXPERTOS_URL} className="text-brand-gold underline underline-offset-2 hover:text-white">
+                  GVC Expertos
+                </a>
+                .
               </p>
               <div className="flex gap-3 items-center flex-wrap max-w-[600px]">
                 <Link href="/es/contacto" className="btn-primary">
@@ -243,41 +208,46 @@ export default async function NegligenciasMedicasPage() {
           </section>
         )}
 
-        {/* Ciudades donde actuamos */}
-        {cities.length > 0 && (
-          <section className="py-16 md:py-20 bg-white">
-            <div className="container-custom max-w-6xl">
-              <div className="reveal text-center mb-12">
-                <div className="flex items-center gap-3 justify-center mb-4">
-                  <span className="w-9 h-0.5 bg-brand-brown" />
-                  <span className="text-[0.6rem] font-semibold text-brand-brown tracking-[0.2em] uppercase">
-                    Actuamos en toda España
-                  </span>
-                  <span className="w-9 h-0.5 bg-brand-brown" />
-                </div>
-                <h2 className="section-title mb-4">
-                  {SERVICE_NAME}: asesoramiento local en su ciudad
-                </h2>
-                <p className="text-sm text-neutral-500 max-w-2xl mx-auto">
-                  Con sede central en Murcia, ofrecemos asesoramiento especializado presencial y por videoconferencia en las principales ciudades de España.
-                </p>
+        {/* Plaza Murcia + Expertos */}
+        <section className="py-16 md:py-20 bg-white">
+          <div className="container-custom max-w-6xl">
+            <div className="reveal text-center mb-12">
+              <div className="flex items-center gap-3 justify-center mb-4">
+                <span className="w-9 h-0.5 bg-brand-brown" />
+                <span className="text-[0.6rem] font-semibold text-brand-brown tracking-[0.2em] uppercase">
+                  Murcia y el resto del territorio
+                </span>
+                <span className="w-9 h-0.5 bg-brand-brown" />
               </div>
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
-                {cities.map((city) => (
-                  <Link
-                    key={city.slug}
-                    href={`/es/servicios/${FOLDER_SLUG}/${city.slug}`}
-                    className="reveal group bg-neutral-50 border border-neutral-200 p-4 rounded-xl text-center hover:border-brand-brown hover:shadow-md hover:-translate-y-0.5 transition-all"
-                  >
-                    <span className="text-sm font-medium text-brand-dark group-hover:text-brand-brown transition-colors">
-                      {city.name}
-                    </span>
-                  </Link>
-                ))}
-              </div>
+              <h2 className="section-title mb-4">
+                Negligencias médicas: plaza Murcia, producto nacional
+              </h2>
+              <p className="text-sm text-neutral-500 max-w-2xl mx-auto">
+                En este bufete cubrimos el caso ocurrido en Murcia. Fuera de la Región, GVC Expertos es el vertical de negligencias médicas.
+              </p>
             </div>
-          </section>
-        )}
+            <div className="grid sm:grid-cols-2 gap-4 max-w-3xl mx-auto">
+              <Link
+                href={`/es/servicios/${FOLDER_SLUG}/murcia`}
+                className="reveal group bg-neutral-50 border border-neutral-200 p-6 rounded-xl hover:border-brand-brown hover:shadow-md transition-all"
+              >
+                <span className="text-sm font-medium text-brand-dark group-hover:text-brand-brown">
+                  Caso en Murcia
+                </span>
+                <p className="text-sm text-neutral-500 mt-2">Guía del bufete en la plaza.</p>
+              </Link>
+              <a
+                href={`${EXPERTOS_URL}/es`}
+                className="reveal group bg-neutral-50 border border-neutral-200 p-6 rounded-xl hover:border-brand-brown hover:shadow-md transition-all"
+              >
+                <span className="text-sm font-medium text-brand-dark group-hover:text-brand-brown">
+                  Daño en otra ciudad → GVC Expertos
+                </span>
+                <p className="text-sm text-neutral-500 mt-2">Producto nacional. Despacho en Murcia, todo el territorio.</p>
+              </a>
+            </div>
+          </div>
+        </section>
 
         {/* Proceso de trabajo */}
         {svc.processEs.length > 0 && (
@@ -324,7 +294,7 @@ export default async function NegligenciasMedicasPage() {
                       { title: '1970', desc: 'año de fundación' },
                       { title: '5 profesionales', desc: 'especializados' },
                       { title: 'Trato', desc: 'personalizado' },
-                      { title: 'Toda España', desc: 'sede en Murcia' },
+                      { title: 'Murcia', desc: 'plaza del bufete' },
                     ].map((item, i) => (
                       <div key={i} className="bg-white/90 p-5 rounded-xl hover:bg-white hover:scale-105 transition-all">
                         <div className="font-display text-2xl md:text-3xl font-bold text-brand-brown-hover mb-1">

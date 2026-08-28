@@ -886,9 +886,9 @@ export const services: Service[] = [
     descriptionEs: 'Reclamaciones por errores médicos, responsabilidad sanitaria e indemnizaciones',
     descriptionEn: 'Claims for medical errors, healthcare liability and compensation',
     longDescriptionEs:
-      'Abogados especializados en negligencias médicas en Murcia. Reclamamos por errores de diagnóstico, fallos quirúrgicos, infecciones hospitalarias, consentimiento informado y cualquier tipo de mala praxis sanitaria ante el Servicio Murciano de Salud (SMS) y los tribunales competentes. Contamos con una web especializada en esta materia con todo el contenido SEO necesario.',
+      'Abogados especializados en negligencias médicas en Murcia. Reclamamos por errores de diagnóstico, fallos quirúrgicos, infecciones hospitalarias, consentimiento informado y cualquier tipo de mala praxis sanitaria ante el Servicio Murciano de Salud (SMS) y los tribunales competentes. Si el daño ocurrió fuera de Murcia, el producto nacional es GVC Expertos (gvcexpertos.com).',
     longDescriptionEn:
-      'Lawyers specialized in medical malpractice in Murcia. We claim for diagnostic errors, surgical failures, hospital infections, informed consent and any type of healthcare malpractice.',
+      'Lawyers specialized in medical malpractice in Murcia. We claim for diagnostic errors, surgical failures, hospital infections, informed consent and any type of healthcare malpractice. If the harm occurred outside Murcia, the national product is GVC Expertos (gvcexpertos.com).',
     icon: '🏥',
     priority: 5,
     category: 'privado',

@@ -4,6 +4,7 @@ import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import { supabaseAdmin } from '@/lib/supabase';
 import { getActiveServices, getFolderSlug } from '@/data/services';
+import { shouldIndexServiceLocality } from '@/lib/negligencias-valla';
 import { Home, Scale, Globe, BookOpen, FileText } from 'lucide-react';
 
 export const revalidate = 60;
@@ -56,7 +57,10 @@ export default async function SitemapPage() {
   }));
 
   const localPagesEs = (servicePages || [])
-    .filter((sc: any) => activeIds.has(sc.services.service_key))
+    .filter((sc: any) =>
+      activeIds.has(sc.services.service_key)
+      && shouldIndexServiceLocality(sc.services.service_key, sc.localities.slug)
+    )
     .map((sc: any) => ({
       href: `/es/servicios/${getFolderSlug(sc.services.service_key)}/${sc.localities.slug}`,
       label: `${sc.services.name_es} — ${sc.localities.name}`,
@@ -84,7 +88,11 @@ export default async function SitemapPage() {
   }));
 
   const localPagesEn = (servicePages || [])
-    .filter((sc: any) => sc.slug_en && activeIds.has(sc.services.service_key))
+    .filter((sc: any) =>
+      sc.slug_en
+      && activeIds.has(sc.services.service_key)
+      && shouldIndexServiceLocality(sc.services.service_key, sc.localities.slug)
+    )
     .map((sc: any) => {
       const svc = activeServices.find(s => s.id === sc.services.service_key);
       return {

@@ -2,6 +2,7 @@ import { MetadataRoute } from 'next';
 import { supabaseAdmin } from '@/lib/supabase';
 import { SITE_URL } from '@/lib/site-config';
 import { getActiveServices, getFolderSlug } from '@/data/services';
+import { shouldIndexServiceLocality } from '@/lib/negligencias-valla';
 
 export const revalidate = 3600;
 
@@ -50,7 +51,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const activeIds = new Set(activeServices.map(s => s.id));
 
   const localPagesEs = (servicePages || [])
-    .filter((sc: any) => activeIds.has(sc.services.service_key))
+    .filter((sc: any) =>
+      activeIds.has(sc.services.service_key)
+      && shouldIndexServiceLocality(sc.services.service_key, sc.localities.slug)
+    )
     .map((sc: any) => ({
       url: `${SITE_URL}/es/servicios/${getFolderSlug(sc.services.service_key)}/${sc.localities.slug}`,
       lastModified: new Date(sc.updated_at || now),
@@ -59,7 +63,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }));
 
   const localPagesEn = (servicePages || [])
-    .filter((sc: any) => sc.slug_en && activeIds.has(sc.services.service_key))
+    .filter((sc: any) =>
+      sc.slug_en
+      && activeIds.has(sc.services.service_key)
+      && shouldIndexServiceLocality(sc.services.service_key, sc.localities.slug)
+    )
     .map((sc: any) => {
       const svc = activeServices.find(s => s.id === sc.services.service_key);
       return {

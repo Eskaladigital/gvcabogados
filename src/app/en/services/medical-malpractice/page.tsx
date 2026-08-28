@@ -9,7 +9,7 @@ import Breadcrumbs from '@/components/ui/Breadcrumbs';
 import RichTextContent from '@/components/content/RichTextContent';
 import { BreadcrumbSchema, ServiceSchema, FAQSchema } from '@/components/seo/SchemaOrg';
 import { services } from '@/data/services';
-import { supabaseAdmin } from '@/lib/supabase';
+import { EXPERTOS_URL } from '@/lib/negligencias-valla';
 
 const SERVICE_KEY = 'negligencias-medicas';
 const SERVICE_NAME = 'Medical Malpractice';
@@ -19,15 +19,17 @@ const FOLDER_SLUG_ES = 'negligencias-medicas';
 export const revalidate = 60;
 
 export const metadata: Metadata = {
-  title: `${SERVICE_NAME} — Specialist Lawyers | GVC Lawyers`,
-  description: `Specialist ${SERVICE_NAME.toLowerCase()} lawyers. Over 55 years of experience. Based in Murcia, operating across Spain.`,
+  title: 'Medical malpractice in Murcia | GVC Lawyers',
+  description:
+    'Medical malpractice lawyers in Murcia. The firm’s local guide. If the harm occurred in another city, the national product is GVC Expertos.',
   alternates: {
     canonical: `https://www.gvcabogados.com/en/services/${FOLDER_SLUG_EN}`,
     languages: { es: `/es/servicios/${FOLDER_SLUG_ES}` },
   },
   openGraph: {
-    title: `${SERVICE_NAME} — Specialist Lawyers | GVC Lawyers`,
-    description: `Specialist ${SERVICE_NAME.toLowerCase()} lawyers. Over 55 years of experience. Based in Murcia, operating across Spain.`,
+    title: 'Medical malpractice in Murcia | GVC Lawyers',
+    description:
+      'Medical malpractice lawyers in Murcia. The national product is GVC Expertos.',
     url: `https://www.gvcabogados.com/en/services/${FOLDER_SLUG_EN}`,
     siteName: 'García-Valcárcel & Cáceres Lawyers',
     locale: 'en_GB',
@@ -35,41 +37,8 @@ export const metadata: Metadata = {
   },
 };
 
-function cleanMurciaRefs(text: string): string {
-  return text
-    .replace(/\bin Murcia\b/gi, 'across Spain')
-    .replace(/\bof Murcia\b/gi, '')
-    .replace(/\s{2,}/g, ' ')
-    .trim();
-}
-
-function cleanMurciaRefsNeutral(text: string): string {
-  return text
-    .replace(/\bin Murcia\b/gi, '')
-    .replace(/\bof Murcia\b/gi, '')
-    .replace(/\s{2,}/g, ' ')
-    .trim();
-}
-
-async function getCitiesForService(): Promise<{ name: string; slug: string }[]> {
-  const { data } = await supabaseAdmin
-    .from('service_content')
-    .select('slug_es, localities!inner(name, slug), services!inner(service_key)')
-    .eq('services.service_key', SERVICE_KEY)
-    .order('localities.name');
-
-  if (!data || data.length === 0) return [];
-
-  return data.map((row: any) => ({
-    name: row.localities.name,
-    slug: row.localities.slug,
-  }));
-}
-
 export default async function MedicalMalpracticePage() {
   const svc = services.find(s => s.id === SERVICE_KEY)!;
-  const cities = await getCitiesForService();
-  const locale = 'en';
 
   const breadcrumbs = [
     { name: 'Home', href: '/en' },
@@ -78,17 +47,10 @@ export default async function MedicalMalpracticePage() {
   ];
 
   const genericDescription = svc.descriptionEn;
-  const genericLongDescription = cleanMurciaRefs(svc.longDescriptionEn);
+  const genericLongDescription = svc.longDescriptionEn;
 
-  const genericSections = svc.sectionsEn.map(s => ({
-    title: cleanMurciaRefsNeutral(s.title),
-    content: cleanMurciaRefsNeutral(s.content),
-  }));
-
-  const genericFaqs = svc.faqsEn.map(f => ({
-    question: cleanMurciaRefsNeutral(f.question),
-    answer: cleanMurciaRefsNeutral(f.answer),
-  }));
+  const genericSections = svc.sectionsEn;
+  const genericFaqs = svc.faqsEn;
 
   return (
     <>
@@ -125,10 +87,14 @@ export default async function MedicalMalpracticePage() {
                 <div className="w-16 h-0.5 bg-brand-gold/40" />
               </div>
               <h1 className="font-display text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white leading-[1.2] mb-5 md:mb-6 max-w-[95%]">
-                Expert {SERVICE_NAME.toLowerCase()} lawyers
+                Medical malpractice lawyers in Murcia
               </h1>
               <p className="text-sm md:text-base text-neutral-300 leading-relaxed mb-8 md:mb-10 max-w-[600px]">
-                {genericDescription}. Multidisciplinary firm based in Murcia operating across Spain. Over 55 years of experience.
+                {genericDescription}. Law firm in Murcia. If the harm occurred in another city, the national case is handled by{' '}
+                <a href={EXPERTOS_URL} className="text-brand-gold underline underline-offset-2 hover:text-white">
+                  GVC Expertos
+                </a>
+                .
               </p>
               <div className="flex gap-3 items-center flex-wrap max-w-[600px]">
                 <Link href="/en/contact" className="btn-primary">
@@ -242,41 +208,45 @@ export default async function MedicalMalpracticePage() {
           </section>
         )}
 
-        {/* Cities */}
-        {cities.length > 0 && (
-          <section className="py-16 md:py-20 bg-white">
-            <div className="container-custom max-w-6xl">
-              <div className="reveal text-center mb-12">
-                <div className="flex items-center gap-3 justify-center mb-4">
-                  <span className="w-9 h-0.5 bg-brand-brown" />
-                  <span className="text-[0.6rem] font-semibold text-brand-brown tracking-[0.2em] uppercase">
-                    We operate across Spain
-                  </span>
-                  <span className="w-9 h-0.5 bg-brand-brown" />
-                </div>
-                <h2 className="section-title mb-4">
-                  {SERVICE_NAME}: local advice in your city
-                </h2>
-                <p className="text-sm text-neutral-500 max-w-2xl mx-auto">
-                  Based in Murcia, we offer specialist advice in person and by video conference across Spain&apos;s main cities.
-                </p>
+        <section className="py-16 md:py-20 bg-white">
+          <div className="container-custom max-w-6xl">
+            <div className="reveal text-center mb-12">
+              <div className="flex items-center gap-3 justify-center mb-4">
+                <span className="w-9 h-0.5 bg-brand-brown" />
+                <span className="text-[0.6rem] font-semibold text-brand-brown tracking-[0.2em] uppercase">
+                  Murcia and the rest of Spain
+                </span>
+                <span className="w-9 h-0.5 bg-brand-brown" />
               </div>
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
-                {cities.map((city) => (
-                  <Link
-                    key={city.slug}
-                    href={`/en/services/${FOLDER_SLUG_EN}/${city.slug}`}
-                    className="reveal group bg-neutral-50 border border-neutral-200 p-4 rounded-xl text-center hover:border-brand-brown hover:shadow-md hover:-translate-y-0.5 transition-all"
-                  >
-                    <span className="text-sm font-medium text-brand-dark group-hover:text-brand-brown transition-colors">
-                      {city.name}
-                    </span>
-                  </Link>
-                ))}
-              </div>
+              <h2 className="section-title mb-4">
+                Medical malpractice: Murcia office, national product
+              </h2>
+              <p className="text-sm text-neutral-500 max-w-2xl mx-auto">
+                This firm covers cases that occurred in Murcia. Outside the Region, GVC Expertos is the medical-negligence vertical.
+              </p>
             </div>
-          </section>
-        )}
+            <div className="grid sm:grid-cols-2 gap-4 max-w-3xl mx-auto">
+              <Link
+                href={`/en/services/${FOLDER_SLUG_EN}/murcia`}
+                className="reveal group bg-neutral-50 border border-neutral-200 p-6 rounded-xl hover:border-brand-brown hover:shadow-md transition-all"
+              >
+                <span className="text-sm font-medium text-brand-dark group-hover:text-brand-brown">
+                  Case in Murcia
+                </span>
+                <p className="text-sm text-neutral-500 mt-2">The firm’s local guide.</p>
+              </Link>
+              <a
+                href={`${EXPERTOS_URL}/en`}
+                className="reveal group bg-neutral-50 border border-neutral-200 p-6 rounded-xl hover:border-brand-brown hover:shadow-md transition-all"
+              >
+                <span className="text-sm font-medium text-brand-dark group-hover:text-brand-brown">
+                  Harm in another city → GVC Expertos
+                </span>
+                <p className="text-sm text-neutral-500 mt-2">National product. Office in Murcia, all of Spain.</p>
+              </a>
+            </div>
+          </div>
+        </section>
 
         {/* Work process */}
         {svc.processEn.length > 0 && (
@@ -323,7 +293,7 @@ export default async function MedicalMalpracticePage() {
                       { title: '1970', desc: 'year founded' },
                       { title: '5 professionals', desc: 'specialized' },
                       { title: 'Personal', desc: 'personalized' },
-                      { title: 'All Spain', desc: 'based in Murcia' },
+                      { title: 'Murcia', desc: 'the firm’s plaza' },
                     ].map((item, i) => (
                       <div key={i} className="bg-white/90 p-5 rounded-xl hover:bg-white hover:scale-105 transition-all">
                         <div className="font-display text-2xl md:text-3xl font-bold text-brand-brown-hover mb-1">

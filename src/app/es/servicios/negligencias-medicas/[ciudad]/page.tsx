@@ -13,7 +13,6 @@ import Breadcrumbs from '@/components/ui/Breadcrumbs';
 import RichTextContent from '@/components/content/RichTextContent';
 import { BreadcrumbSchema, ServiceSchema, FAQSchema } from '@/components/seo/SchemaOrg';
 import { getServiceContentByServiceAndCity } from '@/lib/service-content';
-import { supabaseAdmin } from '@/lib/supabase';
 
 const SERVICE_KEY = 'negligencias-medicas';
 const SERVICE_NAME = 'Negligencias Médicas';
@@ -27,21 +26,7 @@ export const dynamicParams = false;
 export const revalidate = 60;
 
 export async function generateStaticParams() {
-  const slugs = new Set<string>();
-
-  const { data: nuevo } = await supabaseAdmin
-    .from('svc_negligencias_medicas')
-    .select('localities!inner(slug)');
-  if (nuevo) nuevo.forEach((r: any) => slugs.add(r.localities.slug));
-
-  const { data: legacy } = await supabaseAdmin
-    .from('service_content')
-    .select('localities!inner(slug), services!inner(service_key)')
-    .eq('services.service_key', SERVICE_KEY);
-  if (legacy) legacy.forEach((r: any) => slugs.add(r.localities.slug));
-
-  if (slugs.size === 0) return [{ ciudad: 'murcia' }];
-  return [...slugs].map((slug) => ({ ciudad: slug }));
+  return [{ ciudad: 'murcia' }]
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {

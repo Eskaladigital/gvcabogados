@@ -1,3 +1,5 @@
+const { buildExpertosNegligenciasRedirects } = require('./src/lib/negligencias-valla.cjs')
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
@@ -11,6 +13,9 @@ const nextConfig = {
   async redirects() {
     return [
       { source: '/', destination: '/es', permanent: true },
+
+      // Negligencias fuera de Murcia → GVC Expertos (antes que el comodín :ciudad)
+      ...buildExpertosNegligenciasRedirects(),
 
       // URLs antiguas con slug local -> nueva estructura carpeta/ciudad
       { source: '/es/servicios/abogados-accidentes-trafico-:ciudad', destination: '/es/servicios/accidentes-trafico/:ciudad', permanent: true },
