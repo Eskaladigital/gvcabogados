@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from 'react';
 import Link from 'next/link';
-import { BarChart3, Cookie, Shield, X } from 'lucide-react';
+import { BarChart3, Cookie, Megaphone, Settings, Shield, X } from 'lucide-react';
 import { Locale } from '@/data/translations';
 
 export const OPEN_COOKIE_SETTINGS = 'openCookieSettings';
@@ -12,19 +12,22 @@ const PREFS_KEY = 'gvcabogados_cookie_preferences';
 type Prefs = {
   necessary: true;
   analytics: boolean;
+  functional: boolean;
+  marketing: boolean;
 };
 
-const ALL_ON: Prefs = { necessary: true, analytics: true };
-const ONLY_NECESSARY: Prefs = { necessary: true, analytics: false };
+const ALL_ON: Prefs = { necessary: true, analytics: true, functional: true, marketing: true };
+const ONLY_NECESSARY: Prefs = { necessary: true, analytics: false, functional: false, marketing: false };
 
 function updateGtag(prefs: Prefs) {
   if (typeof window === 'undefined' || !(window as any).gtag) return;
-  const v = prefs.analytics ? 'granted' : 'denied';
+  const analytics = prefs.analytics ? 'granted' : 'denied';
+  const ads = prefs.marketing ? 'granted' : 'denied';
   (window as any).gtag('consent', 'update', {
-    analytics_storage: v,
-    ad_storage: 'denied',
-    ad_user_data: 'denied',
-    ad_personalization: 'denied',
+    analytics_storage: analytics,
+    ad_storage: ads,
+    ad_user_data: ads,
+    ad_personalization: ads,
   });
 }
 
@@ -39,7 +42,12 @@ function readPrefs(): Prefs | null {
     const raw = localStorage.getItem(PREFS_KEY);
     if (raw) {
       const parsed = JSON.parse(raw) as Partial<Prefs>;
-      return { necessary: true, analytics: Boolean(parsed.analytics) };
+      return {
+        necessary: true,
+        analytics: Boolean(parsed.analytics),
+        functional: Boolean(parsed.functional),
+        marketing: Boolean(parsed.marketing),
+      };
     }
     const legacy = localStorage.getItem(KEY);
     if (legacy === 'granted') return ALL_ON;
@@ -136,21 +144,39 @@ export function CookieConsentBar() {
           <div className="flex-1 overflow-y-auto p-6">
             <p className="text-brand-dark/70 mb-6">
               {es
-                ? 'Elige qué tipos de cookies deseas aceptar. Las cookies necesarias no se pueden desactivar.'
-                : 'Choose which cookies to accept. Necessary cookies cannot be turned off.'}
+                ? 'Elige qué tipos de cookies deseas aceptar. Las cookies necesarias no se pueden desactivar ya que son imprescindibles para el funcionamiento del sitio.'
+                : 'Choose which cookies to accept. Necessary cookies cannot be turned off because they are essential for the site to work.'}
             </p>
-            <Category
-              title={es ? 'Cookies necesarias' : 'Necessary cookies'}
-              description={es ? 'Esenciales para el funcionamiento del sitio y recordar tu consentimiento.' : 'Essential for the site to work and to remember your consent.'}
-              enabled
-              required
-            />
-            <Category
-              title={es ? 'Cookies analíticas' : 'Analytics cookies'}
-              description={es ? 'Nos permiten medir visitas y mejorar la web (Google Analytics).' : 'Help us measure visits and improve the site (Google Analytics).'}
-              enabled={prefs.analytics}
-              onChange={(v) => setPrefs((p) => ({ ...p, analytics: v }))}
-            />
+            <div className="space-y-4">
+              <Category
+                icon={Shield}
+                title={es ? 'Cookies necesarias' : 'Necessary cookies'}
+                description={es ? 'Estas cookies son esenciales para el funcionamiento del sitio web. Sin ellas, el sitio no funcionaría correctamente.' : 'These cookies are essential for the website to work. Without them, the site would not function correctly.'}
+                enabled
+                required
+              />
+              <Category
+                icon={BarChart3}
+                title={es ? 'Cookies analíticas' : 'Analytics cookies'}
+                description={es ? 'Nos permiten contar las visitas y analizar cómo los usuarios navegan por el sitio para mejorarlo.' : 'Allow us to count visits and analyse how users browse the site in order to improve it.'}
+                enabled={prefs.analytics}
+                onChange={(v) => setPrefs((p) => ({ ...p, analytics: v }))}
+              />
+              <Category
+                icon={Settings}
+                title={es ? 'Cookies funcionales' : 'Functional cookies'}
+                description={es ? 'Permiten recordar tus preferencias para una experiencia más personalizada.' : 'Remember your preferences for a more personalised experience.'}
+                enabled={prefs.functional}
+                onChange={(v) => setPrefs((p) => ({ ...p, functional: v }))}
+              />
+              <Category
+                icon={Megaphone}
+                title={es ? 'Cookies de marketing' : 'Marketing cookies'}
+                description={es ? 'Se utilizan para mostrarte anuncios relevantes y medir la efectividad de las campañas publicitarias.' : 'Used to show you relevant ads and measure the effectiveness of advertising campaigns.'}
+                enabled={prefs.marketing}
+                onChange={(v) => setPrefs((p) => ({ ...p, marketing: v }))}
+              />
+            </div>
             <p className="text-sm text-brand-dark/60 mt-6">
               {es ? 'Más información en la ' : 'More information in our '}
               <Link href={`${prefix}/politica-cookies`} className="text-[#3d2b1f] underline" onClick={() => setView('hidden')}>
@@ -184,8 +210,8 @@ export function CookieConsentBar() {
             <h3 className="text-lg font-bold text-brand-dark mb-1">{es ? 'Utilizamos cookies' : 'We use cookies'}</h3>
             <p className="text-brand-dark/70 text-sm">
               {es
-                ? 'Usamos cookies de analítica para medir visitas y mejorar la web. Puedes aceptar todas o configurar tus preferencias. '
-                : 'We use analytics cookies to measure visits and improve the site. You can accept all or set your preferences. '}
+                ? 'Usamos cookies propias y de terceros para mejorar tu experiencia, analizar el tráfico y mostrarte contenido personalizado. Puedes aceptar todas o configurar tus preferencias. '
+                : 'We use our own and third-party cookies to improve your experience, analyse traffic and show you personalised content. You can accept all or set your preferences. '}
               <Link href={`${prefix}/politica-cookies`} className="underline">
                 {es ? 'Política de cookies' : 'Cookie policy'}
               </Link>
@@ -206,12 +232,14 @@ export function CookieConsentBar() {
 }
 
 function Category({
+  icon: Icon,
   title,
   description,
   enabled,
   required,
   onChange,
 }: {
+  icon: typeof Shield;
   title: string;
   description: string;
   enabled: boolean;
@@ -219,10 +247,10 @@ function Category({
   onChange?: (v: boolean) => void;
 }) {
   return (
-    <div className={`p-4 rounded-xl border-2 mb-4 ${enabled ? 'border-[#3d2b1f] bg-[#3d2b1f]/5' : 'border-gray-200 bg-gray-50'}`}>
+    <div className={`p-4 rounded-xl border-2 ${enabled ? 'border-[#3d2b1f] bg-[#3d2b1f]/5' : 'border-gray-200 bg-gray-50'}`}>
       <div className="flex items-start gap-4">
         <div className={`w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 ${enabled ? 'bg-[#3d2b1f] text-white' : 'bg-gray-200 text-gray-500'}`} aria-hidden="true">
-          {required ? <Shield className="h-5 w-5" /> : <BarChart3 className="h-5 w-5" />}
+          <Icon className="h-5 w-5" />
         </div>
         <div className="flex-1">
           <div className="flex items-center justify-between mb-1 gap-3">

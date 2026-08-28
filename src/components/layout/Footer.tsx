@@ -16,7 +16,7 @@ export default function Footer({ locale }: FooterProps) {
   return (
     <footer className="bg-brand-brown pt-14 text-brand-dark">
       <div className="container-custom">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-[1.4fr_1fr_0.7fr_1fr] gap-x-8 gap-y-10 pb-10 border-b border-brand-dark/10">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-[1.4fr_1fr_0.7fr_1fr_0.9fr] gap-x-8 gap-y-10 pb-10 border-b border-brand-dark/10">
           {/* Brand */}
           <div className="flex flex-col gap-4">
             <Link href={prefix} className="flex items-center gap-3">
@@ -104,26 +104,51 @@ export default function Footer({ locale }: FooterProps) {
               <li className="m-0 p-0 text-[0.78rem] text-brand-dark/70">{t.contact.schedule.value}</li>
             </ul>
           </div>
+
+          {/* Legal */}
+          <div>
+            <h4 className="text-[0.68rem] font-semibold text-brand-dark uppercase tracking-[0.12em] mb-3">
+              Legal
+            </h4>
+            <ul className="flex flex-col gap-1.5 list-none">
+              <li className="m-0 p-0">
+                <Link href={`${prefix}/aviso-legal`} className="text-[0.78rem] text-brand-dark/70 hover:text-brand-dark transition-colors">
+                  {t.nav.legalNotice}
+                </Link>
+              </li>
+              <li className="m-0 p-0">
+                <Link href={`${prefix}/politica-privacidad`} className="text-[0.78rem] text-brand-dark/70 hover:text-brand-dark transition-colors">
+                  {t.nav.privacy}
+                </Link>
+              </li>
+              <li className="m-0 p-0">
+                <Link href={`${prefix}/politica-cookies`} className="text-[0.78rem] text-brand-dark/70 hover:text-brand-dark transition-colors">
+                  {t.nav.cookies}
+                </Link>
+              </li>
+              <li className="m-0 p-0">
+                <CookieSettingsButton
+                  className="text-[0.78rem] text-brand-dark/70 hover:text-brand-dark transition-colors bg-transparent p-0 border-0 cursor-pointer"
+                  label={locale === 'es' ? 'Configurar cookies' : 'Manage cookies'}
+                />
+              </li>
+            </ul>
+          </div>
         </div>
 
         {/* Bottom */}
-        <div className="py-5 flex flex-col md:flex-row justify-between items-center gap-3">
+        <div className="py-5 flex flex-col items-center gap-3">
           <p className="text-[0.68rem] text-brand-dark/70">{t.footer.rights}</p>
-          <div className="flex gap-6">
-            <Link href={`${prefix}/aviso-legal`} className="text-[0.68rem] text-brand-dark/70 hover:text-brand-dark transition-colors">
-              {t.nav.legalNotice}
-            </Link>
-            <Link href={`${prefix}/politica-privacidad`} className="text-[0.68rem] text-brand-dark/70 hover:text-brand-dark transition-colors">
-              {t.nav.privacy}
-            </Link>
-            <Link href={`${prefix}/politica-cookies`} className="text-[0.68rem] text-brand-dark/70 hover:text-brand-dark transition-colors">
-              {t.nav.cookies}
-            </Link>
-            <CookieSettingsButton
-              className="text-[0.68rem] text-brand-dark/70 hover:text-brand-dark transition-colors bg-transparent p-0 border-0 cursor-pointer"
-              label={locale === 'es' ? 'Configurar cookies' : 'Manage cookies'}
-            />
-          </div>
+          <p className="text-[0.68rem] text-brand-dark/70 text-center leading-relaxed">
+            <span className="block sm:inline">Hecho con <span className="text-red-600 inline-block animate-pulse">❤️</span> en Murcia</span>
+            <span className="hidden sm:inline"> · </span>
+            <span className="block sm:inline mt-1 sm:mt-0">
+              Web desarrollada por{' '}
+              <a href="https://www.eskaladigital.com" target="_blank" rel="noopener noreferrer" className="text-brand-dark font-medium whitespace-nowrap hover:underline">
+                ESKALA Agencia de Marketing Digital
+              </a>
+            </span>
+          </p>
         </div>
       </div>
     </footer>
