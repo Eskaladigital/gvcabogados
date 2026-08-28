@@ -12,7 +12,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   const staticPagesEs = [
     '', '/sobre-nosotros', '/servicios', '/equipo', '/blog', '/contacto',
-    '/politica-cookies', '/politica-privacidad', '/aviso-legal', '/sitemap',
   ].map((path) => ({
     url: `${SITE_URL}/es${path}`,
     lastModified: now,
@@ -21,7 +20,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }));
 
   const staticPagesEn = [
-    '', '/about', '/services', '/team', '/blog', '/contact', '/sitemap',
+    '', '/about', '/services', '/team', '/blog', '/contact',
   ].map((path) => ({
     url: `${SITE_URL}/en${path}`,
     lastModified: now,
