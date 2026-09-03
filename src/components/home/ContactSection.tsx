@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { getTranslations, Locale } from '@/data/translations';
 import { getServicesByLocale } from '@/data/services';
 
@@ -18,6 +18,11 @@ export default function ContactSection({ locale }: ContactSectionProps) {
   const services = getServicesByLocale(locale);
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const [contactType, setContactType] = useState<'particular' | 'professional'>('particular');
+  const [formStartedAt, setFormStartedAt] = useState(0);
+
+  useEffect(() => {
+    setFormStartedAt(Date.now());
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -35,6 +40,8 @@ export default function ContactSection({ locale }: ContactSectionProps) {
       referral_source: formData.get('referral_source'),
       gdpr_consent: formData.get('privacy') === 'on',
       locale,
+      website: formData.get('website'),
+      form_started_at: formStartedAt,
     };
 
     try {
@@ -95,8 +102,12 @@ export default function ContactSection({ locale }: ContactSectionProps) {
 
           <form
             onSubmit={handleSubmit}
-            className="reveal bg-neutral-50 border border-neutral-200 p-8 md:p-10"
+            className="reveal relative bg-neutral-50 border border-neutral-200 p-8 md:p-10"
           >
+            <div className="absolute left-[-9999px] h-px w-px overflow-hidden" aria-hidden="true">
+              <label htmlFor="website">Sitio web</label>
+              <input type="text" id="website" name="website" tabIndex={-1} autoComplete="off" />
+            </div>
             <div className="mb-4">
               <span className={labelClass}>{t.contact.form.contactType}</span>
               <div className="flex gap-4">

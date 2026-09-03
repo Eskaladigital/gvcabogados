@@ -14,6 +14,7 @@ export async function GET() {
   const { data, error } = await supabaseAdmin
     .from('contact_submissions')
     .select('*')
+    .or('notes.is.null,notes.not.ilike.spam%')
     .order('created_at', { ascending: false })
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
