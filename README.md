@@ -388,6 +388,9 @@ URL: `/administrator/login`
 - Login con Supabase Auth
 - CRUD de artículos del blog (bilingüe, TinyMCE)
 - Protegido con cookies HTTP-only y RLS
+- Contactos: `/administrator/contactos`. Form `/contacto` → `contact_submissions` + SMTP OVH.
+
+**Anti-spam (9 sep, `67c5059`):** honeypot `website`, tiempo mínimo 2,5 s, tokens aleatorios y pitch de venta B2B (Calendly, demos, `/pricing`, 2+ enlaces; molde ACTTAX). El bot recibe `{ success: true }` y no hay mail.
 
 ---
 
