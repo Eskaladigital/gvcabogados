@@ -19,12 +19,29 @@ function dottedGmailSpam(email: string): boolean {
   return (local.match(/\./g) || []).length >= 4
 }
 
-/** Pitch de copywriter / Calendly (Hannah Melotto 2–3 sep y el mismo molde). */
-function looksLikeWriterPitch(message: string): boolean {
+/** Pitch de venta fría B2B (software, SaaS, copywriters, enlaces SEO, Calendly). */
+function looksLikeSalesPitch(message: string): boolean {
   const m = message.toLowerCase()
-  const hasCalendly = m.includes('calendly.com')
-  const writer = /freelance writer|writing projects|thought leadership|press releases/.test(m)
-  return hasCalendly && writer
+  if (m.includes('calendly.com')) return true
+  if (/freelance writer|writing projects|thought leadership|press releases/.test(m)) return true
+  if (/guest posts?|link building|backlinks?|dofollow|sponsored post/.test(m)) return true
+  if (/prueba gratuita|tarjeta bancaria|demo r[aá]pida|agend(ar|a) (una )?demo/.test(m)) return true
+  if (/desde\s+\d+([.,]\d+)?\s*€\s*\/\s*(mes|factura|año|empleado|usuario)/.test(m)) return true
+  const links = m.match(/https?:\/\/[^\s]+/g) || []
+  if (links.length >= 2) return true
+  if (links.some((l) => /pricing|demo|youtube\.com|youtu\.be|bit\.ly/.test(l))) return true
+  return false
+}
+
+/** Palabras largas casi sin vocales (secuencias aleatorias de bots). */
+function looksLikeTokenWithoutVowels(text: string): boolean {
+  const words = text.split(/\s+/).filter((w) => w.length >= 10)
+  return words.some((w) => {
+    const clean = w.replace(/[^a-zA-Z]/g, '')
+    if (clean.length < 10) return false
+    const vowels = (clean.match(/[aeiouAEIOU]/g) || []).length
+    return vowels / clean.length < 0.2
+  })
 }
 
 function isBotSubmission(input: {
@@ -39,9 +56,10 @@ function isBotSubmission(input: {
   if (!Number.isFinite(started) || started <= 0) return true
   const elapsed = Date.now() - started
   if (elapsed < 2500 || elapsed > 24 * 60 * 60 * 1000) return true
-  if (looksLikeRandomToken(input.name) && looksLikeRandomToken(input.message)) return true
+  if (looksLikeRandomToken(input.name) || looksLikeRandomToken(input.message)) return true
+  if (looksLikeTokenWithoutVowels(`${input.name} ${input.message}`)) return true
   if (dottedGmailSpam(input.email) && looksLikeRandomToken(input.name)) return true
-  if (looksLikeWriterPitch(input.message)) return true
+  if (looksLikeSalesPitch(input.message)) return true
   return false
 }
 
