@@ -62,6 +62,23 @@ const nextConfig = {
       { source: '/en/services/contracts-obligations-lawyers-murcia', destination: '/en/services', permanent: true },
       { source: '/en/services/mediation-lawyers-murcia', destination: '/en/services', permanent: true },
       { source: '/en/services/vulture-fund-defense-lawyers-murcia', destination: '/en/services', permanent: true },
+
+      // ES: URLs legacy Joomla (/es/derecho-privado/ y /es/derecho-publico/) detectadas en GSC (21 nov 2026: 109,5k imp. en 404)
+      { source: '/es/derecho-privado/abogados-negligencias-medicas-murcia', destination: '/es/servicios/negligencias-medicas/murcia', permanent: true },
+      { source: '/es/derecho-publico/abogados-extranjeria-inmigracion-murcia', destination: '/es/servicios/permisos-residencia/murcia', permanent: true },
+      { source: '/es/derecho-privado/abogados-responsabilidad-civil-seguros-murcia', destination: '/es/servicios/responsabilidad-civil/murcia', permanent: true },
+      { source: '/es/derecho-publico/abogados-derecho-administrativo-murcia', destination: '/es/servicios/responsabilidad-administracion/murcia', permanent: true },
+      { source: '/es/derecho-privado/abogados-derecho-familia-murcia', destination: '/es/servicios/derecho-familia/murcia', permanent: true },
+      { source: '/es/derecho-privado/abogados-accidentes-trafico-murcia', destination: '/es/servicios/accidentes-trafico/murcia', permanent: true },
+      { source: '/es/derecho-privado/abogados-derecho-inmobiliario-murcia', destination: '/es/servicios', permanent: true },
+      { source: '/es/derecho-privado/abogados-derecho-mercantil-murcia', destination: '/es/servicios', permanent: true },
+      { source: '/es/derecho-publico/abogados-derecho-penal-murcia', destination: '/es/servicios', permanent: true },
+      { source: '/es/derecho-privado/abogados-derecho-sucesorio-herencias-murcia', destination: '/es/servicios', permanent: true },
+      { source: '/es/derecho-privado/abogados-mediacion-arbitraje-civil-mercantil', destination: '/es/servicios', permanent: true },
+      { source: '/es/derecho-privado/abogados-obligaciones-contratos-murcia', destination: '/es/servicios', permanent: true },
+      { source: '/es/derecho-privado/:path*', destination: '/es/servicios', permanent: true },
+      { source: '/es/derecho-publico/:path*', destination: '/es/servicios', permanent: true },
+      { source: '/index.php', destination: '/es', permanent: true },
     ];
   },
 };
