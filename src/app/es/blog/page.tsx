@@ -32,6 +32,7 @@ async function getPosts() {
       .from('blog_posts')
       .select('id, slug_es, title_es, excerpt_es, published_at, reading_time_minutes, category_id')
       .eq('status', 'published')
+      .lte('published_at', new Date().toISOString())
       .order('published_at', { ascending: false });
 
     if (error) {

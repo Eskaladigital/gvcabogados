@@ -35,6 +35,7 @@ export default async function SitemapPage() {
     .from('blog_posts')
     .select('slug_es, slug_en, title_es, title_en')
     .eq('status', 'published')
+    .lte('published_at', new Date().toISOString())
     .order('published_at', { ascending: false });
 
   // --- EN ---

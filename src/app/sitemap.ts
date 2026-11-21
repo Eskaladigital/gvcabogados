@@ -82,6 +82,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     .from('blog_posts')
     .select('slug_es, slug_en, published_at, updated_at')
     .eq('status', 'published')
+    .lte('published_at', now.toISOString())
     .order('published_at', { ascending: false });
 
   const blogPagesEs = (blogPosts || []).map((post) => ({

@@ -20,6 +20,7 @@ async function getRelatedPosts(currentPostId: string, categoryId: string | null)
       blog_categories(name_es, color)
     `)
     .eq('status', 'published')
+    .lte('published_at', new Date().toISOString())
     .neq('id', currentPostId)
     .order('published_at', { ascending: false })
     .limit(3);

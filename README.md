@@ -418,6 +418,13 @@ URL: `/administrator/login`
 
 **EN**: URLs antiguas `/en/services/X-lawyers-murcia` y `/en/lawyers/X-lawyers-ciudad` redirigen a `/en/services/{carpeta}/{ciudad}`. Servicios inactivos redirigen a `/en/services`.
 
+### Actualización SEO 21 noviembre 2026 (corte GSC 16 meses)
+
+- **Commit `10dd845` (`next.config.js`, en producción):** añadidas 15 redirecciones `301` permanentes para las 13 URLs legacy en 404 (`/es/derecho-privado/…`, `/es/derecho-publico/…` e `index.php`, 109,5k imp. en GSC). Verificado `308`.
+- **Supabase Murcia (en producción):** reescritos `title_es` y `meta_description_es` en `svc_*` y `service_content` para Murcia en Derecho de Familia/Divorcio, Derecho Administrativo, Responsabilidad Civil y Daños, Negligencias Médicas y Extranjería (pasando de títulos editoriales sin «Abogados»/«Divorcio» a títulos transaccionales).
+- **Commit `e604c8f` (`src/app/es/blog/[slug]/page.tsx`, en producción):** overrides de `<title>` y `meta description` para los 3 posts que concentran el 52 % del tráfico (560k imp.) + bloque CTA contextual al final del artículo enlazando a los servicios de Murcia. Verificado en producción.
+- **Filtro de programación futura + reactivación del blog (21 nov):** añadido `.lte('published_at', now)` en listados, fichas, relacionados y sitemaps ES/EN para soportar cola programada sin filtrar artículos futuros; creados y redactados 8 nuevos artículos ES/EN orientados a Murcia (ritmo quincenal `21 nov 2026` → `27 feb 2027`, detalle en `W - GVCABOGADOS/EDITORIAL-BLOG.md`).
+
 ---
 
 ## Despliegue en Vercel
