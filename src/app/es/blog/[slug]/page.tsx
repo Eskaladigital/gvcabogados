@@ -29,14 +29,72 @@ async function getPost(slug: string) {
   return data;
 }
 
+const BLOG_SEO_OVERRIDES: Record<string, { title: string; description: string }> = {
+  'cuanto-tiempo-tarda-un-juicio-en-espana': {
+    title: '¿Cuánto tarda un juicio en España? Plazos por vía (2026) | GVC',
+    description:
+      'Plazos reales de un juicio civil, penal, laboral o contencioso en España en 2026: de 3 meses a 2 años según juzgado y recursos. Guía de abogados expertos.',
+  },
+  'cuanto-tarda-en-cobrarse-una-indemnizacion-por-accidente-de-trafico': {
+    title: '¿Cuánto tarda una indemnización por accidente de tráfico? (2026)',
+    description:
+      'Plazo legal para cobrar una indemnización por accidente de tráfico: 3 meses tras la oferta motivada (o 6–12 meses en juicio). Cómo reclamar sin retrasos.',
+  },
+  'inhabilitacion-profesional-en-que-casos-se-aplica': {
+    title: 'Inhabilitación profesional: qué es, casos y duración | GVC Abogados',
+    description:
+      'Cuándo se aplica la inhabilitación especial o absoluta en España, a qué profesiones afecta, duración y cómo recurrirla. Explicado por abogados especialistas.',
+  },
+};
+
+function getContextualServiceCta(slug: string, categorySlug?: string): {
+  title: string;
+  text: string;
+  href: string;
+  label: string;
+} {
+  const s = `${slug} ${categorySlug || ''}`.toLowerCase();
+  if (s.includes('accidente') || s.includes('trafico') || s.includes('indemnizacion')) {
+    return {
+      title: '¿Necesita reclamar una indemnización por accidente de tráfico?',
+      text: 'Nuestro equipo de abogados en Murcia valora su caso con el baremo vigente y negocia directamente con la aseguradora.',
+      href: '/es/servicios/accidentes-trafico/murcia',
+      label: 'Abogados de accidentes de tráfico en Murcia →',
+    };
+  }
+  if (s.includes('familia') || s.includes('divorcio') || s.includes('custodia') || s.includes('pension')) {
+    return {
+      title: '¿Necesita asesoramiento en Derecho de Familia o divorcio?',
+      text: 'Más de 55 años defendiendo acuerdos y procedimientos de familia ante los juzgados de Murcia.',
+      href: '/es/servicios/derecho-familia/murcia',
+      label: 'Abogados de derecho de familia en Murcia →',
+    };
+  }
+  if (s.includes('administracion') || s.includes('administrativo') || s.includes('inhabilitacion') || s.includes('sancion')) {
+    return {
+      title: '¿Afronta un procedimiento o reclamación ante la Administración?',
+      text: 'Analizamos plazos, recursos administrativos y defensa contenciosa desde nuestro despacho en Gran Vía 15, Murcia.',
+      href: '/es/servicios/responsabilidad-administracion/murcia',
+      label: 'Abogados de derecho administrativo en Murcia →',
+    };
+  }
+  return {
+    title: '¿Necesita un abogado especialista en Murcia?',
+    text: 'En García-Valcárcel & Cáceres llevamos más de 55 años defendiendo procedimientos civiles, responsabilidad civil, familia y administrativo.',
+    href: '/es/servicios/responsabilidad-civil/murcia',
+    label: 'Ver áreas de práctica en Murcia →',
+  };
+}
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const post = await getPost(slug);
   if (!post) return {};
 
+  const override = BLOG_SEO_OVERRIDES[post.slug_es];
   return {
-    title: `${post.title_es} | Blog GVC Abogados Murcia`,
-    description: post.excerpt_es || post.title_es,
+    title: override?.title || `${post.title_es} | Blog GVC Abogados Murcia`,
+    description: override?.description || post.excerpt_es || post.title_es,
     alternates: { canonical: `${SITE_URL}/es/blog/${post.slug_es}` },
   };
 }
@@ -60,6 +118,7 @@ export default async function BlogPostPage({ params }: Props) {
 
   const locale = 'es';
   const cleanContent = cleanHtmlContent(post.content_es || '');
+  const serviceCta = getContextualServiceCta(post.slug_es, post.blog_categories?.slug_es);
 
   return (
     <>
@@ -126,6 +185,30 @@ export default async function BlogPostPage({ params }: Props) {
                 prose-strong:text-brand-dark prose-strong:font-semibold"
               dangerouslySetInnerHTML={{ __html: cleanContent }}
             />
+
+            {/* Puente comercial contextual a servicios Murcia */}
+            <aside className="my-10 border border-brand-brown/30 bg-brand-dark text-white p-6 md:p-8 rounded-sm">
+              <p className="text-[0.65rem] font-bold uppercase tracking-widest text-brand-brown mb-2">
+                García-Valcárcel &amp; Cáceres · Despacho en Murcia desde 1970
+              </p>
+              <h2 className="font-display text-xl md:text-2xl font-bold text-white mb-2">
+                {serviceCta.title}
+              </h2>
+              <p className="text-neutral-300 text-sm leading-relaxed mb-5">
+                {serviceCta.text}
+              </p>
+              <div className="flex flex-wrap items-center gap-3">
+                <Link href={serviceCta.href} className="btn-primary text-xs">
+                  {serviceCta.label}
+                </Link>
+                <Link href="/es/contacto" className="btn-outline text-xs">
+                  Solicitar consulta
+                </Link>
+                <a href="tel:+34968241025" className="text-xs text-neutral-300 hover:text-white underline underline-offset-4 ml-1">
+                  ☎ 968 241 025
+                </a>
+              </div>
+            </aside>
 
             {/* Compartir al final también */}
             <SocialShare url={`/es/blog/${post.slug_es}`} title={post.title_es} />
